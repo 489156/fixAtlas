@@ -1,0 +1,9 @@
+# Supabase CLI — run `supabase link` to fill project_id after creating a project.
+# https://supabase.com/docs/guides/cli/config
+
+[api]
+enabled = true
+
+[functions.make-server-3e8c4785]
+# Public search/product reads do not send a JWT from the browser.
+verify_jwt = false
