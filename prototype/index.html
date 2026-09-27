@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FixAtlas — 고장도감 & 수리비 투명화 플랫폼</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM CDN -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- Babel Standalone for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#2563eb', // blue-600
+              600: '#1d4ed8',
+              700: '#1e40af'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased pb-28">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- SEED FIXATLAS PRODUCTS & REPORTS ---
+    const SEED_PRODUCTS = [
+      {
+        id: 'roborock-s8',
+        brand: 'Roborock',
+        model: 'S8 Pro Ultra',
+        category: '로봇청소기',
+        releaseYear: 2023,
+        currentNewPrice: 1290000,
+        symptoms: [
+          { 
+            name: '충전 도크 복귀 실패 및 충전 안 됨 (Error 13)', 
+            code: 'Error 13', 
+            reportsCount: 24, 
+            avgCost: 125000, 
+            costRange: '70,000 ~ 180,000원',
+            cause: '충전 접점 단자 부식 또는 도크 내부 충전 모듈 열화',
+            selfCheck: [
+              '도크 및 로봇 본체 하단 충전 핀 마른 천으로 닦기',
+              '도크 후면 전원선 재체결 및 멀티탭 전압 확인',
+              '주의: 내부 배터리 임의 분해 절대 금지 (화재 위험)'
+            ]
+          },
+          { 
+            name: '물걸레 세척 안 됨 및 오수통 흡입 오류', 
+            code: 'Error 42', 
+            reportsCount: 14, 
+            avgCost: 85000, 
+            costRange: '50,000 ~ 110,000원',
+            cause: '오수 펌프 필터 막힘 또는 실링 고무 패킹 마모',
+            selfCheck: [
+              '오수통 뚜껑 고무 패킹 밀착 여부 확인',
+              '세척 트레이 거름망 분리 후 세척'
+            ]
+          }
+        ]
+      },
+      {
+        id: 'dyson-v10',
+        brand: 'Dyson',
+        model: 'Cyclone V10',
+        category: '무선청소기',
+        releaseYear: 2021,
+        currentNewPrice: 650000,
+        symptoms: [
+          { 
+            name: '모터 울컥거림 및 꺼짐 (Pulsing 현상)', 
+            code: 'Filter LED', 
+            reportsCount: 38, 
+            avgCost: 0, 
+            costRange: '자가해결 0원 ~ 공식 AS 90,000원',
+            cause: '상단 필터 미세먼지 막힘 또는 흡입관 이물질 적체',
+            selfCheck: [
+              '상단 필터를 찬물로 세척 후 최소 24시간 완전 건조',
+              '먼지통 플랩을 열고 입구 플라스틱 통로 막힘 확인',
+              '모터 본체에는 절대 물이 닿지 않도록 주의'
+            ]
+          },
+          { 
+            name: '트리거 버튼 누르면 반응 없음 (레버 파손)', 
+            code: 'Trigger Break', 
+            reportsCount: 42, 
+            avgCost: 45000, 
+            costRange: '사설 35,000 ~ 공식 80,000원',
+            cause: '내부 플라스틱 트리거 스위치 지지대 피로 파손',
+            selfCheck: [
+              '배터리 LED가 파란색으로 켜지는지 확인',
+              '자가 수리 시 토크스(Torx) 별드라이버 필요 (사설 부품 이용)'
+            ]
+          }
+        ]
+      }
+    ];
+
+    function App() {
+      const [searchTerm, setSearchTerm] = useState('');
+      const [selectedProduct, setSelectedProduct] = useState(SEED_PRODUCTS[0]);
+      const [activeTab, setActiveTab] = useState('browse'); // 'browse' | 'calc' | 'report'
+      
+      // Calculator State
+      const [calcNewPrice, setCalcNewPrice] = useState(1000000);
+      const [calcRepairCost, setCalcRepairCost] = useState(200000);
+      const [calcYear, setCalcYear] = useState(3);
+
+      // Report Form State
+      const [reportSuccess, setReportSuccess] = useState(false);
+
+      // Filtered products
+      const filteredProducts = SEED_PRODUCTS.filter(p => 
+        p.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.symptoms.some(s => s.name.includes(searchTerm) || s.code.includes(searchTerm))
+      );
+
+      // Calculate Repair vs Replace
+      const ratio = calcNewPrice > 0 ? (calcRepairCost / calcNewPrice) * 100 : 0;
+      let diagnosis = '수리 권장 (경제성 높음)';
+      let diagnosisColor = 'text-emerald-400 bg-emerald-950/40 border-emerald-800';
+      if (ratio > 50 || calcYear >= 5) {
+        diagnosis = '교체 권장 (새 제품 구매 고려)';
+        diagnosisColor = 'text-rose-400 bg-rose-950/40 border-rose-800';
+      } else if (ratio > 25) {
+        diagnosis = '조건부 수리 (핵심 부품 여부 확인)';
+        diagnosisColor = 'text-amber-400 bg-amber-950/40 border-amber-800';
+      }
+
+      const handleReportSubmit = (e) => {
+        e.preventDefault();
+        setReportSuccess(true);
+        setTimeout(() => {
+          setReportSuccess(false);
+          setActiveTab('browse');
+        }, 2000);
+      };
+
+      return (
+        <div className="max-w-md mx-auto min-h-screen px-4 pt-5">
+          {/* HEADER */}
+          <header className="mb-4">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+              <span className="text-[10px] tracking-widest text-blue-400 font-bold uppercase">FixAtlas Platform</span>
+            </div>
+            <h1 className="text-xl font-black text-white mt-0.5">고장도감 & 수리비 계산기</h1>
+            <p className="text-xs text-slate-400 mt-1">AS센터 전화 전, 같은 모델 수리비와 자가점검을 확인하세요.</p>
+          </header>
+
+          {/* MAIN TABS */}
+          <div className="bg-slate-900 p-1 rounded-2xl border border-slate-800 grid grid-cols-3 gap-1 mb-5 text-xs font-bold">
+            <button 
+              onClick={() => setActiveTab('browse')}
+              className={`py-2 rounded-xl transition-all ${activeTab === 'browse' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}>
+              🔍 고장 조회
+            </button>
+            <button 
+              onClick={() => setActiveTab('calc')}
+              className={`py-2 rounded-xl transition-all ${activeTab === 'calc' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}>
+              ⚖️ 수리 vs 교체
+            </button>
+            <button 
+              onClick={() => setActiveTab('report')}
+              className={`py-2 rounded-xl transition-all ${activeTab === 'report' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}>
+              📝 수리비 제보
+            </button>
+          </div>
+
+          {/* TAB 1: BROWSE & SEARCH */}
+          {activeTab === 'browse' && (
+            <div className="space-y-4">
+              {/* Search Bar */}
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="제품명, 에러코드 검색 (예: S8, V10, Error 13)" 
+                  className="w-full bg-slate-900 border border-slate-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 shadow-inner"
+                />
+                <span className="absolute left-3.5 top-3.5 text-slate-500 text-xs">🔍</span>
+              </div>
+
+              {/* Product Cards */}
+              <div className="space-y-4">
+                {filteredProducts.map(prod => (
+                  <div key={prod.id} className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-lg space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-950 text-blue-400 border border-blue-900">
+                          {prod.category}
+                        </span>
+                        <h2 className="text-lg font-bold text-white mt-1.5">{prod.brand} {prod.model}</h2>
+                        <span className="text-[11px] text-slate-400">{prod.releaseYear}년 출시 · 신품가 약 {prod.currentNewPrice.toLocaleString()}원</span>
+                      </div>
+                    </div>
+
+                    {/* Symptoms List */}
+                    <div className="space-y-3 pt-2">
+                      <span className="text-xs font-bold text-slate-300 block">자주 발생하는 대표 고장 & 수리비</span>
+                      {prod.symptoms.map((sym, sIdx) => (
+                        <div key={sIdx} className="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-4 space-y-2.5">
+                          <div className="flex justify-between items-start">
+                            <h3 className="text-xs font-bold text-slate-100 pr-2">{sym.name}</h3>
+                            <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-800 text-amber-400 shrink-0">
+                              {sym.code}
+                            </span>
+                          </div>
+
+                          {/* Cost range badge */}
+                          <div className="flex justify-between items-center py-1.5 px-3 rounded-xl bg-slate-900 border border-slate-800/60 text-xs">
+                            <span className="text-slate-400">제보 수리비 범위</span>
+                            <span className="font-bold text-emerald-400 font-mono">{sym.costRange}</span>
+                          </div>
+
+                          {/* Cause */}
+                          <p className="text-[11px] text-slate-400">
+                            <span className="font-semibold text-slate-300">주요 원인:</span> {sym.cause}
+                          </p>
+
+                          {/* Safe self check checklist */}
+                          <div className="pt-1.5 border-t border-slate-800/50 space-y-1">
+                            <span className="text-[10px] font-bold text-blue-400">🛡️ 서비스센터 가기 전 자가점검:</span>
+                            {sym.selfCheck.map((step, stepIdx) => (
+                              <div key={stepIdx} className="flex items-start gap-1.5 text-[11px] text-slate-300">
+                                <span className="text-blue-500">•</span>
+                                <span>{step}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: REPAIR VS REPLACE CALCULATOR */}
+          {activeTab === 'calc' && (
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-5">
+              <div>
+                <h2 className="text-lg font-bold text-white">수리 vs 교체 경제성 계산기</h2>
+                <p className="text-xs text-slate-400 mt-0.5">견적받은 수리비가 합리적인지, 새로 사는 게 나은지 판단합니다.</p>
+              </div>
+
+              {/* Diagnosis Banner */}
+              <div className={`p-4 rounded-2xl border text-center space-y-1 ${diagnosisColor}`}>
+                <div className="text-xs font-semibold uppercase tracking-wider">진단 결과</div>
+                <div className="text-lg font-black">{diagnosis}</div>
+                <div className="text-[11px] opacity-80">수리비가 현재 신품가의 {ratio.toFixed(1)}%를 차지합니다.</div>
+              </div>
+
+              {/* Inputs */}
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                    <span>현재 신품 구매 가격</span>
+                    <span className="text-blue-400 font-mono">{calcNewPrice.toLocaleString()}원</span>
+                  </div>
+                  <input 
+                    type="range" min="100000" max="3000000" step="50000"
+                    value={calcNewPrice}
+                    onChange={(e) => setCalcNewPrice(parseInt(e.target.value))}
+                    className="w-full accent-blue-500 bg-slate-950"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                    <span>제시받은 예상 수리비</span>
+                    <span className="text-emerald-400 font-mono">{calcRepairCost.toLocaleString()}원</span>
+                  </div>
+                  <input 
+                    type="range" min="0" max="1500000" step="10000"
+                    value={calcRepairCost}
+                    onChange={(e) => setCalcRepairCost(parseInt(e.target.value))}
+                    className="w-full accent-emerald-500 bg-slate-950"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs font-bold text-slate-300 mb-1">
+                    <span>제품 사용 연식</span>
+                    <span className="text-slate-200 font-mono">{calcYear}년 사용</span>
+                  </div>
+                  <div className="grid grid-cols-5 gap-1.5 pt-1">
+                    {[1, 2, 3, 4, 5].map(y => (
+                      <button
+                        key={y}
+                        onClick={() => setCalcYear(y)}
+                        className={`py-2 rounded-xl text-xs font-bold transition-all ${calcYear === y ? 'bg-blue-600 text-white' : 'bg-slate-950 border border-slate-800 text-slate-400'}`}>
+                        {y}년{y === 5 ? '+' : ''}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Guideline */}
+              <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800/80 text-[11px] text-slate-400 space-y-1">
+                <div className="font-bold text-slate-300">📌 판단 공식 가이드</div>
+                <div>• 수리비 ≤ 25%: 수리 적극 권장 (경제적 이득 큼)</div>
+                <div>• 25% &lt; 수리비 ≤ 50%: 소모품/배터리면 수리, 모터/메인보드면 고민</div>
+                <div>• 수리비 &gt; 50% 또는 4년 이상 사용: 신형 모델 교체 권장</div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: REPORT FORM */}
+          {activeTab === 'report' && (
+            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-4">
+              <div>
+                <h2 className="text-lg font-bold text-white">수리비 및 AS 경험 제보</h2>
+                <p className="text-xs text-slate-400 mt-0.5">여러분의 제보 1건이 다른 소비자의 과잉 견적을 막습니다.</p>
+              </div>
+
+              {reportSuccess ? (
+                <div className="p-8 text-center bg-emerald-950/40 border border-emerald-800 rounded-2xl text-emerald-300 space-y-2">
+                  <div className="text-2xl">🎉</div>
+                  <div className="font-bold text-sm">제보가 정상적으로 등록되었습니다!</div>
+                  <div className="text-xs opacity-80">수리비 통계 데이터베이스에 즉시 반영됩니다.</div>
+                </div>
+              ) : (
+                <form onSubmit={handleReportSubmit} className="space-y-3">
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-400">제품군 / 모델명</label>
+                    <input required placeholder="예: 로보락 S8 Pro Ultra, 다이슨 V10" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-400">고장 증상 또는 에러코드</label>
+                    <input required placeholder="예: 충전 안 됨, 모터 꺼짐, Error 13" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-400">수리 경로</label>
+                      <select className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-2 py-2 text-xs text-white">
+                        <option>공식 서비스센터</option>
+                        <option>사설 수리점</option>
+                        <option>자가 수리/부품교체</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-bold text-slate-400">실제 지불 금액</label>
+                      <input type="number" required placeholder="예: 85000 (원)" className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-slate-400">AS 경험 후기 및 주의점</label>
+                    <textarea placeholder="예: 필터 교체만으로 해결 가능했으나 센터에서 모터 전체 교체를 권유받음." className="w-full mt-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white h-20 focus:outline-none focus:border-blue-500"></textarea>
+                  </div>
+                  <button type="submit" className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg active:scale-98">
+                    익명으로 수리비 제보하기
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
