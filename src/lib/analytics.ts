@@ -11,7 +11,33 @@ type Props = Record<string, string | number | boolean>;
 interface QueuedEvent { name: EventName; path: string; props: Props }
 
 const SID_KEY = 'fixatlas:sid';
+const UTM_KEY = 'fixatlas:utm';
 let queue: QueuedEvent[] = [];
+
+/**
+ * First-touch campaign attribution for this browsing session (e.g. a Naver blog post link).
+ * Stored in sessionStorage only; attached to every event as `src` / `cmp` / `cnt` so the KPI panel can count
+ * blog-originated visits, quote checks and submissions. No personal data is involved.
+ */
+function campaign(): Props {
+  try {
+    const q = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null;
+    const src = q?.get('utm_source');
+    if (src) {
+      const c: Props = { src: src.slice(0, 40) };
+      const cmp = q?.get('utm_campaign');
+      const cnt = q?.get('utm_content');
+      if (cmp) c.cmp = cmp.slice(0, 80);
+      if (cnt) c.cnt = cnt.slice(0, 80);
+      sessionStorage.setItem(UTM_KEY, JSON.stringify(c));
+      return c;
+    }
+    const saved = sessionStorage.getItem(UTM_KEY);
+    return saved ? (JSON.parse(saved) as Props) : {};
+  } catch {
+    return {};
+  }
+}
 let timer: ReturnType<typeof setTimeout> | null = null;
 let memorySid: string | null = null;
 
@@ -50,7 +76,7 @@ export function flush(): void {
 
 export function track(name: EventName, props: Props = {}): void {
   if (!allowed()) return;
-  queue.push({ name, path: typeof location !== 'undefined' ? location.pathname : '', props });
+  queue.push({ name, path: typeof location !== 'undefined' ? location.pathname : '', props: { ...props, ...campaign() } });
   if (queue.length >= 10) flush();
   else if (!timer) timer = setTimeout(flush, 1500);
 }

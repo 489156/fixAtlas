@@ -21,6 +21,7 @@ interface Metrics {
   top_queries: { q: string; n: number }[];
   top_requested_models: { q: string; n: number }[];
   thin_products: { product_id: string; brand: string; model_name: string; n_reports: number; n_priced: number }[];
+  campaigns: { src: string; cmp: string; sessions: number; quote_checks: number; submits: number }[];
 }
 
 // RFP section 18 targets (90 days)
@@ -159,6 +160,26 @@ export function Admin() {
             {num('submit_starts') > 0 && ` (${Math.round((num('submit_done') / num('submit_starts')) * 100)}%)`}
             {' · '}검색 {num('searches')}건 중 0건 {num('zero_result_searches')}건 · 견적 비교 {num('quote_checks')}회 · 미분류 제보 {num('reports_unmapped')}건
           </p>
+        </section>
+
+        <section className={card} aria-labelledby="camp">
+          <h2 id="camp" className="text-xl font-bold text-gray-900 mb-1">블로그·캠페인 유입 (수집형 블로그 전환 조건)</h2>
+          <p className="text-sm text-gray-700 mb-3">
+            블로그 유입 세션 <strong>{num('blog_sessions')}</strong> (목표 월 500) · 블로그 경유 견적 비교 {num('blog_quote_checks')} · 블로그 경유 제보 완료 {num('blog_submit_done')} · 전체 캠페인 세션 {num('campaign_sessions')}
+          </p>
+          <p className="text-xs text-gray-500 mb-3">글 링크는 <code>node scripts/blog-link.mjs</code>로 만든 UTM 링크만 집계됩니다. 첫 유입 기준(세션 단위)입니다.</p>
+          {metrics && metrics.campaigns.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-gray-500"><tr><th className="py-1 pr-3">출처</th><th className="py-1 pr-3">글(캠페인)</th><th className="py-1 pr-3">세션</th><th className="py-1 pr-3">견적 비교</th><th className="py-1">제보</th></tr></thead>
+                <tbody className="divide-y divide-gray-100">
+                  {metrics.campaigns.map((c) => (
+                    <tr key={`${c.src}|${c.cmp}`}><td className="py-1 pr-3">{c.src}</td><td className="py-1 pr-3">{c.cmp || '—'}</td><td className="py-1 pr-3">{c.sessions}</td><td className="py-1 pr-3">{c.quote_checks}</td><td className="py-1">{c.submits}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : <p className="text-sm text-gray-500">아직 캠페인 유입이 없습니다.</p>}
         </section>
 
         <div className="grid md:grid-cols-3 gap-6 mb-6">

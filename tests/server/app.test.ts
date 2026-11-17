@@ -216,3 +216,16 @@ test('admin product creation is validated and makes the product searchable', asy
   const s = await call('GET', `/search?q=${encodeURIComponent('드리미 X40')}`);
   assert.deepEqual(s.json.products.map((p: { id: string }) => p.id), ['prod-99']);
 });
+
+test('campaign attribution: blog-tagged events are aggregated per post for staff only', async () => {
+  const { call } = setup();
+  const blog = { src: 'naver_blog', cmp: '2026-11-battery-price' };
+  await call('POST', '/events', { body: { session_id: 'session-blog-000001', events: [
+    { name: 'page_view', props: blog }, { name: 'quote_check', props: blog }, { name: 'submit_done', props: blog },
+  ] } });
+  await call('POST', '/events', { body: { session_id: 'session-blog-000002', events: [{ name: 'page_view', props: blog }] } });
+  await call('POST', '/events', { body: { session_id: 'session-organic-0001', events: [{ name: 'page_view', props: {} }] } });
+  assert.equal((await call('GET', '/admin/metrics', { token: ALICE })).status, 403);
+  const m = await call('GET', '/admin/metrics', { token: MOD });
+  assert.deepEqual(m.json.campaigns, [{ src: 'naver_blog', cmp: '2026-11-battery-price', sessions: 2, quote_checks: 1, submits: 1 }]);
+});

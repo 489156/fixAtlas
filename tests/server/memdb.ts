@@ -95,6 +95,17 @@ export class MemDb implements Db {
     return [...m].map(([q, n]) => ({ q, n })).sort((a, b) => b.n - a.n).slice(0, limit);
   }
   async thinProducts(_min: number) { return []; }
+  async topCampaigns(limit: number) {
+    const m = new Map<string, { src: string; cmp: string; s: Set<string>; quote_checks: number; submits: number }>();
+    for (const e of this.events) {
+      if (typeof e.props.src !== 'string') continue;
+      const key = `${e.props.src}|${e.props.cmp ?? ''}`;
+      const row = m.get(key) ?? { src: e.props.src, cmp: String(e.props.cmp ?? ''), s: new Set<string>(), quote_checks: 0, submits: 0 };
+      row.s.add(e.session_id); if (e.name === 'quote_check') row.quote_checks++; if (e.name === 'submit_done') row.submits++;
+      m.set(key, row);
+    }
+    return [...m.values()].map((r) => ({ src: r.src, cmp: r.cmp, sessions: r.s.size, quote_checks: r.quote_checks, submits: r.submits })).sort((a, b) => b.sessions - a.sessions).slice(0, limit);
+  }
   async seedCatalog() { return { products: this.products.length, symptoms: this.symptoms.length, cards: this.cards.length, reference_prices: this.refs.length }; }
 }
 

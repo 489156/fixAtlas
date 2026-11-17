@@ -141,6 +141,17 @@ try {
   ok('F6 admin can verify a report (state changes in the db)', db.reports.some((r) => r.verified_status === 'verified'));
   ok('F7 admin link visible for staff', (await page.locator('a[href="/admin"]').count()) >= 1);
 
+  // ---- H. Blog attribution: first-touch UTM follows the session to later events
+  const ctx2 = await browser.newContext(); const p2 = await ctx2.newPage();
+  await p2.goto(`${BASE}/products/robot-vacuum/roborock-s8-pro-ultra?utm_source=naver_blog&utm_medium=blog&utm_campaign=e2e-post&utm_content=cta`); await p2.waitForTimeout(600);
+  await p2.goto(`${BASE}/calculator`); await p2.waitForTimeout(400);
+  await p2.fill('#np', '850000'); await p2.fill('#rc', '100000'); await p2.selectOption('#py', String(new Date().getFullYear() - 1));
+  await p2.getByRole('button', { name: '계산하기' }).click(); await p2.waitForTimeout(2200);
+  await ctx2.close();
+  const tagged = db.events.filter((e) => e.props.cmp === 'e2e-post');
+  ok('H1 blog UTM recorded on landing page_view', tagged.some((e) => e.name === 'page_view' && e.props.src === 'naver_blog' && e.props.cnt === 'cta'));
+  ok('H2 attribution carried to a later action on another page (calculator)', tagged.some((e) => e.name === 'calculator_used'));
+
   // ---- G. Analytics: events were recorded, search text stored, no user ids
   await page.waitForTimeout(2200);
   const names = new Set(db.events.map((e) => e.name));

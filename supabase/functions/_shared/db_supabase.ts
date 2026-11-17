@@ -192,6 +192,11 @@ export function makeSupabaseDb(sb: SupabaseClient): Db {
       if (error) throw new Error(`top queries: ${error.message}`);
       return ((data ?? []) as Row[]).map((r) => ({ q: String(r.q), n: Number(r.n) }));
     },
+    async topCampaigns(limit) {
+      const { data, error } = await sb.rpc('top_campaigns', { lim: limit });
+      if (error) throw new Error(`campaigns: ${error.message}`);
+      return ((data ?? []) as Row[]).map((r) => ({ src: String(r.src), cmp: String(r.cmp ?? ''), sessions: Number(r.sessions), quote_checks: Number(r.quote_checks), submits: Number(r.submits) }));
+    },
     async thinProducts(minPriced) {
       const { data, error } = await sb.rpc('thin_products', { min_priced: minPriced });
       if (error) throw new Error(`thin products: ${error.message}`);

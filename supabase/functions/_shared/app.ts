@@ -245,11 +245,11 @@ export function createApp(deps: AppDeps) {
   routes.get('/admin/metrics', async (c) => {
     const gate = await requireStaff(c.req.header('Authorization'));
     if (!gate.ok) return c.json({ error: gate.message }, gate.status);
-    const [kpi, zero, searches, requests, thin] = await Promise.all([
+    const [kpi, zero, searches, requests, thin, campaigns] = await Promise.all([
       db.kpiSummary(), db.topEventQueries('search_zero_result', 20), db.topEventQueries('search', 20),
-      db.topEventQueries('product_request', 20), db.thinProducts(5),
+      db.topEventQueries('product_request', 20), db.thinProducts(5), db.topCampaigns(20),
     ]);
-    return c.json({ kpi, top_zero_result_queries: zero, top_queries: searches, top_requested_models: requests, thin_products: thin });
+    return c.json({ kpi, top_zero_result_queries: zero, top_queries: searches, top_requested_models: requests, thin_products: thin, campaigns });
   });
 
   routes.patch('/admin/posts/:id', async (c) => {

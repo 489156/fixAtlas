@@ -76,6 +76,7 @@ export interface Db {
   upsertProduct(p: Omit<Product, 'image_url'> & { image_url?: string }): Promise<Product>;
   kpiSummary(): Promise<Record<string, unknown>>;
   topEventQueries(eventName: string, limit: number): Promise<{ q: string; n: number }[]>;
+  topCampaigns(limit: number): Promise<{ src: string; cmp: string; sessions: number; quote_checks: number; submits: number }[]>;
   thinProducts(minPriced: number): Promise<{ product_id: string; brand: string; model_name: string; n_reports: number; n_priced: number }[]>;
   seedCatalog(): Promise<{ products: number; symptoms: number; cards: number; reference_prices: number }>;
 }
