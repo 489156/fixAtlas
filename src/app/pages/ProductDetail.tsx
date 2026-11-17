@@ -1,315 +1,295 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router';
-import { Package, AlertTriangle, TrendingUp, CheckCircle, XCircle } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { useParams, useSearchParams, Link } from 'react-router';
+import { Package, AlertTriangle, TrendingUp, CheckCircle, XCircle, ShieldAlert, BadgeInfo } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { API_BASE } from '../../lib/supabase';
+import { api } from '../../lib/api';
+import { categoryLabel, formatMoney, CHANNEL_LABEL, RESOLVED_LABEL, SAFETY_LABEL } from '../../lib/format';
+import { track } from '../../lib/analytics';
 import { AffiliateSlot } from '../components/AffiliateSlot';
+import { QuoteCheck } from '../components/QuoteCheck';
 import { SEO } from '../components/SEO';
 
 interface Product {
-  id: string;
-  category: string;
-  brand: string;
-  model_name: string;
-  alternate_names: string[];
-  release_year: number;
-  description: string;
+  id: string; slug: string; category: string; brand: string; brand_ko: string; model_name: string;
+  alternate_names: string[]; release_year: number; description: string;
 }
+interface Symptom { id: string; code: string; name_ko: string; name_en: string; risk_level: string; categories: string[] }
+interface Report {
+  id: string; symptom_id: string; paid_price: number | null; quoted_price: number | null; currency: string;
+  repair_channel: string; resolved_status: string; review_text: string; error_code: string;
+  purchase_year: number | null; created_at: string;
+}
+interface Card { id: string; symptom_id: string | null; title_ko: string; body_ko: string; sort_order: number; safety_level: string }
+interface Stat {
+  symptom_id: string; currency: string; n_reports: number; n_priced: number;
+  price: { n: number; level: 'none' | 'low' | 'ok' | 'good'; min: number | null; max: number | null; p25: number | null; median: number | null; p75: number | null };
+  resolved_rate: number | null; recurred_rate: number | null;
+  by_channel: { channel: string; n_priced: number; median: number | null }[];
+}
+interface RefPrice { id: string; item: string; item_type: string; price_krw: number; source_name: string; source_url: string; date_seen: string; notes: string }
+interface Payload { product: Product; reports: Report[]; stats: Stat[]; symptoms: Symptom[]; self_check_cards: Card[]; reference_prices: RefPrice[] }
 
-interface RepairReport {
-  id: string;
-  symptom_id: string;
-  paid_price: number;
-  currency: string;
-  repair_channel: string;
-  resolved_status: string;
-  review_text: string;
-  created_at: string;
-}
-
-interface Symptom {
-  id: string;
-  name_ko: string;
-  name_en: string;
-  risk_level: string;
-  self_check_allowed: boolean;
-}
-
-interface SelfCheckCard {
-  id: string;
-  product_id: string;
-  symptom_id: string | null;
-  title_ko: string;
-  body_ko: string;
-  sort_order: number;
-}
+const REF_TYPE_LABEL: Record<string, string> = {
+  battery: '배터리', consumable: '소모품', part: '부품', visit_fee: '출장 점검료', inspection_fee: '점검비', shipping_fee: '택배 서비스비', warranty: '보증',
+};
+const SAMPLE_LABEL = { none: '표본 부족', low: '표본 적음', ok: '참고 가능', good: '표본 충분' } as const;
 
 export function ProductDetail() {
-  const { id } = useParams();
+  const { id: key } = useParams();
+  const [params] = useSearchParams();
+  const focusSymptom = params.get('symptom') ?? '';
   const { t } = useTranslation();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [reports, setReports] = useState<RepairReport[]>([]);
-  const [symptoms, setSymptoms] = useState<Symptom[]>([]);
-  const [selfCheckCards, setSelfCheckCards] = useState<SelfCheckCard[]>([]);
+  const [data, setData] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    fetchProductData();
-  }, [id]);
-
-  const fetchProductData = async () => {
+    if (!key) return;
+    let alive = true;
     setLoading(true);
-    try {
-      const response = await fetch(`${API_BASE}/products/${id}`);
-      const data = await response.json();
-      setProduct(data.product);
-      setReports(data.reports || []);
-      setSymptoms(data.symptoms || []);
-      setSelfCheckCards(data.self_check_cards || []);
-    } catch (error) {
-      console.error('Failed to fetch product:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setFailed(false);
+    api<Payload>(`/products/${encodeURIComponent(key)}`)
+      .then((d) => { if (alive) { setData(d); track('product_view', { product: d.product.slug, has_reports: d.reports.length > 0 }); } })
+      .catch(() => alive && (setData(null), setFailed(true)))
+      .finally(() => alive && setLoading(false));
+    return () => { alive = false; };
+  }, [key]);
 
-  const getCategoryLabel = (category: string) => {
-    if (category === 'robot-vacuum') return t('product.categoryRobot');
-    if (category === 'cordless-vacuum') return t('product.categoryCordless');
-    return category;
-  };
-
-  const getRepairChannelLabel = (channel: string) => {
-    if (channel === 'official') return t('product.channelOfficial');
-    if (channel === 'third_party') return t('product.channelThird');
-    if (channel === 'self_check') return t('product.channelSelf');
-    return channel;
-  };
-
-  const getResolvedStatusLabel = (status: string) => {
-    if (status === 'resolved') return t('product.statusResolved');
-    if (status === 'unresolved') return t('product.statusUnresolved');
-    if (status === 'recurred') return t('product.statusRecurred');
-    return status;
-  };
-
-  const getResolvedStatusIcon = (status: string) => {
-    if (status === 'resolved') return <CheckCircle className="w-4 h-4 text-green-600" />;
-    if (status === 'unresolved') return <XCircle className="w-4 h-4 text-red-600" />;
-    return <AlertTriangle className="w-4 h-4 text-yellow-600" />;
-  };
-
-  const getRiskLevelBadge = (level: string) => {
-    if (level === 'safe') return <span className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded">{t('product.riskSafe')}</span>;
-    if (level === 'caution') return <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded">{t('product.riskCaution')}</span>;
-    if (level === 'expert') return <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded">{t('product.riskExpert')}</span>;
-    if (level === 'dangerous') return <span className="px-2 py-1 bg-red-100 text-red-700 text-xs rounded">{t('product.riskDanger')}</span>;
-    return null;
-  };
+  const symptomName = (sid: string) => data?.symptoms.find((s) => s.id === sid)?.name_ko ?? sid;
+  const applicable = useMemo(() => (data ? data.symptoms.filter((s) => !s.categories.length || s.categories.includes(data.product.category)) : []), [data]);
 
   if (loading) {
     return (
-      <div className="text-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <div className="text-center py-12" role="status">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
         <p className="mt-4 text-gray-600">{t('product.loading')}</p>
       </div>
     );
   }
-
-  if (!product) {
+  if (failed || !data) {
     return (
       <div className="text-center py-12">
+        <SEO title="제품을 찾을 수 없습니다" noIndex />
         <p className="text-gray-600">{t('product.notFound')}</p>
-        <Link to="/" className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-          {t('product.backHome')}
-        </Link>
+        <Link to="/search" className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">제품 검색하기</Link>
       </div>
     );
   }
 
-  const symptomStats = reports.reduce((acc: Record<string, { count: number; prices: number[]; resolved: number }>, report) => {
-    const key = report.symptom_id;
-    if (!acc[key]) {
-      acc[key] = { count: 0, prices: [], resolved: 0 };
-    }
-    acc[key].count++;
-    if (report.paid_price > 0) {
-      acc[key].prices.push(report.paid_price);
-    }
-    if (report.resolved_status === 'resolved') {
-      acc[key].resolved++;
-    }
-    return acc;
-  }, {});
+  const { product, reports, stats, self_check_cards: cards, reference_prices: refs } = data;
+  const name = `${product.brand} ${product.model_name}`;
+  const safetyCards = cards.filter((c) => c.symptom_id === null);
+  const symptomCards = cards.filter((c) => c.symptom_id !== null);
+  const statsBySymptom = stats.reduce<Record<string, Stat[]>>((acc, s) => ((acc[s.symptom_id] ??= []).push(s), acc), {});
+  const noData = reports.length === 0 && refs.length === 0;
+
+  // FAQ markup only from real data (n_priced >= 5): never from templates.
+  const faq = stats.filter((s) => s.price.level === 'ok' || s.price.level === 'good').slice(0, 5).map((s) => ({
+    '@type': 'Question',
+    name: `${name} ${symptomName(s.symptom_id)} 수리비는 얼마인가요?`,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: `사용자 제보 ${s.price.n}건 기준 중앙값은 ${formatMoney(s.price.median, s.currency)}, 중간 50% 구간은 ${formatMoney(s.price.p25, s.currency)}~${formatMoney(s.price.p75, s.currency)}입니다. 지역·업체·부품에 따라 달라질 수 있는 참고 정보입니다.`,
+    },
+  }));
+  const jsonLd: Record<string, unknown>[] = [
+    { '@context': 'https://schema.org', '@type': 'Product', name, brand: { '@type': 'Brand', name: product.brand }, category: categoryLabel(product.category), description: product.description },
+  ];
+  if (faq.length) jsonLd.push({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq });
+
+  const reportCount = stats.reduce((n, s) => n + s.n_reports, 0);
 
   return (
     <>
       <SEO
-        title={product ? `${product.brand} ${product.model_name}` : '제품 상세'}
-        description={product ? `${product.brand} ${product.model_name}의 고장 증상, 수리비 범위, 해결률 정보` : '제품 상세 정보'}
+        title={`${name} 고장·수리비`}
+        description={`${name}의 고장 증상별 자가점검, 사용자 제보 수리비 범위, 해결률${reportCount ? ` (제보 ${reportCount}건)` : ''}.`}
+        noIndex={noData}
+        jsonLd={jsonLd}
       />
       <div className="max-w-5xl mx-auto space-y-8 pb-24 md:pb-8">
-      <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-        <div className="flex items-start gap-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <Package className="w-8 h-8 text-white" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm text-gray-500 mb-1">{getCategoryLabel(product.category)}</p>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              {product.brand} {product.model_name}
-            </h1>
-            <p className="text-gray-600">{product.description}</p>
-            {product.alternate_names && product.alternate_names.length > 0 && (
-              <p className="text-sm text-gray-500 mt-2">
-                {product.alternate_names.join(', ')}
-              </p>
-            )}
-            <p className="text-sm text-gray-500 mt-1">{t('product.releaseYear', { year: product.release_year })}</p>
-            <div className="mt-4">
-              <AffiliateSlot productId={product.id} />
+        <nav aria-label="경로" className="text-sm text-gray-500">
+          <Link to="/" className="hover:underline">홈</Link> › <Link to={`/search?q=${encodeURIComponent(product.brand)}`} className="hover:underline">{product.brand}</Link> › <span>{product.model_name}</span>
+        </nav>
+
+        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+          <div className="flex items-start gap-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shrink-0">
+              <Package className="w-8 h-8 text-white" aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-gray-500 mb-1">{categoryLabel(product.category)}</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{name} 고장·수리비</h1>
+              <p className="text-gray-600">{product.description}</p>
+              {product.alternate_names.length > 0 && <p className="text-sm text-gray-500 mt-2">다른 이름: {product.alternate_names.join(', ')}</p>}
+              <p className="text-sm text-gray-500 mt-1">{t('product.releaseYear', { year: product.release_year })}</p>
+              <div className="mt-4"><AffiliateSlot productId={product.id} /></div>
             </div>
           </div>
         </div>
-      </div>
 
-      {selfCheckCards.length > 0 && (
-        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('product.selfCheckTitle')}</h2>
-          <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded p-2 mb-4">{t('product.selfCheckDisclaimer')}</p>
-          <ul className="space-y-4">
-            {selfCheckCards.map((card) => (
-              <li key={card.id} className="p-4 border border-gray-100 rounded-lg bg-gray-50">
-                <p className="font-medium text-gray-900">{card.title_ko}</p>
-                <p className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">{card.body_ko}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        <QuoteCheck productKey={product.id} productSlug={product.slug} symptoms={applicable} defaultSymptomId={focusSymptom} />
 
-      <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-        <div className="flex items-center gap-2 mb-6">
-          <TrendingUp className="w-6 h-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">{t('product.symptomsTitle')}</h2>
-        </div>
-        {Object.keys(symptomStats).length > 0 ? (
-          <div className="space-y-4">
-            {Object.entries(symptomStats).map(([symptomId, stats]) => {
-              const symptom = symptoms.find(s => s.id === symptomId);
-              if (!symptom) return null;
-
-              const minPrice = stats.prices.length > 0 ? Math.min(...stats.prices) : 0;
-              const maxPrice = stats.prices.length > 0 ? Math.max(...stats.prices) : 0;
-              const resolveRate = stats.count > 0 ? Math.round((stats.resolved / stats.count) * 100) : 0;
-
-              const sample = reports.find(r => r.symptom_id === symptomId);
-              const cur = sample?.currency ?? 'KRW';
-              return (
-                <div key={symptomId} className="p-6 border border-gray-200 rounded-lg">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-lg font-bold text-gray-900">{symptom.name_ko}</h3>
-                        {getRiskLevelBadge(symptom.risk_level)}
-                      </div>
-                      <p className="text-sm text-gray-500">{symptom.name_en}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">{t('product.reportCount')}</p>
-                      <p className="text-2xl font-bold text-blue-600">{stats.count}</p>
-                    </div>
-                  </div>
-                  {stats.prices.length > 0 && (
-                    <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100">
-                      <div>
-                        <p className="text-xs text-gray-500">{t('product.priceRange')}</p>
-                        <p className="font-medium text-gray-900">
-                          {minPrice.toLocaleString()} ~ {maxPrice.toLocaleString()}{' '}
-                          {cur === 'KRW' ? '원' : cur}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">{t('product.resolveRate')}</p>
-                        <p className="font-medium text-gray-900">{resolveRate}%</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+        {safetyCards.map((c) => (
+          <div key={c.id} className="p-5 bg-red-50 border-2 border-red-300 rounded-xl flex gap-3" role="note">
+            <ShieldAlert className="w-6 h-6 text-red-600 shrink-0" aria-hidden="true" />
+            <div>
+              <p className="font-bold text-red-800">[Do Not DIY] {c.title_ko}</p>
+              <p className="text-sm text-red-900 mt-2 whitespace-pre-wrap">{c.body_ko}</p>
+            </div>
           </div>
-        ) : (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-600">{t('product.noStats')}</p>
-            <p className="text-sm text-gray-500 mt-2">
-              {t('product.noStatsHint')}
+        ))}
+
+        <section className="bg-white rounded-xl p-8 shadow-sm border border-gray-200" aria-labelledby="stats-title">
+          <div className="flex items-center gap-2 mb-6">
+            <TrendingUp className="w-6 h-6 text-blue-600" aria-hidden="true" />
+            <h2 id="stats-title" className="text-2xl font-bold text-gray-900">{t('product.symptomsTitle')}</h2>
+          </div>
+          {stats.length > 0 ? (
+            <div className="space-y-4">
+              {Object.entries(statsBySymptom).map(([sid, rows]) => {
+                const sym = data.symptoms.find((s) => s.id === sid);
+                return (
+                  <div key={sid} className={`p-6 border rounded-lg ${sid === focusSymptom ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-200'}`}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <h3 className="text-lg font-bold text-gray-900">{sym?.name_ko ?? sid}</h3>
+                      {sym && <span className="text-xs text-gray-500">{sym.name_en}</span>}
+                    </div>
+                    {rows.map((s) => (
+                      <div key={s.currency} className="grid md:grid-cols-3 gap-4 py-3 border-t border-gray-100 first:border-t-0 text-sm">
+                        <div>
+                          <p className="text-xs text-gray-500">제보 수 ({s.currency})</p>
+                          <p className="text-2xl font-bold text-blue-600">{s.n_reports}<span className="text-sm font-normal text-gray-500"> 건 · 금액 입력 {s.n_priced}건</span></p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">수리비 ({SAMPLE_LABEL[s.price.level]})</p>
+                          {s.price.level === 'none' && <p className="text-gray-700">표본이 부족해 범위를 표시하지 않습니다. (3건 이상부터 표시)</p>}
+                          {s.price.level === 'low' && (
+                            <p className="font-medium text-gray-900">{formatMoney(s.price.min, s.currency)} ~ {formatMoney(s.price.max, s.currency)} <span className="text-xs text-amber-700">참고용 (표본 {s.price.n}건)</span></p>
+                          )}
+                          {(s.price.level === 'ok' || s.price.level === 'good') && (
+                            <>
+                              <p className="font-bold text-gray-900">중앙값 {formatMoney(s.price.median, s.currency)}</p>
+                              <p className="text-xs text-gray-600">중간 50%: {formatMoney(s.price.p25, s.currency)} ~ {formatMoney(s.price.p75, s.currency)}</p>
+                              <p className="text-xs text-gray-500">전체: {formatMoney(s.price.min, s.currency)} ~ {formatMoney(s.price.max, s.currency)}</p>
+                            </>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">해결률 · 재발률</p>
+                          {s.resolved_rate === null ? <p className="text-gray-700">표본 부족 (5건 이상부터)</p> : <p className="font-medium text-gray-900">{s.resolved_rate}% · {s.recurred_rate}%</p>}
+                          {s.by_channel.filter((c) => c.median !== null).map((c) => (
+                            <p key={c.channel} className="text-xs text-gray-600">{CHANNEL_LABEL[c.channel] ?? c.channel} 중앙값 {formatMoney(c.median, s.currency)} ({c.n_priced}건)</p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-gray-50 rounded-lg">
+              <p className="text-gray-700">{t('product.noStats')}</p>
+              <p className="text-sm text-gray-500 mt-2">{t('product.noStatsHint')}</p>
+              <Link to={`/submit-repair?product=${product.slug}`} onClick={() => track('submit_start', { from: 'product_empty' })} className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                이 제품 수리비 제보하기
+              </Link>
+            </div>
+          )}
+        </section>
+
+        {refs.length > 0 && (
+          <section className="bg-white rounded-xl p-8 shadow-sm border border-gray-200" aria-labelledby="ref-title">
+            <div className="flex items-center gap-2 mb-2">
+              <BadgeInfo className="w-6 h-6 text-blue-600" aria-hidden="true" />
+              <h2 id="ref-title" className="text-2xl font-bold text-gray-900">공식·공개 자료 기준 가격</h2>
+            </div>
+            <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded p-2 mb-4">
+              사용자 제보가 아닌 제조사·공식 스토어 등 공개 출처의 표기 가격입니다. 확인일 이후 변경될 수 있으니 구매·접수 전에 출처를 다시 확인하세요.
             </p>
-          </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-gray-500"><tr><th className="py-2 pr-4">구분</th><th className="py-2 pr-4">항목</th><th className="py-2 pr-4">가격</th><th className="py-2">출처 · 확인일</th></tr></thead>
+                <tbody className="divide-y divide-gray-100">
+                  {refs.map((r) => (
+                    <tr key={r.id}>
+                      <td className="py-2 pr-4 whitespace-nowrap">{REF_TYPE_LABEL[r.item_type] ?? r.item_type}</td>
+                      <td className="py-2 pr-4">{r.item}{r.notes && <span className="block text-xs text-gray-500">{r.notes}</span>}</td>
+                      <td className="py-2 pr-4 font-medium whitespace-nowrap">{formatMoney(r.price_krw)}</td>
+                      <td className="py-2"><a href={r.source_url} target="_blank" rel="noopener noreferrer nofollow" className="text-blue-600 underline">{r.source_name}</a><span className="block text-xs text-gray-500">{r.date_seen}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
         )}
-      </div>
 
-      <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('product.reportsTitle')}</h2>
-        {reports.length > 0 ? (
-          <div className="space-y-4">
-            {reports.slice(0, 10).map((report) => {
-              const symptom = symptoms.find(s => s.id === report.symptom_id);
-              return (
-                <div key={report.id} className="p-4 border border-gray-200 rounded-lg">
-                  <div className="flex items-start justify-between mb-2">
+        {cards.length > 0 && (
+          <section className="bg-white rounded-xl p-8 shadow-sm border border-gray-200" aria-labelledby="self-title">
+            <h2 id="self-title" className="text-2xl font-bold text-gray-900 mb-2">{t('product.selfCheckTitle')}</h2>
+            <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded p-2 mb-4">{t('product.selfCheckDisclaimer')}</p>
+            <div className="space-y-3">
+              {symptomCards.map((c) => {
+                const sf = SAFETY_LABEL[c.safety_level] ?? SAFETY_LABEL.caution;
+                const open = c.symptom_id === focusSymptom;
+                return (
+                  <details key={c.id} open={open} onToggle={(e) => (e.currentTarget as HTMLDetailsElement).open && track('self_check_view', { symptom: c.symptom_id ?? '' })} className="border border-gray-200 rounded-lg bg-gray-50">
+                    <summary className="p-4 cursor-pointer flex flex-wrap items-center gap-2">
+                      <span className={`px-2 py-0.5 text-xs font-medium border rounded ${sf.cls}`} title={sf.hint}>{sf.label}</span>
+                      <span className="font-medium text-gray-900">{c.title_ko}</span>
+                    </summary>
+                    <div className="px-4 pb-4">
+                      <p className="text-xs text-gray-500 mb-2">{sf.hint}</p>
+                      <p className="text-sm text-gray-800 whitespace-pre-wrap">{c.body_ko}</p>
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        <section className="bg-white rounded-xl p-8 shadow-sm border border-gray-200" aria-labelledby="recent-title">
+          <h2 id="recent-title" className="text-2xl font-bold text-gray-900 mb-6">{t('product.reportsTitle')}</h2>
+          {reports.length > 0 ? (
+            <div className="space-y-4">
+              {reports.slice(0, 10).map((r) => (
+                <div key={r.id} className="p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-start justify-between gap-4 mb-2">
                     <div>
-                      <p className="font-medium text-gray-900">{symptom?.name_ko || report.symptom_id}</p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {getRepairChannelLabel(report.repair_channel)}
-                      </p>
+                      <p className="font-medium text-gray-900">{symptomName(r.symptom_id)}{r.error_code && <span className="ml-2 text-xs font-mono px-1.5 py-0.5 bg-gray-100 rounded">{r.error_code}</span>}</p>
+                      <p className="text-sm text-gray-600 mt-1">{CHANNEL_LABEL[r.repair_channel] ?? r.repair_channel}{r.purchase_year ? ` · ${r.purchase_year}년 구매` : ''}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-lg font-bold text-blue-600">
-                        {report.paid_price.toLocaleString()} {report.currency}
-                      </p>
+                      <p className="text-lg font-bold text-blue-600">{formatMoney(r.paid_price, r.currency)}</p>
+                      {r.quoted_price !== null && r.paid_price !== null && r.quoted_price !== r.paid_price && <p className="text-xs text-gray-500">견적 {formatMoney(r.quoted_price, r.currency)}</p>}
                       <div className="flex items-center gap-1 justify-end mt-1">
-                        {getResolvedStatusIcon(report.resolved_status)}
-                        <span className="text-sm text-gray-600">
-                          {getResolvedStatusLabel(report.resolved_status)}
-                        </span>
+                        {r.resolved_status === 'resolved' ? <CheckCircle className="w-4 h-4 text-green-600" aria-hidden="true" /> : r.resolved_status === 'unresolved' ? <XCircle className="w-4 h-4 text-red-600" aria-hidden="true" /> : <AlertTriangle className="w-4 h-4 text-yellow-600" aria-hidden="true" />}
+                        <span className="text-sm text-gray-600">{RESOLVED_LABEL[r.resolved_status] ?? r.resolved_status}</span>
                       </div>
                     </div>
                   </div>
-                  {report.review_text && (
-                    <p className="text-sm text-gray-600 mt-3 p-3 bg-gray-50 rounded">
-                      {report.review_text}
-                    </p>
-                  )}
-                  <p className="text-xs text-gray-400 mt-2">
-                    {new Date(report.created_at).toLocaleDateString('ko-KR')}
-                  </p>
+                  {r.review_text && <p className="text-sm text-gray-600 mt-3 p-3 bg-gray-50 rounded whitespace-pre-wrap">{r.review_text}</p>}
+                  <p className="text-xs text-gray-400 mt-2">{new Date(r.created_at).toLocaleDateString('ko-KR')}</p>
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-600">{t('product.noReports')}</p>
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-gray-50 rounded-lg"><p className="text-gray-600">{t('product.noReports')}</p></div>
+          )}
+        </section>
 
-      <div className="flex flex-col md:flex-row gap-4">
-        <Link
-          to="/submit-repair"
-          className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
-        >
-          {t('product.ctaSubmit')}
-        </Link>
-        <Link
-          to="/calculator"
-          className="flex-1 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-center"
-        >
-          {t('product.ctaCalculator')}
-        </Link>
+        <div className="flex flex-col md:flex-row gap-4">
+          <Link to={`/submit-repair?product=${product.slug}`} onClick={() => track('submit_start', { from: 'product_cta' })} className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors text-center">
+            {t('product.ctaSubmit')}
+          </Link>
+          <Link to={`/calculator?product=${product.slug}`} className="flex-1 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors text-center">
+            {t('product.ctaCalculator')}
+          </Link>
+        </div>
       </div>
-    </div>
     </>
   );
 }

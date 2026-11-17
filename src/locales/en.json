@@ -9,8 +9,11 @@
     "navCommunity": "Community",
     "navAdmin": "Admin",
     "navSubmitShort": "Report",
-    "legalNotice": "TODO: Legal copy pending internal review. This area will hold terms, privacy, and operating policies.",
-    "affiliateStub": "Affiliate / parts links: not implemented (placeholder)."
+    "legalNotice": "Information on FixAtlas is reference material based on user reports and public sources. Actual repair costs, warranty coverage, parts availability and safety depend on the product, region, repair provider and manufacturer policy.",
+    "safetyNotice": "Work involving high voltage, batteries, refrigerant, gas or waterproofing is hazardous. Use a professional or an official service center.",
+    "reviewNotice": "Reviews must be factual. Posts containing abuse, false statements, personal data or defamation may be restricted.",
+    "login": "Log in",
+    "logout": "Log out"
   },
   "home": {
     "heroTitle1": "Before paying for repair,",
@@ -69,8 +72,8 @@
     "noStatsHint": "Submitting repair costs helps others with this model.",
     "reportsTitle": "Recent repair reports",
     "noReports": "No reports yet.",
-    "selfCheckTitle": "Self-check checklist (reference)",
-    "selfCheckDisclaimer": "TODO: Final medical/safety wording pending review. Do not rely on this as professional advice.",
+    "selfCheckTitle": "Self-check checklist",
+    "selfCheckDisclaimer": "General checking order; it does not replace the manual or professional advice. Do not repair items rated Expert Only or Do Not DIY yourself.",
     "ctaSubmit": "Submit repair for this product",
     "ctaCalculator": "Repair vs replace calculator",
     "reportCount": "Reports",
@@ -96,9 +99,9 @@
     "home": "Home",
     "again": "Submit another",
     "receiptLabel": "Receipt / quote image (optional)",
-    "receiptHint": "Upload to private storage. Avoid personal data where possible.",
-    "privacyTitle": "Privacy notice (placeholder)",
-    "privacyBody": "TODO: Replace with final privacy text after legal review. Submitted data may be shown in aggregate to other users.",
+    "receiptHint": "JPG, PNG, WebP or HEIC, up to 5 MB. Mask names, addresses, phone and card numbers first. Stored privately; only reviewing operators can see it.",
+    "privacyTitle": "Personal data notice",
+    "privacyBody": "We collect account data (email, nickname, country), the report you enter and, optionally, a receipt image. They are used to provide repair-cost statistics and to verify reports. Receipt images are never public. Report content is shown to others in aggregated, non-identifying form.",
     "submitting": "Submitting…",
     "submit": "Submit report"
   },
@@ -143,7 +146,7 @@
   "calculator": {
     "title": "Repair vs replace calculator",
     "subtitle": "Enter repair cost, new price, and age to get a rough recommendation.",
-    "disclaimer": "TODO: Legal disclaimer pending review. This tool is informational only.",
+    "disclaimer": "This result is a general economic aid. Actual decisions depend on product condition, warranty, parts availability, safety and manufacturer policy.",
     "calculate": "Calculate"
   },
   "search": {

@@ -10,8 +10,12 @@ import { CommunityPost } from './pages/CommunityPost';
 import { CommunityNew } from './pages/CommunityNew';
 import { Auth } from './pages/Auth';
 import { Admin } from './pages/Admin';
+import { ConfigMissing } from './components/ConfigMissing';
+import { NotFound } from './pages/NotFound';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 export default function App() {
+  if (!isSupabaseConfigured) return <ConfigMissing />;
   return (
     <BrowserRouter>
       <Routes>
@@ -30,10 +34,8 @@ export default function App() {
           {/* RFP example paths → current routes */}
           <Route path="submit-repair-report" element={<Navigate to="/submit-repair" replace />} />
           <Route path="calculator/repair-vs-replace" element={<Navigate to="/calculator" replace />} />
-          <Route
-            path="products/robot-vacuum/roborock-s8-pro-ultra"
-            element={<Navigate to="/products/robot-vacuum/prod-1" replace />}
-          />
+          {/* /products/robot-vacuum/roborock-s8-pro-ultra now resolves natively: the API accepts id or slug */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>

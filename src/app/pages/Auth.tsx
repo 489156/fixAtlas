@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { LogIn, UserPlus, Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../lib/supabase';
 
 export function Auth() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const { t } = useTranslation();
+  // Only same-site relative paths are honoured (prevents open redirects).
+  const rawNext = params.get('next') || '/';
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +22,7 @@ export function Auth() {
     country: '한국',
   });
 
-  const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/` : undefined;
+  const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}${next}` : undefined;
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +79,7 @@ export function Auth() {
       if (error) {
         alert(`${t('auth.loginFail')}: ${error.message}`);
       } else {
-        navigate('/');
+        navigate(next);
       }
     } catch (err) {
       console.error(err);

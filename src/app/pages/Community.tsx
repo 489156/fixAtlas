@@ -12,8 +12,9 @@ interface CommunityPost {
   body: string;
   status: string;
   created_at: string;
-  product_id: string;
-  symptom_id: string;
+  product_id: string | null;
+  product_name?: string;
+  symptom_id: string | null;
 }
 
 export function Community() {
@@ -149,7 +150,7 @@ export function Community() {
                   <p className="text-gray-600 text-sm line-clamp-2 mb-3">{post.body}</p>
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     <span>{new Date(post.created_at).toLocaleDateString('ko-KR')}</span>
-                    {post.product_id && <span>제품 ID: {post.product_id}</span>}
+                    {post.product_name && <span>{post.product_name}</span>}
                   </div>
                 </div>
               </div>

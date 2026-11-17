@@ -60,7 +60,7 @@ export function CommunityPost() {
 
       if (sessionError || !session) {
         alert(t('community.loginComment'));
-        navigate('/auth');
+        navigate(`/auth?next=${encodeURIComponent(`/community/${id}`)}`);
         return;
       }
 
@@ -97,7 +97,7 @@ export function CommunityPost() {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError || !session) {
         alert(t('community.loginComment'));
-        navigate('/auth');
+        navigate(`/auth?next=${encodeURIComponent(`/community/${id}`)}`);
         return;
       }
       const response = await fetch(`${API_BASE}/comments/${commentId}/helpful`, {
@@ -229,10 +229,6 @@ export function CommunityPost() {
         )}
       </div>
     </div>
-    <SEO
-      title={post ? post.title : '게시글'}
-      description={post ? post.body.substring(0, 160) : '커뮤니티 게시글 상세'}
-    />
-  </div>
-</>
-```
+    </>
+  );
+}

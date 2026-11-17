@@ -1,201 +1,82 @@
 # FixAtlas / 고장도감 MVP
 
-제품 고장, 수리비, AS 후기, 자가점검, 수리/교체 판단 정보를 사용자가 제보·검색·공유하는 커뮤니티형 웹서비스
+로봇청소기·무선청소기의 **고장 증상, 실제 수리비, AS 경험**을 사용자가 제보·검색하고, 받은 견적이 같은 모델·증상 기준으로 정상 범위인지 확인하는 웹서비스.
 
-## 프로젝트 개요
+> 기획 근거·시장/경쟁/수요 조사·로드맵: `docs/PLAN_REINFORCEMENT.md`, `docs/research/`
 
-**FixAtlas / 고장도감**은 소비자가 제품 구매 후 고장 상황에서 필요한 정보를 찾기 쉽게 하는 플랫폼입니다.
+## 지금 되는 것 (2026-11 기준)
 
-### 핵심 기능 (P0 - MVP)
+| 기능 | 상태 |
+|---|---|
+| 제품·증상 통합 검색 (한글 브랜드, "로보락 S8 충전 안 됨" 같은 복합 질의) | 구현 · 단위테스트 |
+| 제품 상세: 증상별 수리비(중앙값·사분위, 표본 3/5/10건 기준 표시), 해결률, 자가점검(안전등급), 공식 기준가격 | 구현 |
+| **내 견적 위치 확인** (같은 모델·증상·통화 분포에서의 백분위) | 구현 · 단위/API 테스트 |
+| 수리비 제보 폼 (구매연도·에러코드·동의·영수증 검증, 로그인 지연형, 미등록 제품 직접 입력) | 구현 |
+| 수리 vs 교체 계산기 (RFP 5.5 규칙, 입력 검증) | 구현 · 단위테스트 |
+| 커뮤니티(질문/제보/해결후기/수리vs교체) + 댓글 + 도움됨(1인 1회) | 구현 |
+| 관리자: KPI(RFP 18), 제보 검토(인증/반려/숨김/영수증 열람/제품 매핑), 게시글 관리, 시드 | 구현 |
+| 익명 계측(쿠키·제3자 없음, DNT/GPC 존중) | 구현 |
 
-1. **홈 화면** - 제품/증상 통합 검색, 최근 수리비 제보, 인기 고장 증상
-2. **검색** - 제품명, 브랜드, 모델명, 증상으로 검색
-3. **제품 상세** - 제품별 고장 증상, 수리비 범위, 해결률, 최근 제보
-4. **수리비 제보** - 수리비, AS 경험 제보 폼
-5. **Repair vs Replace 계산기** - 수리/교체 판단 보조 도구
-6. **커뮤니티** - 질문, 수리비 제보, 해결후기, 수리 vs 교체 고민 게시판
-7. **관리자 대시보드** - 제품, 증상, 제보, 게시글 관리
-
-### 초기 제품 카테고리
-
-- 로봇청소기
-- 무선청소기
-
-### 브랜드
-
-**로봇청소기**: Roborock, Dreame, Ecovacs, iRobot, Samsung, LG  
-**무선청소기**: Dyson, Samsung, LG, Dreame
+미구현/후순위: 내 제품 수명카드, 공유 카드, 모델별 리포트(P1), 수리점 지도·구매 전 리포트(P2), 제품·증상 CRUD UI, 신고 버튼, 상세 페이지 SSR/프리렌더(SPA 한계는 계획서 참고), 제휴 링크 슬롯(의도적으로 비어 있음).
 
 ## 기술 스택
 
-- **Frontend**: React + TypeScript
-- **Styling**: Tailwind CSS
-- **Routing**: React Router v7
-- **Backend**: Supabase (Edge Functions with Hono)
-- **Database**: Supabase Postgres (`profiles`, `products`, `symptoms`, `repair_reports`, `community_posts`, `comments`, `self_check_cards`)
-- **Auth**: Supabase Auth (magic link / email OTP + optional password sign-in + Google OAuth on `/auth`)
-- **Icons**: Lucide React
+React 18 + TypeScript + Vite 6, Tailwind CSS 4, React Router 7, react-i18next(ko/en), Supabase(Postgres·Auth·Storage·Edge Function/Hono).
+
+```
+src/                      프런트엔드 (pages / components / lib)
+supabase/functions/
+  make-server-3e8c4785/   Edge Function 엔트리(Deno)
+  _shared/                HTTP 앱·검색·통계·검증·DB 어댑터 (Node에서도 테스트 가능)
+supabase/migrations/      스키마·RLS·보안 하드닝·KPI 함수
+tests/                    단위(검색/통계/검증/API/계산기) + 실제 Postgres 통합 테스트
+docs/                     기획 보강안, 조사(R1~R6), 블루프린트
+```
 
 ## 시작하기
 
-### 1. Supabase 연결
+```bash
+cp .env.example .env      # VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY 입력
+npm ci
+npm run dev
+```
 
-`.env`에 `VITE_SUPABASE_URL`과 `VITE_SUPABASE_ANON_KEY`를 넣고, DB 마이그레이션과 Edge Function 배포는 `SETUP.md`를 따르세요.
+Supabase 준비(마이그레이션·Edge Function 배포·관리자 지정·시드)는 `SETUP.md`. 환경변수가 없으면 빈 화면 대신 설정 안내 화면이 뜬다.
 
-### 2. 초기 데이터 생성
+## 테스트
 
-1. `/auth`에서 매직 링크 또는 Google로 로그인합니다.
-2. Supabase SQL 또는 Table Editor에서 `public.profiles`의 해당 사용자 `role`을 `admin`으로 올립니다 (`SETUP.md` 참고).
-3. `/admin`에서 **초기 데이터 생성**을 실행합니다.
+```bash
+npm test                  # 단위 + API 테스트 (의존성 없이 실행, 약 1초)
+```
 
-이렇게 하면 다음 데이터가 생성됩니다:
-- 10가지 증상 (충전 안 됨, 흡입력 약함, 배터리 빨리 닳음 등)
-- 12개 제품 (로봇청소기 7개, 무선청소기 5개)
+실제 PostgreSQL에서 마이그레이션·RLS·KPI 함수를 검증하는 통합 테스트(`tests/db/`)는 `embedded-postgres`와 `pg`가 설치된 디렉터리를 지정해 실행한다.
 
-### 3. 주요 페이지
+```bash
+# 예: 별도 폴더에 npm i embedded-postgres pg 후
+PG_NODE_MODULES=/path/to/that/folder node --test tests/db/security.test.mjs tests/db/catalog_events.test.mjs tests/db/contract.test.mjs
+```
 
-- `/` - 홈 (검색, 최근 제보, 인기 증상)
-- `/search?q=검색어` - 검색 결과
-- `/products/:category/:id` - 제품 상세
-- `/submit-repair` - 수리비 제보
-- `/calculator` - 수리 vs 교체 계산기
-- `/community` - 커뮤니티 게시판
-- `/community/new` - 게시글 작성
-- `/auth` - 로그인/회원가입
-- `/admin` - 관리자 대시보드
+`tests/db/supabase_stub.sql`은 Supabase의 role·기본 권한을 모사한 것이며 실제 플랫폼과 100% 동일하지 않다. 스테이징 프로젝트에서 같은 시나리오를 한 번 더 확인할 것(계획서 5장).
 
-## 사용자 플로우
+## API (`/functions/v1/make-server-3e8c4785`)
 
-### 검색 사용자
+공개: `GET /health` · `/search?q=` · `/products[?category=]` · `/products/:idOrSlug` · `/products/:idOrSlug/quote-check?symptom_id&currency&quote` · `/symptoms` · `/repair-reports?limit=` · `/community[?type=]` · `/community/:id` · `POST /events`(익명 계측)
 
-1. 홈에서 제품명/증상 검색
-2. 검색 결과에서 제품 선택
-3. 제품 상세 페이지에서 수리비 범위, 해결률 확인
-4. 필요시 계산기로 수리/교체 판단
-5. 수리비 제보 (로그인 필요)
+로그인: `GET /user` · `POST /repair-reports` · `POST /community` · `POST /comments` · `POST /comments/:id/helpful`
 
-### 제보 사용자
+운영진(admin/moderator): `GET /admin/data` · `/admin/metrics` · `PATCH /admin/posts/:id` · `PATCH /admin/reports/:id` · `GET /admin/reports/:id/receipt`(60초 서명 URL)
+관리자 전용: `POST /admin/seed` · `POST /admin/products`
 
-1. 수리비 제보 페이지 방문
-2. 제품, 증상, 수리비, 경로 입력
-3. 후기 작성 (선택)
-4. 제보 제출 (로그인 필요)
+공개 응답에는 제보자 ID·영수증 경로·숨김 플래그가 **절대 포함되지 않는다**(테스트로 보장).
 
-### 커뮤니티 사용자
+## 90일 성공 기준 (RFP 18)과 측정
 
-1. 커뮤니티 게시판 방문
-2. 질문/후기 작성 (로그인 필요)
-3. 댓글로 정보 공유
+관리자 화면의 KPI 패널이 제보 100건 · 인증 20건 · 방문자 5,000 · 계산기 1,000회 · 가입 300 · 게시글 100 · 댓글 300 · 7일 재방문율 10%를 `events`/DB에서 집계한다. 정의는 `supabase/migrations/20260517000200_*.sql` 주석 참고. 목표 수치 자체의 현실성은 `docs/PLAN_REINFORCEMENT.md` 3장에서 재검토했다.
 
-## 백엔드 API 구조
+## 운영 정책 고지
 
-모든 API는 `/functions/v1/make-server-3e8c4785` 경로를 사용합니다.
-
-### 공개 엔드포인트
-
-- `GET /health` - 헬스체크
-- `GET /search?q=검색어` - 제품/증상 검색
-- `GET /products` - 전체 제품 목록
-- `GET /products/:id` - 제품 상세 (응답에 `self_check_cards` 포함)
-- `GET /symptoms` - 전체 증상 목록
-- `GET /repair-reports` - 수리비 제보 목록
-- `GET /community` - 커뮤니티 게시글 목록
-- `GET /community/:id` - 게시글 상세
-
-### 인증 필요 엔드포인트
-
-- `GET /user` - 사용자 프로필 (`profiles` 행)
-- `POST /repair-reports` - 수리비 제보 생성
-- `POST /community` - 게시글 생성
-- `POST /comments` - 댓글 생성
-- `POST /comments/:id/helpful` - 댓글 “도움됨” 카운트 증가
-
-### 관리자 전용 엔드포인트
-
-- `GET /admin/data` - 전체 데이터 조회
-- `POST /admin/seed` - 초기 데이터 생성
-- `PATCH /admin/posts/:id` - 게시글 `hidden` / `verified` 플래그 (JSON body)
-
-## 데이터 모델
-
-### User
-- id, email, nickname, country, role, created_at
-
-### Product
-- id, category, brand, model_name, alternate_names, release_year, description
-
-### Symptom
-- id, code, name_ko, name_en, name_zh, risk_level, self_check_allowed
-
-### RepairReport
-- id, user_id, product_id, symptom_id, country, city, repair_channel
-- quoted_price, paid_price, currency, repair_item
-- resolved_status, review_text, verified_status, created_at
-
-### CommunityPost
-- id, user_id, type, product_id, symptom_id
-- title, body, status, images, tags, created_at
-
-### Comment
-- id, post_id, user_id, body, helpful_count, created_at
-
-## 환경 변수
-
-Supabase 연결 시 자동으로 설정됩니다:
-- `SUPABASE_URL` - Supabase 프로젝트 URL
-- `SUPABASE_ANON_KEY` - Supabase Anon 키
-- `SUPABASE_SERVICE_ROLE_KEY` - Supabase Service Role 키
-
-## MVP 성공 기준 (90일)
-
-- 월 방문자: 5,000명 이상
-- 수리비 제보: 100건 이상 ⭐ **가장 중요**
-- 인증 제보: 20건 이상
-- 계산기 사용: 1,000회 이상
-- 회원가입: 300명 이상
-- 커뮤니티 게시글: 100개 이상
-- 댓글: 300개 이상
-- 7일 재방문율: 10% 이상
-
-## 향후 확장 계획
-
-### P1 기능
-- 내 제품 수명카드
-- 공유 카드 생성
-- 모델별 고장 리포트
-
-### P2 기능
-- 수리점·AS센터 후기 지도
-- 구매 전 내구성 리포트
-
-### 추가 제품 카테고리
-- 세탁기, 건조기, 냉장고, 에어컨
-- 노트북, 태블릿, 스마트폰
-- 전기자전거, 전동킥보드
-
-## 중요 안내
-
-⚠️ **Make는 프로토타입 및 MVP 검증 목적입니다**
-
-- 개인정보 수집 최소화
-- 영수증 이미지 업로드 시 개인정보 가림 안내 필수
-- 프로덕션 환경에서는 별도의 보안 검토 필요
-
-## 운영 정책
-
-### 정보 제공 고지
-고장도감/FixAtlas의 정보는 사용자 제보와 공개자료를 기반으로 한 참고 정보입니다. 실제 수리비, 보증 적용 여부, 부품 수급, 안전성은 제품 상태, 지역, 수리업체, 제조사 정책에 따라 달라질 수 있습니다.
-
-### 안전 고지
-고전압, 배터리, 냉매, 가스, 방수 구조와 관련된 작업은 안전사고 위험이 있으므로 전문가 또는 공식 서비스센터를 이용하십시오.
-
-### 후기 작성 고지
-AS 후기와 수리점 후기는 사실에 기반해 작성해야 하며, 욕설, 허위사실, 개인정보 노출, 비방 목적의 게시물은 제한될 수 있습니다.
+푸터와 각 화면에 RFP 16.1~16.3의 정보 제공·안전·후기 작성 고지가 표시된다. **정식 개인정보처리방침·이용약관(임시조치 절차 포함)은 공개 전 법무 검토 후 별도 게시**해야 한다(`docs/research/R5` 체크리스트).
 
 ## 라이선스
 
-이 프로젝트는 MVP 검증 목적으로 작성되었습니다.
-
-## 문의
-
-프로젝트에 대한 문의사항이 있으시면 이슈를 생성해주세요.
+MVP 검증 목적. 자세한 UI 컴포넌트 출처는 `ATTRIBUTIONS.md`.

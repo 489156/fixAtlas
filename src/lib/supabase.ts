@@ -1,15 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 
-// In Figma Make environment, these are injected at runtime
-// @ts-ignore
-const supabaseUrl = (typeof window !== 'undefined' && window.__SUPABASE_URL__) ||
-                    import.meta.env.VITE_SUPABASE_URL ||
-                    '';
-// @ts-ignore
-const supabaseAnonKey = (typeof window !== 'undefined' && window.__SUPABASE_ANON_KEY__) ||
-                        import.meta.env.VITE_SUPABASE_ANON_KEY ||
-                        '';
+declare global {
+  interface Window {
+    __SUPABASE_URL__?: string;
+    __SUPABASE_ANON_KEY__?: string;
+  }
+}
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Runtime injection (e.g. Figma Make) wins; otherwise Vite build-time env.
+const supabaseUrl: string =
+  (typeof window !== 'undefined' && window.__SUPABASE_URL__) ||
+  (import.meta as unknown as { env: Record<string, string | undefined> }).env.VITE_SUPABASE_URL ||
+  '';
+const supabaseAnonKey: string =
+  (typeof window !== 'undefined' && window.__SUPABASE_ANON_KEY__) ||
+  (import.meta as unknown as { env: Record<string, string | undefined> }).env.VITE_SUPABASE_ANON_KEY ||
+  '';
+
+/** False when the public env vars are missing; App renders a setup screen instead of crashing. */
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+// createClient() throws on an empty URL, which previously white-screened the whole app.
+// Use inert placeholders when unconfigured; nothing talks to them because App short-circuits.
+export const supabase = createClient(
+  supabaseUrl || 'http://localhost:54321',
+  supabaseAnonKey || 'missing-anon-key',
+);
 
 export const API_BASE = `${supabaseUrl}/functions/v1/make-server-3e8c4785`;

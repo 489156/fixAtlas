@@ -57,7 +57,7 @@ export function CommunityNew() {
 
       if (sessionError || !session) {
         alert('글을 작성하려면 먼저 로그인해야 합니다.');
-        navigate('/auth');
+        navigate('/auth?next=%2Fcommunity%2Fnew');
         return;
       }
 

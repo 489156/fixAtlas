@@ -16,9 +16,9 @@ supabase db push
 ## 3) Edge Function 배포 및 시크릿
 
 ```bash
-supabase secrets set SUPABASE_URL=https://YOUR_REF.supabase.co
-supabase secrets set SUPABASE_SERVICE_ROLE_KEY=서비스롤_키
 supabase functions deploy make-server-3e8c4785
+# (선택) CORS 제한: supabase secrets set ALLOWED_ORIGIN=https://내도메인
+# SUPABASE_URL / SERVICE_ROLE 키는 플랫폼이 자동 주입하므로 설정하지 않습니다.
 ```
 
 ## 4) 인증 설정
@@ -39,8 +39,9 @@ update public.profiles set role = 'admin' where email = '내이메일@example.co
 ## 6) 로컬 실행
 
 ```bash
-npm install
+npm ci
 npm run dev
+npm test        # 단위/API 테스트
 ```
 
 ## 7) 시드 데이터
@@ -55,7 +56,7 @@ npm run dev
 
 - `/submit-repair-report` → `/submit-repair`
 - `/calculator/repair-vs-replace` → `/calculator`
-- `/products/robot-vacuum/roborock-s8-pro-ultra` → `/products/robot-vacuum/prod-1`
+- `/products/robot-vacuum/roborock-s8-pro-ultra` → 슬러그로 바로 열립니다 (API가 id·slug 모두 지원)
 
 ## 자세한 설명
 
