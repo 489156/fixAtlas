@@ -86,6 +86,37 @@ export function affiliateProblems(front, body) {
   return problems;
 }
 
+// Blog posts are written in 격식체 (합쇼체). 해요체 sentence endings fail unless front matter says `register: polite`.
+// Narration of the editor's/AI's own work ("열어 대조했고 캡처해 붙였어요") reads like an assistant reporting to a user;
+// the same facts belong in source lines and image captions (user review 2026-11-18).
+const WORK_REPORT = /대조했|캡처해\s*붙였|열어\s*(확인|대조)|맞춰\s*봤|한\s*줄씩|옮겨\s*봤|정리해\s*봤/;
+
+function proseSentences(body) {
+  const out = [];
+  for (const line of body.split('\n')) {
+    const t = line.trim();
+    if (!t || /^(\||#|!\[|-\s.*\]\()/.test(t) || /\[\[직접 확인:/.test(t)) continue;
+    for (const s of t.replace(/^>\s?/, '').replace(/\]\([^)]*\)/g, ']').split(/(?<=[.!?])\s+/)) if (s.trim()) out.push(s.trim());
+  }
+  return out;
+}
+
+export function registerProblems(front, body) {
+  const problems = [];
+  const register = (/^register:[ \t]*(\S+)/m.exec(front) || [])[1] ?? 'formal';
+  if (register === 'formal') {
+    const informal = proseSentences(body).filter((s) => /요[.!?]?$/.test(s.replace(/\*\*/g, '')) && !/^(쓴 사람|만든 방법)/.test(s));
+    for (const s of informal.slice(0, 5)) problems.push({ type: 'informal_register', detail: `해요체 문장 — 격식체(합니다체)로: "${s.slice(0, 50)}"` });
+    if (informal.length > 5) problems.push({ type: 'informal_register', detail: `해요체 문장 ${informal.length - 5}개 더` });
+  }
+  for (const s of proseSentences(body)) {
+    if (/^(만든 방법|쓴 사람|수정 이력)/.test(s)) continue; // the disclosure line describes the process on purpose
+    const hit = WORK_REPORT.exec(s);
+    if (hit) problems.push({ type: 'work_report', detail: `작업 보고 문장("${hit[0]}") — 확인 사실은 출처 줄·캡처 설명으로 옮기기: "${s.slice(0, 50)}"` });
+  }
+  return problems;
+}
+
 /** Paragraph lines that mix 합니다체 (-니다) and 해요체 (-요) sentence endings. Tables and headings are skipped. */
 export function mixedRegister(body) {
   const out = [];
@@ -172,13 +203,14 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
     if (hit) problems.push({ type: 'cliche', detail: `"${hit[0]}" — ${c.why}` });
   }
   problems.push(...affiliateProblems(front, body));
+  problems.push(...registerProblems(front, body));
   for (const m of body.matchAll(/\[\[직접 확인:([^\]]*)\]\]/g)) problems.push({ type: 'human_slot', detail: `직접 확인 칸이 비어 있습니다:${m[1].slice(0, 50)}…` });
   if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
   return { ok: problems.length === 0, problems, claims: claims.length };
 }
 
 // Source lists, the source heading, the byline, the AI-use line and the fixed correction policy line repeat on purpose.
-const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(쓴 사람|작성|만든 방법|바로잡기)\s*[:：]/.test(l.trim());
+const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(>\s*)?(쓴 사람|작성|만든 방법|바로잡기)\s*[:：]/.test(l.trim()) || /^(>\s*)?광고·제휴 없이 작성한 글입니다/.test(l.trim());
 
 const grams = (t) => { const x = t.replace(/[\s.,!?·()'"]/g, ''); const g = new Set(); for (let i = 0; i < x.length - 2; i++) g.add(x.slice(i, i + 3)); return g; };
 const jaccard = (a, b) => { let n = 0; for (const g of a) if (b.has(g)) n++; return n / (a.size + b.size - n || 1); };

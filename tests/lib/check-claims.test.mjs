@@ -61,16 +61,17 @@ test('site:/ internal sources and links are accepted', () => {
 });
 
 test('a paragraph mixing 합니다체 and 해요체 fails; separate blocks and a bare "아니요." do not', () => {
-  const r = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '비율이에요. 고장률이 아닙니다.'), { today: '2026-11-18' });
+  const polite = (claims, body) => draft(claims, body).replace('slug: t\n', 'slug: t\nregister: polite\n'); // 해요체 allowed here
+  const r = checkDraft(polite([`1원 | https://a.example | 2026-11-17 | x`], '비율이에요. 고장률이 아닙니다.'), { today: '2026-11-18' });
   assert.deepEqual(r.problems.map((p) => p.type), ['mixed_register']);
-  const ok = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '결론은 이렇습니다.\n\n아니요. 부품값이에요.\n| 표 | 입니다. 이에요. |'), { today: '2026-11-18' });
+  const ok = checkDraft(polite([`1원 | https://a.example | 2026-11-17 | x`], '결론은 이렇습니다.\n\n아니요. 부품값이에요.\n| 표 | 입니다. 이에요. |'), { today: '2026-11-18' });
   assert.equal(ok.ok, true, JSON.stringify(ok.problems));
 });
 
 test('5th ledger field is a verbatim quote; 직접: sources are accepted for in-person checks', () => {
   const { claims } = parseDraft(draft([`28,000원 | ${SRC} | 2026-11-17 | 평일 | 거리에 상관없이 동일하게`], 'x'));
   assert.equal(claims[0].quote, '거리에 상관없이 동일하게');
-  const r = checkDraft(draft([`5분 | 직접:LG전자 고객센터 전화 2026-11-18 | 2026-11-18 | 대기 시간`], '상담 연결까지 5분 걸렸어요.'), { today: '2026-11-18' });
+  const r = checkDraft(draft([`5분 | 직접:LG전자 고객센터 전화 2026-11-18 | 2026-11-18 | 대기 시간`], '상담 연결까지 5분 걸렸습니다.'), { today: '2026-11-18' });
   assert.equal(r.ok, true, JSON.stringify(r.problems));
 });
 
@@ -120,4 +121,14 @@ test('affiliate links: disclosure first, definitive wording, no "광고·제휴 
   assert.ok(types('affiliate: shopping-connect', `${ok}\n${link()}`).some((d) => d.startsWith('같은 제휴 링크')), 'duplicate product link');
   assert.ok(types('affiliate: shopping-connect', `${ok}\n${link('http://x.y/1')}\n${link('https://a.b/2')}`).length >= 2, 'non-https and >2 links');
   assert.deepEqual(affiliateProblems('affiliate: none', '# t\n본문'), [], 'no links → nothing to check');
+});
+
+test('posts are 격식체 by default: 해요체 sentences and work-report narration fail', () => {
+  const C = [`1원 | https://a.example | 2026-11-17 | x`];
+  const types = (body) => checkDraft(draft(C, body), { today: '2026-11-18' }).problems.map((p) => p.type);
+  assert.deepEqual(types('정품 가격은 160,000원이에요.'.replace('160,000원', '1원')), ['informal_register']);
+  assert.deepEqual(types('가격과 보증 문구는 각 공식 페이지를 다시 열어 대조했고 그 화면을 캡처해 붙였습니다.'), ['work_report']);
+  assert.deepEqual(types('출처: 삼성전자서비스 소모품샵(2026년 11월 18일 기준)\n\n정품 가격은 1원입니다.'), []);
+  assert.deepEqual(types('> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다.'), [], 'the disclosure line may describe the process');
+  assert.deepEqual(types('> 광고·제휴 없이 작성한 글입니다.\n\n배터리를 직접 교체하십시오.'), []);
 });
