@@ -9,9 +9,11 @@
 // `직접:<what/when>` for something the editor did in person (a phone call, a photo, a visit).
 // Optional 5th ledger field = a verbatim phrase from the source (checked live by scripts/verify-sources.mjs).
 //
-// Reader-trust checks (EDITORIAL_STANDARDS §9): template/AI-cliché phrases, unfilled [[직접 확인: ...]] slots,
-// a missing `firsthand:` record (every post needs at least one thing the editor did in person), and — when several
-// posts are checked together — sentences or headings copied across posts.
+// Reader-trust checks (EDITORIAL_STANDARDS §9): template/AI-cliché phrases, unfilled person slots, no verifiable case
+// (every post needs one real case: a `사례:` ledger row quoting a public case — Korea Consumer Agency case boards,
+// news reports, our own user reports — or a `firsthand:` record of something the editor did; operator rule 2026-11-18:
+// an in-person check cannot be required for every post), and — when several posts are checked together — sentences
+// or headings copied across posts.
 //
 // Ledger format (front matter):
 //   claims:
@@ -158,6 +160,8 @@ export function readerProblems(front, body) {
 
 // Severity. Heuristics that can misfire report as warnings (printed, not failing) unless --strict.
 export const WARN_TYPES = new Set(['repeated_ending']);
+/** A cited case counts only with a checkable source (web page or our own site) and a verbatim quote verify-sources can find. */
+export const hasCase = (claims) => claims.some((c) => /^사례:/.test(c.note || '') && /^(https:\/\/|site:\/)/.test(c.url) && Boolean((c.quote || '').trim()));
 // Reading pages or captures, comparing, searching, dating a check, writing prose: computer work, never a person slot.
 export const COMPUTER_TASK = /원문|캡처|대조|조회|검색|확인한 날짜|격식체로|문장으로 (?:적|쓰)|적기|쓰기/;
 export const levelOf = (p) => (WARN_TYPES.has(p.type) ? 'warn' : 'fail');
@@ -303,7 +307,7 @@ export function checkDraft(text, { today = todayKST(), maxAgeDays = 90, strict =
     if (COMPUTER_TASK.test(m[2])) problems.push({ type: 'ai_task_in_slot', detail: `사람 칸에 컴퓨터 작업이 들어 있습니다 — AI가 수행하고 결과를 본문에 쓰세요:${m[2].slice(0, 50)}…` });
     else problems.push({ type: 'human_slot', owner, detail: `${owner} 칸이 비어 있습니다:${m[2].slice(0, 50)}…` });
   }
-  if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
+  if (!/^firsthand:[ \t]*\S/m.test(front) && !hasCase(claims)) problems.push({ type: 'no_case', detail: '검증 가능한 사례가 없습니다. 출처 기록에 "사례:" 행(공적 사례·언론 보도·자사 제보 + 원문 인용 문구)을 넣거나, 편집자가 직접 한 확인이 있으면 firsthand:에 적으세요(docs/blog/CASES.md).' });
   for (const p of problems) p.level = strict ? 'fail' : levelOf(p);
   return { ok: problems.every((p) => p.level === 'warn'), problems, claims: claims.length };
 }

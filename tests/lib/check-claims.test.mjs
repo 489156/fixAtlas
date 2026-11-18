@@ -75,7 +75,7 @@ test('5th ledger field is a verbatim quote; 직접: sources are accepted for in-
   assert.equal(r.ok, true, JSON.stringify(r.problems));
 });
 
-test('template/AI clichés, unfilled in-person slots and a missing firsthand record fail', () => {
+test('template/AI clichés, unfilled person slots and a post with no verifiable case fail', () => {
   for (const body of ['**한 줄 결론**: 28,000원입니다.', '오늘은 출장비에 대해 알아보겠습니다.', '## 자주 묻는 질문', '자세히 보기 → 링크', '⚠ 주의하세요.']) {
     const r = checkDraft(draft([`28,000원 | ${SRC} | 2026-11-17 | x`], body), { today: '2026-11-18' });
     assert.ok(r.problems.some((p) => p.type === 'cliche'), body);
@@ -83,9 +83,14 @@ test('template/AI clichés, unfilled in-person slots and a missing firsthand rec
   const slot = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '[[직접 확인: 고객센터에 전화해 물어볼 것]]'), { today: '2026-11-18' });
   assert.deepEqual(slot.problems.map((p) => p.type), ['human_slot']);
   const noFirst = checkDraft('---\nslug: t\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n본문', { today: '2026-11-18' });
-  assert.deepEqual(noFirst.problems.map((p) => p.type), ['no_firsthand']);
+  assert.deepEqual(noFirst.problems.map((p) => p.type), ['no_case']);
+  // a quoted public case satisfies the rule without any in-person check
+  const cited = checkDraft('---\nslug: t\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | 사례: 소비자원 상담 사례 | 세차례나 수리를 했는데도\n---\n본문 1원', { today: '2026-11-18' });
+  assert.deepEqual(cited.problems.map((p) => p.type), []);
+  const unquoted = checkDraft('---\nslug: t\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | 사례: 출처만 있고 인용 없음 |\n---\n본문 1원', { today: '2026-11-18' });
+  assert.deepEqual(unquoted.problems.map((p) => p.type), ['no_case'], 'a case needs a verbatim quote to be checkable');
   const blank = checkDraft('---\nslug: t\nfirsthand:\ndata_checked: 2026-11-18\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n본문', { today: '2026-11-18' });
-  assert.deepEqual(blank.problems.map((p) => p.type), ['no_firsthand'], 'an empty firsthand: must not borrow the next line');
+  assert.deepEqual(blank.problems.map((p) => p.type), ['no_case'], 'an empty firsthand: must not borrow the next line');
 });
 
 test('sentences and headings copied across posts are reported; source list lines are not', () => {

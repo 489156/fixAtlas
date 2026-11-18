@@ -10,10 +10,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkDraft, parseDraft } from './check-claims.mjs';
+import { checkDraft, hasCase, parseDraft } from './check-claims.mjs';
 import { SLOT_RE, slotOwner } from './lib/korean-style.mjs';
 
-const HUMAN = new Set(['human_slot', 'no_firsthand']);
+const HUMAN = new Set(['human_slot']);
 const days = (a, b) => Math.round((Date.parse(a) - Date.parse(b)) / 86400000);
 const field = (front, k) => (new RegExp(`^${k}:[ \\t]*(.*)$`, 'm').exec(front) || [])[1]?.trim() ?? '';
 
@@ -28,6 +28,7 @@ export function statusOf(text, { today, verifyStamp = null, suggestData = null }
   // image-only rows are read by the AI from the capture; a row dated before the last verification is still unread
   const imagePending = verifyStamp?.date ? claims.filter((c) => /^이미지:/.test(c.note || '') && c.date < verifyStamp.date) : [];
   const firsthand = /^firsthand:[ \t]*\S/m.test(front);
+  const cased = firsthand || hasCase(claims);
   const publish = (/(\d{4}-\d{2}-\d{2})/.exec(field(front, 'publish')) || [])[1] || null;
   const dDay = publish ? days(publish, today) : null;
   const webDates = claims.filter((c) => /^https:\/\//.test(c.url) && /^\d{4}-\d{2}-\d{2}$/.test(c.date)).map((c) => c.date).sort();
@@ -42,7 +43,8 @@ export function statusOf(text, { today, verifyStamp = null, suggestData = null }
   const judge = slotList.filter((x) => x.owner === '판단').length;
   const field_ = slotList.filter((x) => x.owner === '현장').length;
   if (judge) todo.push(`[판단] ${judge}건`);
-  if (field_ || !firsthand) todo.push(`[현장] ${field_}건${firsthand ? '' : ' (결과를 받으면 [AI]가 본문·firsthand·출처 줄 작성)'}`);
+  if (field_) todo.push(`[현장] ${field_}건 (결과를 받으면 [AI]가 본문·firsthand·출처 줄 작성)`);
+  if (!cased) todo.push('[AI] 사례 찾기 — 공적 사례·언론 보도·자사 제보를 "사례:" 행으로 인용 (CASES.md)');
   if (!verifyStamp) todo.push('[AI] 원문 대조 (verify-sources)');
   else if (!verifyOk) todo.push(`[AI] 원문 대조 문제 ${verifyStamp.problems}건·캡처 ${verifyStamp.capture_failures?.length || 0}건 해결`);
   else if (dDay !== null && dDay <= 1 && verifyAge > 0) todo.push('[AI] 발행 전날 재대조 (verify-sources --write)');
@@ -55,7 +57,7 @@ export function statusOf(text, { today, verifyStamp = null, suggestData = null }
   const ready = todo.length === 0;
   return {
     slug: field(front, 'slug'), title: field(front, 'title'), publish, dDay,
-    fails: fails.length, warns: warns.length, slots, firsthand, demand: Boolean(field(front, 'demand')),
+    fails: fails.length, warns: warns.length, slots, firsthand, cased, demand: Boolean(field(front, 'demand')),
     oldestLedger: oldest, lastVerify: verifyStamp?.date || null, verifyOk, imageRows: verifyStamp?.image_rows || 0, demandFetched: suggestData?.fetched_at || null,
     ready, todo, urgent: !ready && dDay !== null && dDay <= 2, slotList, imagePending: imagePending.length,
   };
@@ -63,13 +65,14 @@ export function statusOf(text, { today, verifyStamp = null, suggestData = null }
 
 export function renderTable(rows, today) {
   const lines = [`# 블로그 발행 상태 (${today} 기준, \`node scripts/blog-status.mjs\`로 생성)`, '',
-    '| 글 | 발행 | 기계 점검 | 사람 몫 | 원문 대조 | 검색어 자료 | 다음 할 일 |', '|---|---|---|---|---|---|---|'];
+    '| 글 | 발행 | 기계 점검 | 사례 | 사람 몫 | 원문 대조 | 검색어 자료 | 다음 할 일 |', '|---|---|---|---|---|---|---|---|'];
   for (const r of rows) {
     const d = r.dDay === null ? '미정' : `${r.publish} (D${r.dDay >= 0 ? '-' : '+'}${Math.abs(r.dDay)})`;
     const machine = r.fails ? `실패 ${r.fails}` : `통과${r.warns ? `·경고 ${r.warns}` : ''}`;
-    const human = r.slots || !r.firsthand ? `남음 ${r.slots}${r.firsthand ? '' : '·firsthand 없음'}` : '완료';
+    const human = r.slots ? `남음 ${r.slots}` : '완료';
+    const caseCol = r.firsthand ? '직접' : r.cased ? '인용' : '없음';
     const verify = r.lastVerify ? `${r.lastVerify}${r.verifyOk ? '' : ' (문제)'}${r.imagePending ? ` · 이미지 ${r.imagePending}행 판독 대기` : ''}` : '없음';
-    lines.push(`| ${r.urgent ? '⚠ ' : ''}${r.slug} | ${d} | ${machine} | ${human} | ${verify} | ${r.demandFetched || '없음'} | ${r.ready ? '발행 가능' : r.todo.join('; ')} |`);
+    lines.push(`| ${r.urgent ? '⚠ ' : ''}${r.slug} | ${d} | ${machine} | ${caseCol} | ${human} | ${verify} | ${r.demandFetched || '없음'} | ${r.ready ? '발행 가능' : r.todo.join('; ')} |`);
   }
   // The person's share, spelled out: only judgment and in-person acts. Computer work never appears here.
   const person = rows.flatMap((r) => r.slotList.map((x) => ({ ...x, slug: r.slug })));

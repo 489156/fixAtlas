@@ -84,8 +84,10 @@ export function mdToHtml(md, ctx) {
     if ((m = /^!\[([^\]]*)\]\(([^)]+)\)\s*$/.exec(line))) {
       const [, alt, src] = m;
       if (src.startsWith('photo:')) {
+        // optional in-person photo (operator rule 2026-11-18: not required for every post). Kept out of the pasted body so
+        // an untaken photo never leaves a placeholder box in the published post; listed above the body instead.
         ctx.photos.push(alt);
-        html.push(`<div class="photo-slot">직접 촬영 사진 자리 — ${esc(alt)}<br><small>${esc(src.slice(6))}</small></div>`);
+        ctx.photoHints = [...(ctx.photoHints || []), { alt, hint: src.slice(6), after: ctx.lastText || '' }];
       } else {
         ctx.images.push(src);
         html.push(`<figure><img src="${esc(`${ctx.slug}-${path.basename(src)}`)}" alt="${esc(alt)}"><figcaption>${esc(alt)}</figcaption></figure>`);
@@ -119,7 +121,8 @@ export function mdToHtml(md, ctx) {
     const para = [];
     while (i < lines.length && lines[i].trim() && !/^(#{1,3}\s|---\s*$|!\[|>|\||-\s|\d+\.\s)/.test(lines[i])) para.push(lines[i++]);
     if (!para.length) { para.push(lines[i++]); }
-    html.push(`<p>${para.map((p) => inline(p, ctx)).join('<br>')}</p>`);
+    ctx.lastText = para[para.length - 1].replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
+    html.push(`<p>${para.map((p) => inline(p, ctx)).join("<br>")}</p>`);
   }
   return html.join('\n');
 }
@@ -159,7 +162,7 @@ export function exportPost(text, { origin, preview = false, today, cards = [] } 
   if (!preview && /\.example(\/|$)/.test(new URL(origin).host + '/')) throw new Error(`임시 도메인(${origin})으로는 발행본을 만들 수 없습니다. --preview로 검토만 하세요.`);
   const check = checkDraft(text, { today });
   // A preview may still have the editor's in-person slots open; everything machine-checkable must pass.
-  const HUMAN_ONLY = new Set(['human_slot', 'no_firsthand']);
+  const HUMAN_ONLY = new Set(['human_slot']); // a missing case is AI work (find one), so it blocks even a preview
   check.problems = check.problems.filter((p) => p.level !== 'warn'); // warnings are advisory
   if (preview) check.problems = check.problems.filter((p) => !HUMAN_ONLY.has(p.type));
   if (check.problems.length) throw new Error(`신뢰성 점검 실패:\n${check.problems.map((p) => `  - [${p.type}] ${p.detail}`).join('\n')}`);
@@ -178,14 +181,14 @@ export function exportPost(text, { origin, preview = false, today, cards = [] } 
 
   const warnings = [];
   const ctas = ctx.links.filter((l) => l.cta).length;
-  const imageTotal = ctx.images.length + ctx.photos.length;
+  const imageTotal = ctx.images.length; // optional photos do not count: the post must stand without them
   if (ctas > LIMITS.maxCta) warnings.push(`제보 CTA ${ctas}개 — 최대 ${LIMITS.maxCta}개`);
   if (imageTotal < LIMITS.minImages || imageTotal > LIMITS.maxImages) warnings.push(`이미지 ${imageTotal}장 — 권장 ${LIMITS.minImages}~${LIMITS.maxImages}장`);
   if (tags.length > LIMITS.maxTags) warnings.push(`태그 ${tags.length}개 — 최대 ${LIMITS.maxTags}개`);
   if ([...f.title].length > LIMITS.maxTitle) warnings.push(`제목 ${[...f.title].length}자 — ${LIMITS.maxTitle}자 이하 권장`);
   for (const n of ctx.tables) if (n > 3) warnings.push(`표 열 ${n}개 — 모바일에서는 3열 이하 권장`);
 
-  return { slug: f.slug, title: f.title, demand: f.demand || '', tags, content, images: ctx.images, photos: ctx.photos, links: ctx.links, ctas, sources, warnings };
+  return { slug: f.slug, title: f.title, demand: f.demand || '', tags, content, images: ctx.images, photos: ctx.photos, photoHints: ctx.photoHints || [], links: ctx.links, ctas, sources, warnings };
 }
 
 export function renderPage(post, { preview }) {
@@ -219,7 +222,8 @@ ${preview ? '<p class="preview">미리보기 — 임시 도메인. 발행본은 
   <p class="muted">제목 칸에 붙여넣기 (${[...post.title].length}자)</p>
   <p><strong>${esc(post.title)}</strong></p>
   <p class="muted">태그 ${post.tags.length}개: ${post.tags.map((t) => `#${esc(t)}`).join(' ')}</p>
-  <p class="muted">이미지 ${post.images.length}장 업로드 + 직접 촬영 ${post.photos.length}장 · 제보 링크 ${post.ctas}개 · 링크 ${post.links.length}개</p>
+  <p class="muted">이미지 ${post.images.length}장 업로드 · 제보 링크 ${post.ctas}개 · 링크 ${post.links.length}개</p>
+  ${post.photoHints.length ? `<p class="muted">선택 사진 — 직접 찍은 사진이 있을 때만 넣습니다(없어도 발행 가능):<br>${post.photoHints.map((h) => `· ${esc(h.alt)} — ${esc(h.hint)}${h.after ? ` (넣을 위치: "${esc(h.after.slice(0, 30))}…" 다음)` : ''}`).join('<br>')}</p>` : ''}
   ${post.warnings.length ? `<p class="preview">${post.warnings.map(esc).join('<br>')}</p>` : ''}
 </div>
 <article id="post" class="panel">

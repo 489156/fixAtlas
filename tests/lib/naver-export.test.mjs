@@ -84,7 +84,7 @@ test('week-1 posts: every machine check passes; only judgment and in-person item
     // judge each post as of its last live verification: ledger dates move forward whenever verify-sources --write runs
     const today = /^data_checked:\s*(\d{4}-\d{2}-\d{2})/m.exec(text)[1];
     const types = new Set(checkDraft(text, { today }).problems.map((p) => p.type));
-    assert.deepEqual([...types].sort(), ['human_slot', 'no_firsthand'], files[i]);
+    assert.deepEqual([...types].sort(), ['human_slot'], `${files[i]}: only the byline decision is open`);
     // preview export works and raises no layout warnings
     const r = exportPost(text, { origin: SITE, preview: true, today, cards });
     assert.deepEqual(r.warnings, [], `${files[i]}: ${r.warnings.join(', ')}`);
@@ -94,7 +94,7 @@ test('week-1 posts: every machine check passes; only judgment and in-person item
     assert.equal(cards.find((c) => c.id === thumbId)?.kind, 'thumb', `${files[i]} starts with a thumbnail`);
     assert.ok(r.images.length >= 3 && r.images.slice(1).every((img) => img.includes('/evidence/')), `${files[i]} uses source captures`);
     assert.ok(r.images.every((img) => fs.existsSync(new URL(img, `file://${process.cwd()}/${files[i]}`).pathname)), `${files[i]} images exist`);
-    // publishing for real is refused until the editor fills the slots
-    assert.throws(() => exportPost(text, { origin: SITE, today: '2026-11-18' }), /직접 확인|firsthand/);
+    // publishing for real is refused while a judgment slot (the byline) is open
+    assert.throws(() => exportPost(text, { origin: SITE, today }), /human_slot/);
   });
 });
