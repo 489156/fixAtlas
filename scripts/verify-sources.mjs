@@ -73,7 +73,7 @@ const htmlToText = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S
 /** Returns { text, via, page? } — page is kept open for evidence capture when the browser path worked. */
 async function openSource(browser, url) {
   if (browser) {
-    const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2 }); // 2x: captures stay legible on phones
+    const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 }); // phone-width layout at 2x: captures stay legible on phones
     try {
       const res = await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
       if (res && res.ok()) return { text: await page.evaluate(() => document.body.textContent || ''), via: 'browser', page };
@@ -83,7 +83,7 @@ async function openSource(browser, url) {
   const html = await fetchHtml(url);
   if (!browser) return { text: htmlToText(html), via: 'curl' };
   // Render the HTML the server sent to curl so it can still be captured as evidence (styles may be missing).
-  const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, deviceScaleFactor: 2 });
+  const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
   await page.setContent(html.replace(/<head([^>]*)>/i, `<head$1><base href="${url}">`), { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
   return { text: htmlToText(html), via: 'curl', page };
 }
@@ -92,6 +92,9 @@ const KST = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul', dat
 
 /** Capture the part of the page that shows `needle`, outlined, with a caption bar naming the source and time. */
 async function captureEvidence(browser, page, url, needle, outFile, nextImage = false) {
+  // images in pages rendered from curl'd HTML load late; wait (max 8 s) so their size is known
+  await page.evaluate(() => Promise.all([...document.images].map((i) => (i.complete ? 0
+    : new Promise((r) => { i.addEventListener('load', r); i.addEventListener('error', r); setTimeout(r, 8000); }))))).catch(() => {});
   const box = await page.evaluate(([needle, nextImage]) => {
     const all = [...document.querySelectorAll('body *')].filter((el) => {
       const r = el.getBoundingClientRect();
@@ -102,12 +105,20 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
     let target = el.closest('tr, li, dd, p, section') || el;
     if (nextImage) {
       // the first sizeable image that comes after the anchor text in document order
-      const img = [...document.querySelectorAll('img')].find((im) => im.getBoundingClientRect().width > 300
+      const img = [...document.querySelectorAll('img')].find((im) => (im.getBoundingClientRect().width > 300 || im.naturalWidth > 300)
         && (el.compareDocumentPosition(im) & Node.DOCUMENT_POSITION_FOLLOWING));
       if (!img) return null;
       target = img;
     }
     target.scrollIntoView({ block: 'center' });
+    // hide layers that sit on top of the content (pop-up dims, sticky headers, chat buttons) — content is untouched
+    for (const x of document.querySelectorAll('body *')) {
+      const pos = getComputedStyle(x).position;
+      if (pos === 'fixed' || pos === 'sticky') x.style.visibility = 'hidden';
+    }
+    // only one highlight per capture: clear outlines left by an earlier capture of the same page
+    document.querySelectorAll('[data-fx-outline]').forEach((x) => { x.style.outline = ''; x.removeAttribute('data-fx-outline'); });
+    target.setAttribute('data-fx-outline', '1');
     target.style.outline = '3px solid #e11d48';
     target.style.outlineOffset = '4px';
     const r = target.getBoundingClientRect();
@@ -115,19 +126,17 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
   }, [needle, nextImage]);
   await page.waitForTimeout(300); // lazy images
   if (!box) return false;
-  // tight horizontal crop (readable when the image is shown at phone width), a little context above and below
-  const padX = 24;
+  // full phone-width crop (reads like a phone screenshot), with a little context above and below the target
   const padY = 70;
   const vp = page.viewportSize();
-  const clip = { x: Math.max(0, box.x - padX), y: Math.max(0, box.y - padY), width: 0, height: 0 };
-  clip.width = Math.min(vp.width - clip.x, box.w + padX * 2);
+  const clip = { x: 0, y: Math.max(0, box.y - padY), width: vp.width, height: 0 };
   clip.height = Math.min(vp.height - clip.y, box.h + padY * 2);
   const shot = await page.screenshot({ clip });
   const u = new URL(url);
   const framed = await browser.newPage({ viewport: { width: Math.round(clip.width), height: 200 }, deviceScaleFactor: 2 });
   await framed.setContent(`<!doctype html><meta charset="utf-8"><body style="margin:0;font:15px/1.4 'Noto Sans KR',sans-serif">
     <img src="data:image/png;base64,${shot.toString('base64')}" style="display:block;width:100%">
-    <div style="background:#111827;color:#f9fafb;padding:8px 12px;font-size:14px">원문 캡처 ${KST()} · ${u.host}${u.pathname}</div></body>`);
+    <div style="background:#111827;color:#f9fafb;padding:8px 12px;font-size:14px;word-break:break-all">원문 캡처 ${KST()} · ${u.host}${u.pathname}</div></body>`);
   const height = await framed.evaluate(() => document.body.scrollHeight);
   await framed.setViewportSize({ width: Math.round(clip.width), height });
   fs.mkdirSync(path.dirname(outFile), { recursive: true });

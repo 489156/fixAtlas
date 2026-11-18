@@ -11,7 +11,7 @@ claims:
   - 10년 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | A9·A9S·A9X 인버터모터 | 청소기 인버터모터(A9,A9S,A9X, 싸이킹전체) 10년
   - 1년 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | A9 Air 인버터모터 | 인버터모터(A9 Air, R5시리즈 / ODM 제품류) 1년
   - 28,000원 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 평일 출장점검료 | 출장 처리시에는 수리비에 출장점검료를 추가합니다
-  - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | BESPOKE 제트 220W 배터리 판매가격 캡처:samsung-220w | 판매가격
+  - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | BESPOKE 제트 220W 배터리 판매가격 캡처:samsung-220w | 160,000
   - KC 인증번호 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | 220W 배터리 상품 페이지 | XU102502-21001
   - 77,000원 | https://www.samsungsvc.co.kr/shop/product/0000090642 | 2026-11-18 | BESPOKE 제트 봇 배터리 판매가격 | 판매가격
   - 129,000원 / 104,000원 / 19% | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-18 | A9/A9S 배터리 정상가·회원할인가·할인율 캡처:lg-a9 | 회원할인가

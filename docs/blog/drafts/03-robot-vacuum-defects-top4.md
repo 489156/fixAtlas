@@ -4,6 +4,8 @@ template: T1 + T2 (Safe Check 범위만)
 status: 초안
 data_checked: 2026-11-17
 ---
+> **대체됨 (2026-11-18)**: 이 초안은 `docs/blog/naver/03-robot-defects.md`로 대체됐다. 원문 재대조에서 사실 오류가 나왔으니(`docs/blog/AUDIT_HUMAN_SIGNALS.md` §1) 이 파일을 발행이나 인용에 쓰지 않는다.
+
 
 # 로봇청소기 고장 4대 유형: 소비자원 분쟁 데이터로 본 "먼저 확인할 것"
 

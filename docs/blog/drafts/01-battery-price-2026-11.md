@@ -4,6 +4,8 @@ template: T1 비용 리포트
 status: 초안 (발행 전 점검표 미완료 — 도메인 확정 후 링크 재생성, 숫자 재확인)
 data_checked: 2026-11-17
 ---
+> **대체됨 (2026-11-18)**: 이 초안은 `docs/blog/naver/01-battery-price.md`로 대체됐다. 원문 재대조에서 사실 오류가 나왔으니(`docs/blog/AUDIT_HUMAN_SIGNALS.md` §1) 이 파일을 발행이나 인용에 쓰지 않는다.
+
 
 # 무선·로봇청소기 정품 배터리 가격 정리 (2026.11 삼성·LG 공식몰 기준)
 

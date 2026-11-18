@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { exportPost, mdToHtml, resolveSite, unsourcedCardNumbers } from '../../scripts/naver-export.mjs';
+import { checkDraft, crossPostDuplicates } from '../../scripts/check-claims.mjs';
 
 const SITE = 'https://fixatlas.kr';
 const post = (body, extraClaims = []) => `---
 slug: 2026-11-test
 title: 테스트 글
 tags: 가, 나, 다
+firsthand: 2026-11-18 테스트
 claims:
   - 28,000원 | https://www.lge.co.kr/support/visit-center-reservation?seq=182 | 2026-11-17 | 평일
   - 5건 | site:/methodology | 2026-11-18 | 공개 기준
@@ -36,7 +38,7 @@ test('markdown subset converts to HTML; the title line is left for the title fie
   assert.match(html, /<blockquote>인용 1<br>인용 2<\/blockquote>/);
   assert.match(html, /<table><thead><tr><th>a<\/th><th>b<\/th><\/tr><\/thead><tbody><tr><td>1<\/td><td>2<\/td><\/tr><\/tbody><\/table>/);
   assert.match(html, /<ul><li>하나<\/li><li>둘<\/li><\/ul>/);
-  assert.match(html, /<img src="x.png"/);
+  assert.match(html, /<img src="s-x.png"/); // slug-prefixed: two posts may capture the same source page
   assert.doesNotMatch(html, /메모/);
   assert.deepEqual([ctx.images, ctx.photos, ctx.tables, ctx.links.length], [['../cards/x.png'], ['사진'], [2], 1]);
 });
@@ -68,13 +70,20 @@ test('layout warnings: more than 2 report CTAs, wide tables, too few images', ()
   assert.ok(r.warnings.some((w) => /이미지 0장/.test(w)));
 });
 
-test('the three week-1 Naver posts pass the claim check and export cleanly', () => {
-  const cards = JSON.parse(fs.readFileSync('docs/blog/cards/cards.json', 'utf8'));
-  for (const f of ['01-battery-price', '02-lg-visit-fee', '03-robot-defects']) {
-    const r = exportPost(fs.readFileSync(`docs/blog/naver/${f}.md`, 'utf8'), { origin: SITE, today: '2026-11-18', cards });
-    assert.deepEqual(r.warnings, [], `${f}: ${r.warnings.join(', ')}`);
-    assert.ok(r.ctas >= 1 && r.ctas <= 2, f);
-    assert.ok(r.images.length + r.photos.length >= 3, f);
-    assert.ok(r.links.every((l) => !l.href.includes('site:')), f);
-  }
+test('week-1 posts: every machine check passes; only the editor\'s in-person items remain open', () => {
+  const files = ['01-battery-price', '02-lg-visit-fee', '03-robot-defects'].map((f) => `docs/blog/naver/${f}.md`);
+  const texts = files.map((f) => fs.readFileSync(f, 'utf8'));
+  assert.deepEqual(crossPostDuplicates(texts), [], 'no sentence or heading copied across posts');
+  texts.forEach((text, i) => {
+    const types = new Set(checkDraft(text, { today: '2026-11-18' }).problems.map((p) => p.type));
+    assert.deepEqual([...types].sort(), ['human_slot', 'no_firsthand'], files[i]);
+    // preview export works and raises no layout warnings
+    const r = exportPost(text, { origin: SITE, preview: true, today: '2026-11-18' });
+    assert.deepEqual(r.warnings, [], `${files[i]}: ${r.warnings.join(', ')}`);
+    assert.equal(r.ctas, 1, files[i]);
+    assert.ok(r.images.length >= 2 && r.images.every((img) => img.includes('/evidence/')), `${files[i]} uses source captures`);
+    assert.ok(r.images.every((img) => fs.existsSync(new URL(img, `file://${process.cwd()}/${files[i]}`).pathname)), `${files[i]} images exist`);
+    // publishing for real is refused until the editor fills the slots
+    assert.throws(() => exportPost(text, { origin: SITE, today: '2026-11-18' }), /직접 확인|firsthand/);
+  });
 });
