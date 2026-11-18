@@ -2,6 +2,9 @@
 //   node scripts/render-cards.mjs [cards.json] [outDir]
 // Requires Playwright (`npm i -D playwright` or a global install). Cards contain only source-verified figures;
 // every card shows its source and check date so the image never travels without them (SNS reuse).
+// Kinds: summary | checklist (SNS cards) | thumb (blog thumbnail: question + one big verified number + a strip of the
+// official-page capture that shows that number, so the click hook and its evidence travel together).
+// `chip` is per card (e.g. "광고·제휴 없음"); omit it when the post's disclosure may change (affiliate links).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -15,6 +18,32 @@ try { ({ chromium } = createRequire(import.meta.url)('playwright')); }
 catch { console.error('Playwright is required: npm i -D playwright'); process.exit(2); }
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const dataUri = (file) => `data:image/png;base64,${fs.readFileSync(file).toString('base64')}`;
+
+function thumbHtml(card, specDir) {
+  const ev = card.evidence ? dataUri(path.resolve(specDir, card.evidence)) : '';
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{width:1080px;height:1080px;font-family:'Noto Sans KR',sans-serif;background:#fff;color:#111827;display:flex;flex-direction:column}
+  .head{padding:64px 72px 0}
+  .brand{font-weight:900;font-size:28px;color:#2563eb;margin-bottom:26px}
+  h1{font-size:76px;font-weight:900;letter-spacing:-2px;line-height:1.12;white-space:pre-line}
+  .num{padding:34px 72px 0}
+  .label{font-size:36px;font-weight:700;color:#374151;margin-bottom:4px}
+  .big{font-size:164px;font-weight:900;letter-spacing:-5px;line-height:1;color:#dc2626}
+  .sub{font-size:36px;font-weight:700;color:#111827;margin-top:14px}
+  .evlabel{margin-top:auto;background:#111827;color:#fff;font-size:28px;font-weight:700;padding:12px 72px}
+  .ev{position:relative;height:270px;overflow:hidden}
+  .ev img{width:100%;position:absolute;left:0;top:50%;transform:translateY(-50%)}
+</style></head><body>
+  <div class="head"><div class="brand">고장도감 FixAtlas</div><h1>${esc(card.title)}</h1></div>
+  <div class="num"><div class="label">${esc(card.label)}</div><div class="big">${esc(card.big)}</div>${card.sub ? `<div class="sub">${esc(card.sub)}</div>` : ''}</div>
+  ${ev ? `<div class="evlabel">${esc(card.evidenceLabel)}</div><div class="ev"><img src="${ev}"></div>` : ''}
+</body></html>`;
+}
 
 function html(card) {
   const body = card.kind === 'summary'
@@ -56,7 +85,7 @@ function html(card) {
   body.dense li span{font-size:27px}
   body.dense .safety{margin-top:20px;font-size:28px;padding:14px 20px}
 </style></head><body class="${(card.items?.length ?? 0) > 3 || (card.rows?.length ?? 0) > 5 ? 'dense' : ''}">
-  <div class="top"><span class="brand">고장도감 FixAtlas</span><span class="chip">광고·제휴 없음</span></div>
+  <div class="top"><span class="brand">고장도감 FixAtlas</span>${card.chip ? `<span class="chip">${esc(card.chip)}</span>` : ''}</div>
   <div class="eyebrow">${esc(card.eyebrow)}</div>
   <h1>${esc(card.title)}</h1>
   ${body}
@@ -68,7 +97,7 @@ const cards = JSON.parse(fs.readFileSync(specPath, 'utf8'));
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1080, height: 1080 }, deviceScaleFactor: 1 });
 for (const card of cards) {
-  await page.setContent(html(card), { waitUntil: 'networkidle' });
+  await page.setContent(card.kind === 'thumb' ? thumbHtml(card, path.dirname(specPath)) : html(card), { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   const overflow = await page.evaluate(() => document.body.scrollHeight > 1080);
   const file = path.join(outDir, `${card.id}.png`);
