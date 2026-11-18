@@ -74,17 +74,19 @@ test('layout warnings: more than 2 report CTAs, wide tables, too few images', ()
   assert.ok(r.warnings.some((w) => /이미지 0장/.test(w)));
 });
 
-test('week-1 posts: every machine check passes; only the editor\'s in-person items remain open', () => {
+test('week-1 posts: every machine check passes; only judgment and in-person items remain open', () => {
   const files = ['01-battery-price', '02-lg-visit-fee', '03-robot-defects'].map((f) => `docs/blog/naver/${f}.md`);
   const texts = files.map((f) => fs.readFileSync(f, 'utf8'));
   assert.deepEqual(crossPostDuplicates(texts), [], 'no sentence or heading copied across posts');
   assert.deepEqual(crossPostNearDuplicates(texts), [], 'no near-copied sentence across posts');
   const cards = JSON.parse(fs.readFileSync('docs/blog/cards/cards.json', 'utf8'));
   texts.forEach((text, i) => {
-    const types = new Set(checkDraft(text, { today: '2026-11-18' }).problems.map((p) => p.type));
+    // judge each post as of its last live verification: ledger dates move forward whenever verify-sources --write runs
+    const today = /^data_checked:\s*(\d{4}-\d{2}-\d{2})/m.exec(text)[1];
+    const types = new Set(checkDraft(text, { today }).problems.map((p) => p.type));
     assert.deepEqual([...types].sort(), ['human_slot', 'no_firsthand'], files[i]);
     // preview export works and raises no layout warnings
-    const r = exportPost(text, { origin: SITE, preview: true, today: '2026-11-18', cards });
+    const r = exportPost(text, { origin: SITE, preview: true, today, cards });
     assert.deepEqual(r.warnings, [], `${files[i]}: ${r.warnings.join(', ')}`);
     assert.equal(r.ctas, 1, files[i]);
     // first image = evidence-backed thumbnail card; the rest are official-page captures

@@ -18,7 +18,7 @@
 //     - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-17 | 삼성 BESPOKE 제트 220W 배터리
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { connectiveCommas, repeatedEndings } from './lib/korean-style.mjs';
+import { SLOT_LINE, SLOT_RE, connectiveCommas, repeatedEndings, slotOwner } from './lib/korean-style.mjs';
 
 const UNITS = ['만원', '원', '%', '㎡', 'km', 'cm', 'mm', 'kg', 'm', '건', '개월', '년', '회', '명', '시간', '배', '편'];
 const unitAlt = UNITS.map((u) => u.replace(/[%]/g, '\\$&')).join('|');
@@ -96,7 +96,7 @@ function proseSentences(body) {
   const out = [];
   for (const line of body.split('\n')) {
     const t = line.trim();
-    if (!t || /^(\||#|!\[|-\s.*\]\()/.test(t) || /\[\[직접 확인:/.test(t)) continue;
+    if (!t || /^(\||#|!\[|-\s.*\]\()/.test(t) || SLOT_LINE.test(t)) continue;
     for (const s of t.replace(/^>\s?/, '').replace(/\]\([^)]*\)/g, ']').split(/(?<=[.!?])\s+/)) if (s.trim()) out.push(s.trim());
   }
   return out;
@@ -131,7 +131,7 @@ export function readerProblems(front, body) {
   if (/청소기/.test(title) && !CATEGORY_OK.test(title) && !/(제트|코드제로|로보락|다이슨)/.test(title)) problems.push({ type: 'ambiguous_category', detail: `제목의 "청소기"가 무선·로봇 중 무엇인지 불분명합니다: "${title}"` });
   for (const line of body.split('\n')) {
     const t = line.trim();
-    if (!t || /^(\||#|!\[|>|-\s|\d+\.\s)/.test(t) || /\[\[직접 확인:/.test(t) || /^(만든 방법|바로잡기|쓴 사람|수정 이력|출처)\s*:/.test(t)) continue;
+    if (!t || /^(\||#|!\[|>|-\s|\d+\.\s)/.test(t) || SLOT_LINE.test(t) || /^(만든 방법|바로잡기|쓴 사람|수정 이력|출처)\s*:/.test(t)) continue;
     const n = t.split(/(?<=[.!?])\s+/).filter((x) => x.trim().length > 1).length;
     if (n >= 3) problems.push({ type: 'dense_paragraph', detail: `한 줄에 ${n}문장 — 모바일에서는 1~2문장마다 줄을 바꾸세요: "${t.slice(0, 40)}…"` });
   }
@@ -158,6 +158,8 @@ export function readerProblems(front, body) {
 
 // Severity. Heuristics that can misfire report as warnings (printed, not failing) unless --strict.
 export const WARN_TYPES = new Set(['repeated_ending']);
+// Reading pages or captures, comparing, searching, dating a check, writing prose: computer work, never a person slot.
+export const COMPUTER_TASK = /원문|캡처|대조|조회|검색|확인한 날짜|격식체로|문장으로 (?:적|쓰)|적기|쓰기/;
 export const levelOf = (p) => (WARN_TYPES.has(p.type) ? 'warn' : 'fail');
 
 /** Fold for loose Korean matching: no spaces, spelling variants unified (also used by demand-research). */
@@ -247,10 +249,15 @@ export function unsourcedNumbers(text) {
   const keys = new Set(); const digits = new Set();
   for (const c of claims) for (const n of numbersIn(c.value)) { keys.add(n.key); digits.add(n.digits); }
   const seen = new Set();
-  return numbersIn(body).filter((n) => !isSourced(n, keys, digits) && !seen.has(n.key) && seen.add(n.key));
+  // open person slots are instructions, not published text — their numbers ("통화 1회") need no source
+  return numbersIn(body.replace(SLOT_RE, '')).filter((n) => !isSourced(n, keys, digits) && !seen.has(n.key) && seen.add(n.key));
 }
 
-export function checkDraft(text, { today = new Date().toISOString().slice(0, 10), maxAgeDays = 90, strict = false } = {}) {
+// Dates in ledgers, stamps and the status board are Korean dates. UTC "today" lags KST by up to 9 hours and made
+// rows verified after midnight KST look future-dated.
+export const todayKST = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date());
+
+export function checkDraft(text, { today = todayKST(), maxAgeDays = 90, strict = false } = {}) {
   const { front, body, claims } = parseDraft(text);
   const problems = [];
   if (!claims.length) problems.push({ type: 'no_ledger', detail: 'front matter에 claims: 출처 기록이 없습니다.' });
@@ -269,7 +276,7 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   }
 
   const seen = new Set();
-  for (const n of numbersIn(body)) {
+  for (const n of numbersIn(body.replace(SLOT_RE, ""))) { // slot text is an instruction, not published text
     // Same numeric value recorded in the ledger counts as sourced (ranges like "28,000~38,000원" leave the first
     // number without a unit, so the unit is not required to match).
     const matched = isSourced(n, ledgerKeys, ledgerDigits);
@@ -291,7 +298,11 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   problems.push(...registerProblems(front, body));
   problems.push(...readerProblems(front, body));
   problems.push(...styleProblems(body));
-  for (const m of body.matchAll(/\[\[직접 확인:([^\]]*)\]\]/g)) problems.push({ type: 'human_slot', detail: `직접 확인 칸이 비어 있습니다:${m[1].slice(0, 50)}…` });
+  for (const m of body.matchAll(SLOT_RE)) {
+    const owner = slotOwner(m[1]);
+    if (COMPUTER_TASK.test(m[2])) problems.push({ type: 'ai_task_in_slot', detail: `사람 칸에 컴퓨터 작업이 들어 있습니다 — AI가 수행하고 결과를 본문에 쓰세요:${m[2].slice(0, 50)}…` });
+    else problems.push({ type: 'human_slot', owner, detail: `${owner} 칸이 비어 있습니다:${m[2].slice(0, 50)}…` });
+  }
   if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
   for (const p of problems) p.level = strict ? 'fail' : levelOf(p);
   return { ok: problems.every((p) => p.level === 'warn'), problems, claims: claims.length };
@@ -312,7 +323,7 @@ export function crossPostNearDuplicates(texts, threshold = 0.5) {
     const { body } = parseDraft(text);
     const out = [];
     for (const line of body.split('\n')) {
-      if (!line.trim() || isSourceLine(line) || /^\s*\|/.test(line) || /\[\[직접 확인:/.test(line) || /^#/.test(line) || /^!\[/.test(line)) continue;
+      if (!line.trim() || isSourceLine(line) || /^\s*\|/.test(line) || SLOT_LINE.test(line) || /^#/.test(line) || /^!\[/.test(line)) continue;
       const prose = line.replace(/^>\s?/, '').replace(/\]\([^)]*\)/g, ']'); // compare words, not link targets
       for (const s of prose.split(/(?<=[.!?])\s+/)) if (s.trim().length >= 20) out.push(s.trim());
     }
@@ -335,7 +346,7 @@ export function crossPostDuplicates(texts) {
     const { body } = parseDraft(text);
     const units = new Set();
     for (const line of body.split('\n')) {
-      if (!line.trim() || isSourceLine(line) || /^\s*\|/.test(line) || /\[\[직접 확인:/.test(line)) continue; // open slots are instructions, not prose
+      if (!line.trim() || isSourceLine(line) || /^\s*\|/.test(line) || SLOT_LINE.test(line)) continue; // open slots are instructions, not prose
       if (/^#{2,3}\s/.test(line)) { units.add(line.trim()); continue; }
       for (const s of line.replace(/^>\s?/, '').split(/(?<=[.!?])\s+/)) if (s.trim().length >= 20) units.add(s.trim());
     }

@@ -17,7 +17,8 @@
 //   add "클릭:<탭 이름>" when the quote sits in a tab or accordion that is closed by default
 //
 // Automation (so the editor does not repeat these by hand):
-//   --write    rows that matched today get today's date; data_checked: is updated when every web row matched
+//   --write    rows that matched today get today's date; data_checked: and the body's "마지막 대조일은 …" are updated when
+//              every web row matched. Image rows (이미지:) are read by the AI from the capture, which then dates the row.
 //   --suggest  for numbers in the body that no row covers, search the post's source pages and print ready-to-paste rows
 //   captures   are checked automatically (not dark, highlight present, phone-legible width) and retried once
 //   stamp      <evidence>/<slug>/verify.json records when and how the post was last verified (read by blog-status)
@@ -135,14 +136,16 @@ export function refreshLedgerDates(text, matchedKeys, today, allMatched) {
     cells[2] = cells[2].replace(/\d{4}-\d{2}-\d{2}/, today);
     return lead + cells.join('|');
   });
-  if (allMatched) out = out.replace(/^data_checked:.*$/m, `data_checked: ${today}`);
+  // the reader-facing "마지막 대조일은 YYYY-MM-DD" in the method line follows data_checked — a dated computer check, not a person's slot
+  if (allMatched) out = out.replace(/^data_checked:.*$/m, `data_checked: ${today}`).replace(/마지막 대조일은 \d{4}-\d{2}-\d{2}/g, `마지막 대조일은 ${today}`);
   return out;
 }
 export const claimKey = (c) => `${c.value}|${c.url}|${c.quote || ''}`;
 
 /** Capture quality gate from pixel statistics. Pure; unit-tested. */
-export function captureQA({ mean, redRatio, width }) {
+export function captureQA({ mean, redRatio, width, clipped = false }) {
   const reasons = [];
+  if (clipped) reasons.push('대상이 화면 폭을 넘어 일부가 잘렸습니다 — 표·그래프의 오른쪽 숫자가 빠졌을 수 있음');
   if (mean < 90) reasons.push(`화면이 어둡습니다(평균 밝기 ${Math.round(mean)}) — 팝업 덮개가 찍혔을 수 있음`);
   if (redRatio < 0.0015) reasons.push('강조 테두리가 보이지 않습니다 — 엉뚱한 영역이 찍혔을 수 있음');
   if (width < 800) reasons.push(`폭 ${width}px — 휴대폰에서 글자가 너무 작음(800px 이상 필요)`);
@@ -192,6 +195,19 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
       target = img;
     }
     target.scrollIntoView({ block: 'center' });
+    // wide tables/charts overflow a phone viewport and get cut off on the right: shrink the target to the screen width,
+    // then scroll it into view horizontally. Anything still outside the viewport is reported as clipped.
+    const vw = innerWidth - 16;
+    let r0 = target.getBoundingClientRect();
+    if (r0.width > vw || r0.right > innerWidth || r0.left < 0) {
+      const imgs = target.tagName === 'IMG' ? [target] : [...target.querySelectorAll('img')];
+      for (const im of imgs) { im.style.maxWidth = `${vw}px`; im.style.height = 'auto'; }
+      r0 = target.getBoundingClientRect();
+      if (r0.width > vw) target.style.zoom = String(vw / r0.width);
+      target.scrollIntoView({ block: 'center', inline: 'start' });
+      r0 = target.getBoundingClientRect();
+      if (r0.left < 0 || r0.right > innerWidth) window.scrollBy(r0.left - 8, 0);
+    }
     // hide layers that sit on top of the content (pop-up dims, sticky headers, chat buttons) — content is untouched
     for (const x of document.querySelectorAll('body *')) {
       const pos = getComputedStyle(x).position;
@@ -206,7 +222,7 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
     // refuse to capture something the reader would not see (e.g. text inside a closed tab)
     const hit = document.elementFromPoint(Math.min(r.x + r.width / 2, innerWidth - 1), Math.min(Math.max(r.y + 4, 0), innerHeight - 1));
     if (!r.width || !r.height || !hit || !(target.contains(hit) || hit.contains(target))) return null;
-    return { x: r.x, y: r.y, w: r.width, h: r.height };
+    return { x: r.x, y: r.y, w: r.width, h: r.height, clipped: r.left < -1 || r.right > innerWidth + 1 };
   }, [needle, nextImage]);
   await page.waitForTimeout(300); // lazy images
   if (!box) return false;
@@ -226,7 +242,7 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   await framed.screenshot({ path: outFile, fullPage: true });
   await framed.close();
-  return true;
+  return { clipped: box.clipped };
 }
 
 // ---- CLI ----
@@ -255,7 +271,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       let src;
       try { src = await openSource(browser, url); } catch (e) {
         bad += rows.length; fileBad += rows.length; webRows += rows.length;
-        console.log(`  확인 불가  ${url} (${e.message}) → 사람이 직접 열어 확인`);
+        console.log(`  확인 불가  ${url} (${e.message}) → 주소를 고치거나 같은 내용의 다른 원문(PDF·보도자료)을 찾아 바꿀 것`);
         report.push({ file, url, status: 'unreachable', error: e.message });
         continue;
       }
@@ -266,7 +282,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         const status = missing.length ? 'mismatch' : /^계산:/.test(c.note) ? 'derived' : /^이미지:/.test(c.note) ? 'image' : 'ok';
         if (status === 'mismatch') { bad++; fileBad++; }
         if (status === 'ok' || status === 'derived') matched.add(claimKey(c)); // image rows need eyes: their date is not auto-refreshed
-        console.log(`  ${{ ok: '일치', derived: '계산값', image: '이미지(캡처로 눈 확인)', mismatch: '불일치' }[status]}  ${c.value}${c.quote ? ` / "${c.quote}"` : ''}${missing.length ? `  → 페이지에 없음: ${missing.join(', ')}` : ''}  [${src.via}]`);
+        console.log(`  ${{ ok: '일치', derived: '계산값', image: '이미지(캡처 판독 필요)', mismatch: '불일치' }[status]}  ${c.value}${c.quote ? ` / "${c.quote}"` : ''}${missing.length ? `  → 페이지에 없음: ${missing.join(', ')}` : ''}  [${src.via}]`);
         report.push({ file, url, value: c.value, quote: c.quote || '', status, missing, via: src.via });
       }
       if (opt.evidence && src.page) {
@@ -280,11 +296,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           const tab = (/클릭:(\S+)/.exec(r.note) || [])[1];
           if (tab) await src.page.getByText(tab, { exact: true }).filter({ visible: true }).first().click({ timeout: 8000 }).then(() => src.page.waitForTimeout(800)).catch(() => {});
           let ok = needle && await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
-          let qa = ok ? captureQA(await imageStats(browser, out)) : null;
+          let qa = ok ? captureQA({ ...(await imageStats(browser, out)), clipped: ok.clipped }) : null;
           if (ok && !qa.ok) { // flaky pages (late pop-ups, lazy images): one retry before failing
             await src.page.waitForTimeout(1500);
             ok = await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
-            qa = ok ? captureQA(await imageStats(browser, out)) : null;
+            qa = ok ? captureQA({ ...(await imageStats(browser, out)), clipped: ok.clipped }) : null;
           }
           if (!ok) { console.log(`  캡처 실패  ${name} ("${needle}"를 화면에서 찾지 못함)`); qaFails.push(name); }
           else if (!qa.ok) { console.log(`  캡처 품질 불합격  ${out}\n     - ${qa.reasons.join('\n     - ')}`); qaFails.push(name); }

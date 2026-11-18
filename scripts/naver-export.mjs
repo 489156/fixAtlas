@@ -18,6 +18,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { SLOT_RE, slotOwner } from './lib/korean-style.mjs';
 import { checkDraft, numbersIn, parseDraft } from './check-claims.mjs';
 
 const PLACEHOLDER = 'https://fixatlas.example';
@@ -51,7 +52,7 @@ export function frontFields(front) {
 
 function inline(text, ctx) {
   let s = esc(text);
-  s = s.replace(/\[\[직접 확인:([^\]]*)\]\]/g, '<span class="human-slot">직접 확인 필요:$1</span>');
+  s = s.replace(SLOT_RE, (_, kind, t) => `<span class="human-slot">${slotOwner(kind)} 필요:${t}</span>`);
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, target) => {
     const raw = target.replace(/&amp;/g, '&');

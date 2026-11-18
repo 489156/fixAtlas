@@ -11,30 +11,30 @@ queries: 무선청소기 배터리 교체 비용, 무선청소기 배터리 수�
 affiliate: pending
 firsthand:
 publish: 2026-11-24(화) 08:00 예약 — 전날 verify-sources로 원문 재대조, 직접 확인 칸을 채운 뒤
-data_checked: 2026-11-18
+data_checked: 2026-11-19
 claims:
-  - 500회 / 80% | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-18 | LG 코드제로 배터리 수명 | 500회 완충·방전(1Cycle) 시 초기 성능의 약 80% 수준
-  - 2년 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-18 | 교체 권장 주기 | 배터리 교체 권장 주기는 2년
-  - A9 정상 사용 시간 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-18 | 배터리 1개 완충 기준 | A9 제품: 터보 모드(약 6분)
-  - A9 표준 모드 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-18 | 배터리 1개 완충 기준 | 표준 모드(약 30분)
-  - A9S 정상 사용 시간 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-18 | 배터리 1개 완충 기준 | A9S 제품: 터보 모드(약 7분)
-  - A9S 표준 모드 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-18 | 배터리 1개 완충 기준 | 표준 모드(약 40분)
-  - 충전 점검 1 | https://www.lge.co.kr/support/solutions-20150356416630 | 2026-11-18 | LG 「충전이 안돼요」 | 충전 단자에 이물질이 있어요
-  - 충전 점검 2 | https://www.lge.co.kr/support/solutions-20150356416630 | 2026-11-18 | LG 「충전이 안돼요」 | 추운 곳에서 충전하고 있어요
-  - 30% / 3회 / 2년 | https://r1.community.samsung.com/t5/%EC%9C%A0%EC%9A%A9%ED%95%9C-%EA%B0%80%EC%A0%84-%EC%A0%95%EB%B3%B4/%EA%B6%81%EA%B8%88%ED%95%B4%EC%9A%94-%EC%82%BC%EC%84%B1-%EB%AC%B4%EC%84%A0%EC%B2%AD%EC%86%8C%EA%B8%B0-%EC%A0%9C%ED%8A%B8-%EB%B0%B0%ED%84%B0%EB%A6%AC-%EC%88%98%EB%AA%85-%EA%B4%80%EB%A6%AC-%EB%B0%A9%EB%B2%95/ba-p/24839365 | 2026-11-18 | 삼성 멤버스 생활가전담당 안내(2023-12-28) | 500 Cycle 사용 후 20~30% 성능이 떨어져요
-  - 배터리는 소모성 부품 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | LG 유상 수리 사유 캡처:lg-battery-consumable | 수명이 다한 경우 (배터리, 필터류
-  - 1년 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 일반제품(청소기 포함) 무상 보증 | 냉장고, 세탁기, 청소기
-  - 비지정 부품 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 유상 수리 사유 | 당사에서 지정하지 않은 부품이나 옵션품으로 발생된 고장의 건
-  - 28,000원 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 평일 출장점검료 | 출장 처리시에는 수리비에 출장점검료를 추가합니다
-  - 10년 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | A9·A9S·A9X 인버터모터 | 청소기 인버터모터(A9,A9S,A9X, 싸이킹전체) 10년
-  - 2년 | https://www.lg.co.kr/media/release/10194 | 2026-11-18 | LG전자 보도자료(2019): 코드제로 A.R.T 배터리 2년 무상보증, 기존 구매 고객 포함 | 배터리를 2년간 무상보증한다
-  - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | BESPOKE 제트 220W 배터리 판매가격 캡처:samsung-220w | 160,000
-  - DJ96-00242D | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | 부품번호 | DJ96-00242D
-  - 적용 모델 목록 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | 상품 페이지 탭 | 상품 적용 모델
-  - KC 인증번호 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-18 | 220W 배터리 상품 페이지 | XU102502-21001
-  - 129,000원 / 104,000원 / 19% | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-18 | A9/A9S 배터리 정상가·회원할인가·할인율 캡처:lg-a9 | 회원할인가
-  - 6,500원 / 18,500원 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-18 | 회원할인가 '자세히 보기' 안내 | 로그인하여 주문 시에 적용되는 혜택 가격
-  - 25,000원 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-18 | 계산: 129,000-104,000 (= 6,500+18,500) |
+  - 500회 / 80% | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-19 | LG 코드제로 배터리 수명 | 500회 완충·방전(1Cycle) 시 초기 성능의 약 80% 수준
+  - 2년 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-19 | 교체 권장 주기 | 배터리 교체 권장 주기는 2년
+  - A9 정상 사용 시간 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-19 | 배터리 1개 완충 기준 | A9 제품: 터보 모드(약 6분)
+  - A9 표준 모드 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-19 | 배터리 1개 완충 기준 | 표준 모드(약 30분)
+  - A9S 정상 사용 시간 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-19 | 배터리 1개 완충 기준 | A9S 제품: 터보 모드(약 7분)
+  - A9S 표준 모드 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-19 | 배터리 1개 완충 기준 | 표준 모드(약 40분)
+  - 충전 점검 1 | https://www.lge.co.kr/support/solutions-20150356416630 | 2026-11-19 | LG 「충전이 안돼요」 | 충전 단자에 이물질이 있어요
+  - 충전 점검 2 | https://www.lge.co.kr/support/solutions-20150356416630 | 2026-11-19 | LG 「충전이 안돼요」 | 추운 곳에서 충전하고 있어요
+  - 30% / 3회 / 2년 | https://r1.community.samsung.com/t5/%EC%9C%A0%EC%9A%A9%ED%95%9C-%EA%B0%80%EC%A0%84-%EC%A0%95%EB%B3%B4/%EA%B6%81%EA%B8%88%ED%95%B4%EC%9A%94-%EC%82%BC%EC%84%B1-%EB%AC%B4%EC%84%A0%EC%B2%AD%EC%86%8C%EA%B8%B0-%EC%A0%9C%ED%8A%B8-%EB%B0%B0%ED%84%B0%EB%A6%AC-%EC%88%98%EB%AA%85-%EA%B4%80%EB%A6%AC-%EB%B0%A9%EB%B2%95/ba-p/24839365 | 2026-11-19 | 삼성 멤버스 생활가전담당 안내(2023-12-28) | 500 Cycle 사용 후 20~30% 성능이 떨어져요
+  - 배터리는 소모성 부품 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | LG 유상 수리 사유 캡처:lg-battery-consumable | 수명이 다한 경우 (배터리, 필터류
+  - 1년 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 일반제품(청소기 포함) 무상 보증 | 냉장고, 세탁기, 청소기
+  - 비지정 부품 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 유상 수리 사유 | 당사에서 지정하지 않은 부품이나 옵션품으로 발생된 고장의 건
+  - 28,000원 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 평일 출장점검료 | 출장 처리시에는 수리비에 출장점검료를 추가합니다
+  - 10년 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | A9·A9S·A9X 인버터모터 | 청소기 인버터모터(A9,A9S,A9X, 싸이킹전체) 10년
+  - 2년 | https://www.lg.co.kr/media/release/10194 | 2026-11-19 | LG전자 보도자료(2019): 코드제로 A.R.T 배터리 2년 무상보증, 기존 구매 고객 포함 | 배터리를 2년간 무상보증한다
+  - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-19 | BESPOKE 제트 220W 배터리 판매가격 캡처:samsung-220w | 160,000
+  - DJ96-00242D | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-19 | 부품번호 | DJ96-00242D
+  - 적용 모델 목록 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-19 | 상품 페이지 탭 | 상품 적용 모델
+  - KC 인증번호 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-19 | 220W 배터리 상품 페이지 | XU102502-21001
+  - 129,000원 / 104,000원 / 19% | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-19 | A9/A9S 배터리 정상가·회원할인가·할인율 캡처:lg-a9 | 회원할인가
+  - 6,500원 / 18,500원 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-19 | 회원할인가 '자세히 보기' 안내 | 로그인하여 주문 시에 적용되는 혜택 가격
+  - 25,000원 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-19 | 계산: 129,000-104,000 (= 6,500+18,500) |
   - 5건 / 3~4건 | site:/methodology | 2026-11-18 | 방법론 v1.1 공개 기준 |
 ---
 
@@ -91,7 +91,7 @@ LG전자 요금/보증 안내에서 청소기의 무상 보증 기간은 1년이
 LG전자는 2019년 보도자료에서 코드제로 A9 등 A.R.T 라인업 배터리를 2년간 무상보증하고 이미 구입한 고객에게도 같은 혜택을 준다고 발표했습니다.
 현재 요금/보증 안내에는 청소기 배터리 2년 보증이 따로 적혀 있지 않으므로 구입일을 증명할 영수증을 들고 서비스센터에 문의하십시오.
 
-[[직접 확인: LG전자 고객센터(1544-7777)에 두 가지를 문의하고 날짜와 답변 요지를 격식체로 적기 — ① 2019년에 발표된 코드제로 A9 배터리 2년 무상보증이 지금도 적용되는지, 적용 조건은 무엇인지 ② 센터에서 배터리만 교체하면 부품값 말고 기술료가 따로 붙는지. 답에 금액이나 기간이 있으면 출처 기록에 "직접:" 줄로 추가]]
+[[현장: LG전자 고객센터(1544-7777) 통화 1회(2편 질문 2개와 같은 통화). 질문 ① 2019년에 발표된 코드제로 A9 배터리 2년 무상보증이 지금도 적용되는지와 그 조건 ② 센터에서 배터리만 교체하면 부품값 외에 기술료가 붙는지. 통화 날짜와 답을 AI에게 알려 주면 AI가 이 자리와 firsthand·출처 줄을 채움]]
 
 모터는 기준이 다릅니다.
 A9·A9S·A9X의 인버터모터는 10년을 보증하지만 이름이 비슷한 A9 Air는 해당하지 않으니 모델명을 확인하십시오.
@@ -160,12 +160,12 @@ LG전자 요금/보증 안내는 "당사에서 지정하지 않은 부품이나 
 - LG전자 케어 액세서리 [A9/A9S 배터리](https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208), 삼성전자서비스 소모품샵 [BESPOKE 제트 220W 배터리](https://www.samsungsvc.co.kr/shop/product/0000090680) (2026년 11월 18일 기준)
 - 고장도감 [수리비 데이터 방법론 v1.1](site:/methodology#sources)
 
-> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 편집자 확인일은 [[직접 확인: 편집자가 원문과 캡처를 직접 다시 확인한 날짜(YYYY-MM-DD)]]입니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
+> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 마지막 대조일은 2026-11-19입니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
 
 가격은 공식몰 표시 기준이며 실제 센터 청구액과 다를 수 있습니다.
 
 바로잡기: 숫자나 문구가 원문과 다르면 댓글로 알려 주십시오. 원문을 다시 확인해 고치고 수정 이력에 남기겠습니다.
 
-쓴 사람: [[직접 확인: 이름 또는 활동명과 한 줄 소개(무슨 일을 하는 사람이고 왜 이 기록을 하는지). 모든 글에 같은 문장을 씀]]
+쓴 사람: [[판단: 바이라인 — 실명과 활동명 중 무엇으로, 어떤 소개로 드러낼지 정하기. AI 초안: "고장도감 운영자 ○○. 가전 수리비를 공식 자료와 사용자 제보로 비교해 기록합니다." 정한 문장은 AI가 모든 글에 넣음]]
 
 수정 이력: 2026-11-17 첫 원고 · 2026-11-18 배터리 보증 서술 수정, 회원할인가 표시 조건 수정, 격식체로 문체 정리 · 2026-11-18 무선청소기만 다루도록 범위를 좁히고(로봇청소기 배터리는 별도 글로 이동) 수명·교체 전 점검·무상 교체·리필 항목 추가, 제목 교체

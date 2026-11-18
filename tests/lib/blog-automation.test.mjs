@@ -4,7 +4,7 @@ import { connectiveCommas, repeatedEndings } from '../../scripts/lib/korean-styl
 import { checkDraft, isSourced, numbersIn, styleProblems } from '../../scripts/check-claims.mjs';
 import { captureQA, claimKey, findNumberSnippet, refreshLedgerDates } from '../../scripts/verify-sources.mjs';
 import { gapAnalysis, naverSignature, suggestTags } from '../../scripts/demand-research.mjs';
-import { statusOf } from '../../scripts/blog-status.mjs';
+import { renderTable, statusOf } from '../../scripts/blog-status.mjs';
 import { thumbnailProblems } from '../../scripts/naver-export.mjs';
 
 test('C-11: comma after a connective ending is caught; listing commas are not', () => {
@@ -61,6 +61,7 @@ test('capture QA rejects dark, unhighlighted or low-resolution captures', () => 
   assert.equal(captureQA({ mean: 44, redRatio: 0.01, width: 860 }).ok, false);
   assert.equal(captureQA({ mean: 200, redRatio: 0, width: 860 }).ok, false);
   assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 430 }).ok, false);
+  assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 860, clipped: true }).ok, false, 'a table cut off at the right edge fails');
 });
 
 test('demand research: gap analysis, tag suggestions, Naver signature format', () => {
@@ -83,7 +84,8 @@ test('blog-status: verdicts, next actions and the D-2 urgency gate', () => {
   const none = statusOf(post(), { today: '2026-11-19' });
   assert.equal(none.ready, false);
   assert.equal(none.urgent, true, 'D-1 and not ready');
-  assert.ok(none.todo.some((t) => t.includes('원문 대조 미실행')));
+  assert.ok(none.todo.includes('[AI] 원문 대조 (verify-sources)'));
+  assert.ok(none.todo.every((t) => /^\[(AI|판단|현장)\] /.test(t)), 'every action names its owner');
   const ready = statusOf(post('firsthand: 2026-11-18 전화\n'), { today: '2026-11-19', verifyStamp: { date: '2026-11-19', problems: 0, capture_failures: [] }, suggestData: { fetched_at: '2026-11-18' } });
   assert.deepEqual(ready.todo, []);
   assert.equal(ready.ready, true);
@@ -93,4 +95,33 @@ test('thumbnail copy: no 해요체, explicit vacuum type, no ad-free chip on thu
   const cards = [{ id: 'a', kind: 'thumb', title: '청소기 배터리,\n보증 되나요?' }, { id: 'b', kind: 'thumb', title: '무선청소기 배터리,\n교체 비용은?' }];
   assert.equal(thumbnailProblems(['../cards/a.png'], cards).length, 2);
   assert.deepEqual(thumbnailProblems(['../cards/b.png'], cards), []);
+});
+
+test('person slots: judgment vs in-person; computer work left in a person slot fails', () => {
+  const doc = (slot) => `---\nslug: t\nfirsthand: x\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n본문은 1원입니다.\n\n${slot}`;
+  const judge = checkDraft(doc('[[판단: 바이라인을 실명과 활동명 중 무엇으로 할지 정하기]]'), { today: '2026-11-18' });
+  assert.deepEqual(judge.problems.map((p) => [p.type, p.owner]), [['human_slot', '판단']]);
+  const call = checkDraft(doc('[[현장: 고객센터 통화 1회. 답을 AI에게 알려 주면 AI가 채움]]'), { today: '2026-11-18' });
+  assert.deepEqual(call.problems.map((p) => [p.type, p.owner]), [['human_slot', '현장']], 'numbers inside a slot need no source');
+  for (const bad of ['[[현장: 편집자가 원문과 캡처를 직접 다시 확인한 날짜]]', '[[직접 확인: 답을 격식체로 적기]]', '[[판단: 네이버에서 검색해 상위 글 비교]]']) {
+    assert.ok(checkDraft(doc(bad), { today: '2026-11-18' }).problems.some((p) => p.type === 'ai_task_in_slot'), bad);
+  }
+});
+
+test('verify --write also dates the reader-facing "마지막 대조일" when every row matched', () => {
+  const text = '---\ndata_checked: 2026-10-01\nclaims:\n  - 1원 | https://a.example | 2026-10-01 | x |\n---\n> 만든 방법: 마지막 대조일은 2026-10-01입니다.';
+  const keys = new Set([claimKey({ value: '1원', url: 'https://a.example' })]);
+  assert.match(refreshLedgerDates(text, keys, '2026-11-18', true), /마지막 대조일은 2026-11-18입니다/);
+  assert.match(refreshLedgerDates(text, keys, '2026-11-18', false), /마지막 대조일은 2026-10-01입니다/);
+});
+
+test('blog-status: unread image rows become an [AI] task; one shared decision is listed once', () => {
+  const post = (slug) => `---\nslug: ${slug}\ntitle: t\ndemand: d\nclaims:\n  - 3건 | https://a.example | 2026-11-10 | 이미지: 표 캡처:t@다음이미지 | 앵커\n---\n# t\n본문 3건입니다.\n\n쓴 사람: [[판단: 바이라인 정하기]]\n`;
+  const stamp = { date: '2026-11-18', problems: 0, capture_failures: [] };
+  const a = statusOf(post('a'), { today: '2026-11-18', verifyStamp: stamp, suggestData: { fetched_at: '2026-11-18' } });
+  assert.ok(a.todo.includes('[AI] 이미지 속 숫자 1행 판독(캡처를 읽고 행 날짜 갱신)'));
+  assert.ok(a.todo.includes('[판단] 1건'));
+  const b = statusOf(post('b'), { today: '2026-11-18', verifyStamp: stamp });
+  const table = renderTable([a, b], '2026-11-18');
+  assert.equal(table.match(/\[판단\] a, b: 바이라인 정하기/g).length, 1);
 });

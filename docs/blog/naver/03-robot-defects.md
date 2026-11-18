@@ -11,30 +11,30 @@ queries: 로봇청소기 고장, 로봇청소기 고장 증상, 로봇청소기 
 publish: 2026-11-28(토) 09:00 예약 — 전날 verify-sources로 원문 재대조, 직접 확인 칸을 채운 뒤
 affiliate: none
 firsthand:
-data_checked: 2026-11-18
+data_checked: 2026-11-19
 claims:
-  - 10건 / 7건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 보도자료 제목 | 10건 중 7건이 제품 하자 불만
-  - 74.5% / 204건 / 25.5% / 70건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 피해구제 신청 사유 |
-  - 56.5% / 84.1% | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 피해 회복률과 그 이유 캡처:kca-recovery | 사업자가 제품 하자를 인정하지 않거나 소비자의 사용 과실을 주장
-  - 37건 / 105건 / 77건 / 274건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 이미지: 피해구제 신청 현황 표(2022년 37, 2024년 105, 2025년 상반기 77, 계 274) 캡처:kca-yearly@다음이미지 | 올해 상반기에도 전년 같은 기간 대비 두 배 가까이 늘었다
-  - 분석 기간 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 2022년~2025년 6월 | 25년 6월
-  - 169건 / 24.9% / 42건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 센서 기능 하자 캡처:kca-defects | 스테이션 복귀 실패
-  - 17.8% / 30건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 작동 불가·멈춤 | 작동 불가·멈춤
-  - 17.2% / 29건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 부가기능 하자 | 자동 급수 및 먼지통 비움
-  - 10.7% / 18건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 누수 | 물청소 기능이 탑재된
-  - 11.8% / 7.1% / 100% | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 이미지: 하자 유형별 현황 그래프(중복 집계) — 소음 발생 11.8%, 배터리 불량 7.1%, 14개 항목 합 134.6% 캡처:kca-chart@다음이미지 | 로 인한 피해도 발생하고 있는 것으로 나타났다
-  - 41.4% / 29건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 청약철회·계약해제 거부 | 포장박스 개봉 등을 이유로 반품을 거부
-  - 37.1% / 26건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 미배송 | 배송을 지연하는 미배송 사례
-  - 소비자원 당부 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 구매·사용 시 주의 | 집 구조(문턱 높이 등)에 맞는 사양을 선택
-  - 센서 관리 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 사용 시 주의 | 센서가 오작동하지 않도록 먼지를 제거
-  - 상담 번호 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-18 | 1372소비자상담센터 | 국번없이 1372
-  - 1개월 | https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201 | 2026-11-18 | 공정위 고시 소비자분쟁해결기준 별표Ⅱ 9. 공산품(가전제품) — 법제처 국가법령정보센터 게시 파일 | 구입 후 1개월 이내에 정상적인 사용상태에서 발생한 성능
-  - 2회 / 4회 | https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201 | 2026-11-18 | 별표Ⅱ 비고: 동일하자 2회·여러 부위 4회 수리 후 재발 시 수리 불가능으로 봄 | 동일하자에 대해 2회까지
-  - 수리 불가능 시 교환·환급 | https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201 | 2026-11-18 | 별표Ⅱ 해결기준 | 수리불가능 시 o 제품교환 또는 구입가 환급
-  - 1개월 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 공정위 고시 소비자분쟁해결기준(가전제품) — LG전자 페이지 수록 전문 캡처:dispute-rules 클릭:소비자분쟁해결기준 | 구입 후 10일 이내에 정상적인 사용상태에서
-  - 3회 / 5회 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 품질보증기간 내 동일 하자 3회차·여러 부위 5회차 수리 시 교환·환급 | 동일 하자에 대하여 3회차 수리시
-  - 2회 / 4회 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 비고: 재발 시 수리 불가능으로 봄 | 하자가 재발하는 경우는 수리 불가능한 것으로 봄
-  - 피해구제 청구 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-18 | 고시 제2조 | 한국소비자원장 또는 소비자단체에게 그 피해구제를 청구할 수
+  - 10건 / 7건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 보도자료 제목 | 10건 중 7건이 제품 하자 불만
+  - 74.5% / 204건 / 25.5% / 70건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 피해구제 신청 사유 |
+  - 56.5% / 84.1% | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 피해 회복률과 그 이유 캡처:kca-recovery | 사업자가 제품 하자를 인정하지 않거나 소비자의 사용 과실을 주장
+  - 37건 / 105건 / 77건 / 274건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 이미지: 피해구제 신청 현황 표(2022년 37, 2024년 105, 2025년 상반기 77, 계 274) 캡처:kca-yearly@다음이미지 | 올해 상반기에도 전년 같은 기간 대비 두 배 가까이 늘었다
+  - 분석 기간 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 2022년~2025년 6월 | 25년 6월
+  - 169건 / 24.9% / 42건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 센서 기능 하자 캡처:kca-defects | 스테이션 복귀 실패
+  - 17.8% / 30건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 작동 불가·멈춤 | 작동 불가·멈춤
+  - 17.2% / 29건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 부가기능 하자 | 자동 급수 및 먼지통 비움
+  - 10.7% / 18건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 누수 | 물청소 기능이 탑재된
+  - 11.8% / 7.1% / 100% | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 이미지: 하자 유형별 현황 그래프(중복 집계) — 소음 발생 11.8%, 배터리 불량 7.1%, 14개 항목 합 135.5% 캡처:kca-chart@다음이미지 | 로 인한 피해도 발생하고 있는 것으로 나타났다
+  - 41.4% / 29건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 청약철회·계약해제 거부 | 포장박스 개봉 등을 이유로 반품을 거부
+  - 37.1% / 26건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 미배송 | 배송을 지연하는 미배송 사례
+  - 소비자원 당부 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 구매·사용 시 주의 | 집 구조(문턱 높이 등)에 맞는 사양을 선택
+  - 센서 관리 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 사용 시 주의 | 센서가 오작동하지 않도록 먼지를 제거
+  - 상담 번호 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1003906171&page=2 | 2026-11-19 | 1372소비자상담센터 | 국번없이 1372
+  - 1개월 | https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201 | 2026-11-19 | 공정위 고시 소비자분쟁해결기준 별표Ⅱ 9. 공산품(가전제품) — 법제처 국가법령정보센터 게시 파일 | 구입 후 1개월 이내에 정상적인 사용상태에서 발생한 성능
+  - 2회 / 4회 | https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201 | 2026-11-19 | 별표Ⅱ 비고: 동일하자 2회·여러 부위 4회 수리 후 재발 시 수리 불가능으로 봄 | 동일하자에 대해 2회까지
+  - 수리 불가능 시 교환·환급 | https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201 | 2026-11-19 | 별표Ⅱ 해결기준 | 수리불가능 시 o 제품교환 또는 구입가 환급
+  - 1개월 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 공정위 고시 소비자분쟁해결기준(가전제품) — LG전자 페이지 수록 전문 캡처:dispute-rules 클릭:소비자분쟁해결기준 | 구입 후 10일 이내에 정상적인 사용상태에서
+  - 3회 / 5회 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 품질보증기간 내 동일 하자 3회차·여러 부위 5회차 수리 시 교환·환급 | 동일 하자에 대하여 3회차 수리시
+  - 2회 / 4회 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 비고: 재발 시 수리 불가능으로 봄 | 하자가 재발하는 경우는 수리 불가능한 것으로 봄
+  - 피해구제 청구 | https://www.lge.co.kr/support/rates-warranty-guide | 2026-11-19 | 고시 제2조 | 한국소비자원장 또는 소비자단체에게 그 피해구제를 청구할 수
   - 5건 | site:/methodology | 2026-11-18 | 방법론 v1.1 공개 기준 |
 ---
 
@@ -104,7 +104,7 @@ claims:
 - 설명서대로 사용했다는 근거: 문턱 높이, 바닥 물기, 정품 소모품 사용 여부
 - 서비스센터 판정 내용과 수리 내역서(가능하면 문자나 서면)
 
-[[직접 확인: 집에 있는 로봇청소기로 위 기록을 실제로 남겨 보거나(오류 화면·센서 위치 사진), 직접 겪은 고장·판정 사례가 있으면 날짜·증상·센터 판정·결과를 격식체 3~5문장으로 적기. 본인 사례가 없으면 지인 사례를 동의받아 익명으로. 이 칸이 비면 발행을 미룸]]
+[[현장: 둘 중 하나. ① 집에 있는 로봇청소기의 오류 화면·센서 위치 사진(개인정보가 보이지 않게) ② 직접 겪은 고장·센터 판정 사례(날짜·증상·판정·결과, 지인 사례는 동의를 받아 익명으로). 사진이나 사례를 AI에게 넘기면 AI가 3~5문장으로 정리해 넣음. 둘 다 없으면 발행을 미룸]]
 
 합의가 되지 않으면 다음 순서로 진행합니다.
 
@@ -148,12 +148,12 @@ claims:
 - 공정거래위원회 고시 「소비자분쟁해결기준」 별표 Ⅱ — [법제처 국가법령정보센터 게시 파일](https://www.law.go.kr/LSW/flDownload.do?flSeq=137702403&bylClsCd=200201) (가전제품 항목 · 2026년 11월 18일 기준), 같은 기준을 옮긴 [LG전자 요금/보증 안내](https://www.lge.co.kr/support/rates-warranty-guide)
 - 고장도감 [수리비 데이터 방법론 v1.1](site:/methodology#sources)
 
-> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 편집자 확인일은 [[직접 확인: 편집자가 원문과 캡처를 직접 다시 확인한 날짜(YYYY-MM-DD)]]입니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
+> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 마지막 대조일은 2026-11-19입니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
 
 보도자료와 고시를 정리한 참고 정보이므로 개별 분쟁의 결과는 제품 상태와 판정에 따라 달라질 수 있습니다.
 
 바로잡기: 숫자나 문구가 원문과 다르면 댓글로 알려 주십시오. 원문을 다시 확인해 고치고 수정 이력에 남기겠습니다.
 
-쓴 사람: [[직접 확인: 이름 또는 활동명과 한 줄 소개(무슨 일을 하는 사람이고 왜 이 기록을 하는지). 모든 글에 같은 문장을 씀]]
+쓴 사람: [[판단: 바이라인 — 실명과 활동명 중 무엇으로, 어떤 소개로 드러낼지 정하기. AI 초안: "고장도감 운영자 ○○. 가전 수리비를 공식 자료와 사용자 제보로 비교해 기록합니다." 정한 문장은 AI가 모든 글에 넣음]]
 
 수정 이력: 2026-11-17 첫 원고 · 2026-11-18 제목을 교환·환불 기준 중심으로 교체, 줄바꿈 정리 · 2026-11-18 "고장 4대 유형"(센서·작동 불가·부가기능·누수) 수정(본문만 보고 정했으나 보도자료 그래프에서는 소음 발생 11.8%가 누수 10.7%보다 많음), 연도별 건수 출처를 보도자료 표로 변경, 제목 교체, 소비자분쟁해결기준과 피해구제 순서 추가, 격식체로 문체 정리

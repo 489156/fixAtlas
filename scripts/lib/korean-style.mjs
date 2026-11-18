@@ -2,11 +2,20 @@
 // Rules follow 489156/koreanRewriting quick-rules (C-11 connective-ending comma, E-2 repeated sentence endings).
 // Pure functions over Markdown prose; callers decide severity.
 
+// Person slots — only for work that is not computer work (operator rule, 2026-11-18):
+//   [[판단: …]]  a decision only the person can make (identity, money, risk, approval)
+//   [[현장: …]]  an act that needs the person's own identity or the physical world (a phone call, a photo)
+//   [[직접 확인: …]] legacy spelling, treated as 현장
+// Everything else — reading sources and captures, comparing, writing up the answer — is done by the AI.
+export const SLOT_RE = /\[\[(판단|현장|직접 확인):([^\]]*)\]\]/g;
+export const SLOT_LINE = /\[\[(?:판단|현장|직접 확인):/;
+export const slotOwner = (kind) => (kind === '판단' ? '판단' : '현장');
+
 /** Prose sentences of a Markdown body: skips tables, headings, images, list items with links, open [[slots]]. */
 export function proseLines(body) {
   return body.split('\n')
     .map((l) => l.trim())
-    .filter((t) => t && !/^(\||#|!\[|-\s.*\]\()/.test(t) && !/\[\[직접 확인:/.test(t))
+    .filter((t) => t && !/^(\||#|!\[|-\s.*\]\()/.test(t) && !SLOT_LINE.test(t))
     .map((t) => t.replace(/^>\s?/, '').replace(/\]\([^)]*\)/g, ']').replace(/\*\*/g, ''));
 }
 
@@ -42,7 +51,7 @@ export function repeatedEndings(body, run = 4) {
   for (const raw of body.split('\n')) {
     const t = raw.trim();
     if (!t) continue; // blank lines between paragraphs keep the passage going
-    if (/^(\||#|!\[|-\s|\d+\.\s)/.test(t) || /\[\[직접 확인:/.test(t)) { flush(); continue; }
+    if (/^(\||#|!\[|-\s|\d+\.\s)/.test(t) || SLOT_LINE.test(t)) { flush(); continue; }
     const prose = t.replace(/^>\s?/, '').replace(/\]\([^)]*\)/g, ']').replace(/\*\*/g, '');
     for (const sentence of prose.split(/(?<=[.!?])\s+/)) if (sentence.trim().length > 1) ends.push(sentence.trim().replace(/[.!?]+$/, '').slice(-3));
   }
