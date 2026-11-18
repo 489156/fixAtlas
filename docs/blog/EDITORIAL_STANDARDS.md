@@ -161,7 +161,9 @@ SITE_URL=https://실제도메인 node scripts/naver-export.mjs docs/blog/naver/*
 
 ## 11. 독자·제목·가독성·검색어 (2026-11-18 사용자 검수 반영, 상세: `docs/blog/LESSONS.md`, `docs/blog/DEMAND_GEO.md`)
 
-**쓰기 전에 수요 기록부터 만든다.** front matter에 아래 다섯 칸을 쓴다. 비어 있으면 실패 처리한다(`no_demand_brief`).
+**상시 규칙(운영자 지시): 매번 발행 전에 수요자를 예상해 한 문장으로 정의한다.** front matter `demand:`에 "[누가] [어떤 상황에서] [무엇을 판단하려고] ['실제 검색어'를] 검색할 때 이 글을 읽습니다."를 맨 먼저 쓴다. 이 문장이 없거나, 평서문이 아니거나, 검색어가 빠지면 실패 처리한다(`no_demand_statement`). `naver-export`의 붙여넣기 페이지 맨 위에도 이 문장이 나온다. 발행 직전에 본문이 이 사람의 질문에 답하는지 다시 읽어 보라는 뜻이다. 새 원고는 `docs/blog/naver/_TEMPLATE.md`에서 시작한다.
+
+수요자 문장과 함께 아래 다섯 칸을 쓴다. 비어 있으면 실패 처리한다(`no_demand_brief`).
 
 | 칸 | 내용 |
 |---|---|

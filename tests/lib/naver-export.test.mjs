@@ -9,6 +9,7 @@ const post = (body, extraClaims = []) => `---
 slug: 2026-11-test
 title: 테스트 글입니다
 tags: 가, 나, 다
+demand: 테스트 독자가 기능을 확인하려고 '테스트'를 검색할 때 이 글을 읽는다고 가정한 시험용 문장입니다.
 reader: 테스트 독자
 need: 테스트
 queries: 테스트

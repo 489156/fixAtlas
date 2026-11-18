@@ -136,6 +136,14 @@ export function readerProblems(front, body) {
   }
   if (!/^title:/m.test(front)) return problems; // demand brief applies to publishable posts (they carry a title)
   const field = (k) => (new RegExp(`^${k}:[ \\t]*(.+)$`, 'm').exec(front) || [])[1]?.trim() ?? '';
+  // Standing rule (owner, 2026-11-18): before publishing, define the expected reader in ONE sentence —
+  // who, in what situation, to decide what, searching with which words — "…검색할 때 이 글을 읽습니다."
+  const demand = field('demand');
+  if (!demand) problems.push({ type: 'no_demand_statement', detail: 'front matter demand:가 없습니다 — 수요자를 한 문장으로: "[누가] [어떤 상황에서] [무엇을 판단하려고] [어떤 검색어로] 이 글을 읽습니다."' });
+  else {
+    if (!/(니다|다)\.$/.test(demand)) problems.push({ type: 'no_demand_statement', detail: `demand:가 문장이 아닙니다(평서문 마침표로 끝내기): "${demand.slice(0, 40)}"` });
+    if (demand.length < 40 || !/검색/.test(demand)) problems.push({ type: 'no_demand_statement', detail: 'demand:에 누가·상황·판단할 것·검색어가 다 들어가야 합니다(40자 이상, "검색" 포함).' });
+  }
   for (const k of ['reader', 'need', 'queries']) if (!field(k)) problems.push({ type: 'no_demand_brief', detail: `front matter ${k}:가 없습니다(누가 읽고, 무엇이 급하고, 어떤 문장으로 검색하는지).` });
   const queries = field('queries').split(',').map((q) => q.trim()).filter(Boolean);
   if (queries.length) {

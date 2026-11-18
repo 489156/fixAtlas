@@ -166,7 +166,7 @@ export function exportPost(text, { origin, preview = false, today, cards = [] } 
   if ([...f.title].length > LIMITS.maxTitle) warnings.push(`제목 ${[...f.title].length}자 — ${LIMITS.maxTitle}자 이하 권장`);
   for (const n of ctx.tables) if (n > 3) warnings.push(`표 열 ${n}개 — 모바일에서는 3열 이하 권장`);
 
-  return { slug: f.slug, title: f.title, tags, content, images: ctx.images, photos: ctx.photos, links: ctx.links, ctas, sources, warnings };
+  return { slug: f.slug, title: f.title, demand: f.demand || '', tags, content, images: ctx.images, photos: ctx.photos, links: ctx.links, ctas, sources, warnings };
 }
 
 export function renderPage(post, { preview }) {
@@ -192,6 +192,10 @@ export function renderPage(post, { preview }) {
   .muted { color:var(--muted); font-size:.9rem; }
 </style></head><body><div class="wrap">
 ${preview ? '<p class="preview">미리보기 — 임시 도메인. 발행본은 SITE_URL을 지정해 다시 만드세요.</p>' : ''}
+<div class="panel">
+  <p class="muted">이 글의 수요자 (발행 전에 다시 읽고, 본문이 이 사람의 질문에 답하는지 확인)</p>
+  <p><strong>${esc(post.demand)}</strong></p>
+</div>
 <div class="panel">
   <p class="muted">제목 칸에 붙여넣기 (${[...post.title].length}자)</p>
   <p><strong>${esc(post.title)}</strong></p>

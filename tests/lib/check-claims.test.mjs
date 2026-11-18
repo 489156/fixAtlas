@@ -136,16 +136,27 @@ test('posts are 격식체 by default: 해요체 sentences and work-report narrat
 test('reader structure: predicate/question titles, explicit vacuum type, 1-2 sentences per line, demand brief + query coverage', async () => {
   const { readerProblems } = await import('../../scripts/check-claims.mjs');
   const types = (front, body) => readerProblems(front, body).map((p) => p.type).sort();
-  const brief = 'title: t\nreader: 무선청소기를 2년 넘게 쓴 사람\nneed: 교체 판단\nqueries: 무선청소기 배터리 교체 비용, 코드제로 배터리 충전 안됨';
+  const brief = 'title: t\ndemand: 무선청소기를 2년 넘게 쓴 사람이 교체 여부를 판단하려고 무선청소기 배터리 교체 비용을 검색할 때 이 글을 읽습니다.\nreader: 무선청소기를 2년 넘게 쓴 사람\nneed: 교체 판단\nqueries: 무선청소기 배터리 교체 비용, 코드제로 배터리 충전 안됨';
   const good = '# 무선청소기 배터리 교체 비용은? 정품값 16만 원\n무선청소기 배터리 교체 비용은 정품 기준입니다.\n코드제로 배터리가 충전이 안 될 때는 단자를 닦으십시오.';
   assert.deepEqual(types(brief, good), []);
   assert.deepEqual(types(brief, good.replace('# 무선청소기 배터리 교체 비용은? 정품값 16만 원', '# 청소기 배터리 교체 비용, 정품값 4종과 LG 보증 기준 (2026.11)')), ['ambiguous_category', 'title_style']);
   assert.deepEqual(types(brief, `${good}\n첫 문장입니다. 둘째 문장입니다. 셋째 문장입니다.`), ['dense_paragraph']);
-  assert.deepEqual(types('title: t', good), ['no_demand_brief', 'no_demand_brief', 'no_demand_brief']);
+  assert.deepEqual(types('title: t', good), ['no_demand_brief', 'no_demand_brief', 'no_demand_brief', 'no_demand_statement']);
   assert.deepEqual(types(brief.replace('코드제로 배터리 충전 안됨', '로봇청소기 배터리 폭발'), good), ['query_coverage']);
   assert.deepEqual(types('', good), [], 'drafts without a title field skip the demand brief');
 });
 
 test('Korean-unit money in titles is compared with the ledger ("16만 원", "12만 9천 원")', () => {
   assert.deepEqual(numbersIn('삼성 제트 16만 원, 코드제로 12만 9천 원').map((n) => n.key), ['160000원', '129000원']);
+});
+
+test('standing rule: every publishable post defines its expected reader in one sentence (demand:)', async () => {
+  const { readerProblems } = await import('../../scripts/check-claims.mjs');
+  const body = '# 무선청소기 배터리 교체 비용은?\n무선청소기 배터리 교체 비용입니다.';
+  const base = 'title: t\nreader: r\nneed: n\nqueries: 무선청소기 배터리';
+  const types = (front) => readerProblems(front, body).map((p) => p.type);
+  assert.ok(types(base).includes('no_demand_statement'), 'missing');
+  assert.ok(types(`${base}\ndemand: 배터리 사는 사람`).includes('no_demand_statement'), 'not a sentence');
+  const good = `${base}\ndemand: 무선청소기를 2년 넘게 써서 사용 시간이 줄어든 사람이 교체 여부를 판단하려고 '무선청소기 배터리 교체 비용'을 검색할 때 이 글을 읽습니다.`;
+  assert.deepEqual(types(good), []);
 });
