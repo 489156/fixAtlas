@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { exportPost, mdToHtml, resolveSite, unsourcedCardNumbers } from '../../scripts/naver-export.mjs';
-import { checkDraft, crossPostDuplicates } from '../../scripts/check-claims.mjs';
+import { checkDraft, crossPostDuplicates, crossPostNearDuplicates } from '../../scripts/check-claims.mjs';
 
 const SITE = 'https://fixatlas.kr';
 const post = (body, extraClaims = []) => `---
@@ -74,14 +74,19 @@ test('week-1 posts: every machine check passes; only the editor\'s in-person ite
   const files = ['01-battery-price', '02-lg-visit-fee', '03-robot-defects'].map((f) => `docs/blog/naver/${f}.md`);
   const texts = files.map((f) => fs.readFileSync(f, 'utf8'));
   assert.deepEqual(crossPostDuplicates(texts), [], 'no sentence or heading copied across posts');
+  assert.deepEqual(crossPostNearDuplicates(texts), [], 'no near-copied sentence across posts');
+  const cards = JSON.parse(fs.readFileSync('docs/blog/cards/cards.json', 'utf8'));
   texts.forEach((text, i) => {
     const types = new Set(checkDraft(text, { today: '2026-11-18' }).problems.map((p) => p.type));
     assert.deepEqual([...types].sort(), ['human_slot', 'no_firsthand'], files[i]);
     // preview export works and raises no layout warnings
-    const r = exportPost(text, { origin: SITE, preview: true, today: '2026-11-18' });
+    const r = exportPost(text, { origin: SITE, preview: true, today: '2026-11-18', cards });
     assert.deepEqual(r.warnings, [], `${files[i]}: ${r.warnings.join(', ')}`);
     assert.equal(r.ctas, 1, files[i]);
-    assert.ok(r.images.length >= 2 && r.images.every((img) => img.includes('/evidence/')), `${files[i]} uses source captures`);
+    // first image = evidence-backed thumbnail card; the rest are official-page captures
+    const thumbId = r.images[0].split('/').pop().replace('.png', '');
+    assert.equal(cards.find((c) => c.id === thumbId)?.kind, 'thumb', `${files[i]} starts with a thumbnail`);
+    assert.ok(r.images.length >= 3 && r.images.slice(1).every((img) => img.includes('/evidence/')), `${files[i]} uses source captures`);
     assert.ok(r.images.every((img) => fs.existsSync(new URL(img, `file://${process.cwd()}/${files[i]}`).pathname)), `${files[i]} images exist`);
     // publishing for real is refused until the editor fills the slots
     assert.throws(() => exportPost(text, { origin: SITE, today: '2026-11-18' }), /직접 확인|firsthand/);

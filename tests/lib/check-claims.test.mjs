@@ -95,3 +95,13 @@ test('sentences and headings copied across posts are reported; source list lines
   assert.deepEqual(d.map((x) => x.unit).sort(), ['## 출장비 기준', '이 문장은 두 글에 똑같이 들어가 있는 문장입니다.']);
   assert.deepEqual(d[0].posts, [0, 1]);
 });
+
+test('near-duplicate sentences across posts are reported (same CTA with a word changed)', async () => {
+  const { crossPostNearDuplicates } = await import('../../scripts/check-claims.mjs');
+  const a = draft([], '같은 모델 제보가 5건 모이면 중앙값을, 3~4건이면 범위만 참고용으로 공개해요.');
+  const b = draft([], '같은 모델·증상 제보가 5건 모이면 중앙값을, 3~4건이면 범위만 참고용으로 공개해요.');
+  const c = draft([], '받은 견적이나 영수증 금액을 보내 주시면 모델별로 정리해서 보여 드려요.');
+  const hits = crossPostNearDuplicates([a, b, c]);
+  assert.equal(hits.length, 1);
+  assert.deepEqual(hits[0].posts, [0, 1]);
+});

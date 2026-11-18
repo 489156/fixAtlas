@@ -137,6 +137,34 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
 // Source lists, the source heading, the byline and the AI-use line are meant to repeat across posts.
 const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(쓴 사람|작성|만든 방법)\s*[:：]/.test(l.trim());
 
+const grams = (t) => { const x = t.replace(/[\s.,!?·()'"]/g, ''); const g = new Set(); for (let i = 0; i < x.length - 2; i++) g.add(x.slice(i, i + 3)); return g; };
+const jaccard = (a, b) => { let n = 0; for (const g of a) if (b.has(g)) n++; return n / (a.size + b.size - n || 1); };
+
+/**
+ * Near-duplicate sentences across posts (character 3-gram Jaccard >= threshold), e.g. the same CTA or disclaimer
+ * with a word or two changed — the "template with small text changes" pattern search engines call spam.
+ */
+export function crossPostNearDuplicates(texts, threshold = 0.5) {
+  const per = texts.map((text) => {
+    const { body } = parseDraft(text);
+    const out = [];
+    for (const line of body.split('\n')) {
+      if (!line.trim() || isSourceLine(line) || /^\s*\|/.test(line) || /\[\[직접 확인:/.test(line) || /^#/.test(line) || /^!\[/.test(line)) continue;
+      const prose = line.replace(/^>\s?/, '').replace(/\]\([^)]*\)/g, ']'); // compare words, not link targets
+      for (const s of prose.split(/(?<=[.!?])\s+/)) if (s.trim().length >= 20) out.push(s.trim());
+    }
+    return out.map((s) => ({ s, g: grams(s) }));
+  });
+  const hits = [];
+  for (let i = 0; i < per.length; i++) for (let j = i + 1; j < per.length; j++) {
+    for (const a of per[i]) for (const b of per[j]) {
+      const sim = jaccard(a.g, b.g);
+      if (sim >= threshold && a.s !== b.s) hits.push({ posts: [i, j], a: a.s, b: b.s, sim: Math.round(sim * 100) / 100 });
+    }
+  }
+  return hits;
+}
+
 /** Sentences (20+ chars) or H2/H3 headings that appear in two or more of the given posts. */
 export function crossPostDuplicates(texts) {
   const seen = new Map();
@@ -162,7 +190,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   let failed = 0;
   const dups = files.length > 1 ? crossPostDuplicates(files.map((f) => fs.readFileSync(f, 'utf8'))) : [];
   for (const d of dups) console.log(`DUP   ${d.posts.map((i) => files[i]).join(' & ')}\n   - 글 사이에 같은 문장·소제목: "${d.unit.slice(0, 70)}"`);
-  if (dups.length) failed++;
+  const near = files.length > 1 ? crossPostNearDuplicates(files.map((f) => fs.readFileSync(f, 'utf8'))) : [];
+  for (const d of near) console.log(`NEAR  ${d.posts.map((i) => files[i]).join(' & ')} (유사도 ${d.sim})\n   - "${d.a.slice(0, 60)}"\n   - "${d.b.slice(0, 60)}"`);
+  if (dups.length || near.length) failed++;
   for (const f of files) {
     const r = checkDraft(fs.readFileSync(f, 'utf8'), { today: opt.today, maxAgeDays: Number(opt['max-age'] ?? 90) });
     console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${f}  (출처 기록 ${r.claims}건)`);

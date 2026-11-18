@@ -13,7 +13,8 @@
 //   picture). Text matching cannot see them, so only the quote (an anchor text next to the image) is checked and
 //   the row is reported as "이미지" — capture the image with "캡처:<name>@다음이미지" and check it by eye
 // - site:/ sources are FixAtlas's own pages and are skipped here
-// - a note containing "캡처:<name>" saves an outlined capture of that quote to <evidence>/<slug>/<name>.png
+// - a note containing "캡처:<name>" saves an outlined capture of that quote to <evidence>/<slug>/<name>.png;
+//   add "클릭:<탭 이름>" when the quote sits in a tab or accordion that is closed by default
 //
 // Pages are loaded with a normal headless Chromium (Playwright) when available, falling back to curl.
 // No user-agent spoofing and no attempt to get around blocks: a blocked page is reported as "확인 불가".
@@ -122,6 +123,9 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
     target.style.outline = '3px solid #e11d48';
     target.style.outlineOffset = '4px';
     const r = target.getBoundingClientRect();
+    // refuse to capture something the reader would not see (e.g. text inside a closed tab)
+    const hit = document.elementFromPoint(Math.min(r.x + r.width / 2, innerWidth - 1), Math.min(Math.max(r.y + 4, 0), innerHeight - 1));
+    if (!r.width || !r.height || !hit || !(target.contains(hit) || hit.contains(target))) return null;
     return { x: r.x, y: r.y, w: r.width, h: r.height };
   }, [needle, nextImage]);
   await page.waitForTimeout(300); // lazy images
@@ -182,6 +186,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           if (!name) continue;
           const needle = r.quote || numbersIn(r.value)[0]?.raw.replace(/\s/g, '');
           const out = path.join(opt.evidence, slug, `${name}.png`);
+          // "클릭:<탭 이름>" opens a tab/accordion first (content that is in the page but not shown by default)
+          const tab = (/클릭:(\S+)/.exec(r.note) || [])[1];
+          if (tab) await src.page.getByText(tab, { exact: true }).filter({ visible: true }).first().click({ timeout: 8000 }).then(() => src.page.waitForTimeout(800)).catch(() => {});
           const ok = needle && await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
           console.log(ok ? `  캡처 저장  ${out}` : `  캡처 실패  ${name} ("${needle}"를 화면에서 찾지 못함)`);
         }
