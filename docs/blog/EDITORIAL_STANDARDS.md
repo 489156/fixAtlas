@@ -116,10 +116,16 @@
 ## 8. 자동 점검 (발행 전 필수)
 
 ```bash
-node scripts/check-claims.mjs docs/blog/naver/*.md
+npm run blog:demand   # 검색어 수집·공백 분석 (demand-research)
 ```
 ```bash
-NODE_PATH=$(npm root -g) node scripts/verify-sources.mjs docs/blog/naver/*.md --evidence=docs/blog/evidence
+npm run blog:check    # 원고 점검 (check-claims)
+```
+```bash
+npm run blog:verify   # 원문 대조·캡처·확인일 갱신·누락 출처 제안 (verify-sources --write --suggest)
+```
+```bash
+npm run blog:status   # 발행 현황판 docs/blog/STATUS.md (blog-status)
 ```
 ```bash
 SITE_URL=https://실제도메인 node scripts/naver-export.mjs docs/blog/naver/*.md
@@ -135,6 +141,16 @@ SITE_URL=https://실제도메인 node scripts/naver-export.mjs docs/blog/naver/*
 | 원문 대조 | 출처 페이지에 기록한 숫자·인용 문구가 없음, 페이지를 열 수 없음 | verify-sources |
 | 제휴 링크 | `affiliate: none` 글에 제휴 링크, 본문 첫 줄 단정형 수수료 고지 없음(쇼핑 커넥트는 필수 문구), 조건부 표현, "광고·제휴 없음" 문장 잔존, 3개 이상·같은 링크 중복, https 원주소가 아님, 첫 데이터 표보다 앞, 스크립트·iframe | check-claims |
 | 도메인·카드·배치 | 임시 도메인, 카드 숫자 불일치, 제보 링크 3개 이상, 이미지 3장 미만·6장 초과, 태그 10개 초과, 제목 45자 초과, 표 4열 이상 | naver-export |
+| 썸네일 문구 | 썸네일 카드에 해요체, 품목이 불분명한 "청소기", 과장어("최저"·"무조건"·"100%"·"완벽"·"총정리"), "광고·제휴 없음" 칩 | naver-export |
+| 연결어미 쉼표 (C-11) | "~이고, ", "~지만, ", "~라서, "처럼 연결어미 바로 뒤의 쉼표. 나열 쉼표("평일 18시 이후, 주말")는 제외 | check-claims |
+| 제목의 답 | 제목에 쓴 숫자가 본문 첫 문단에 없음 (제목이 약속한 답을 첫 문단에서 바로 준다) | check-claims |
+| 숫자 단위 | 본문 숫자가 출처 기록에 같은 단위로 없음. "4시간"은 "3~4건"으로 통과하지 않는다. 단위 없는 숫자와 네 자리 이상 숫자만 숫자만 같아도 인정 | check-claims |
+| 같은 어미 반복 (E-2) **경고** | 한 단락(소제목·표·목록 사이) 안에서 같은 어미로 끝나는 문장 4개 연속 | check-claims |
+| 캡처 품질 | 평균 밝기 90 미만(팝업 덮임), 빨간 강조 테두리 없음, 가로 800px 미만. 한 번 재시도 후 실패 보고 | verify-sources |
+
+판정은 두 단계다. **실패**는 발행을 막고, **경고**(`WARN`)는 사람이 판단한다. `--strict`는 경고도 실패로 본다. `naver-export`는 경고만 있는 글은 내보낸다.
+
+자동으로 처리하는 반복 작업: 일치한 출처 행의 확인일·`data_checked` 갱신(`--write`), 출처 기록에 없는 숫자의 원문 발췌 제안(`--suggest`), 캡처 재시도, 실행 기록(`evidence/<slug>/verify.json`), 검색어 수집·공백 분석·태그 후보(`demand-research`), 전체 글 현황(`blog-status`). 사람이 할 일은 이미지 행 눈 확인, 제안 행의 설명 작성과 채택 여부, 직접 확인 칸, 경고 판단이다.
 
 출처 기록 한 줄 형식: `- 값 | 출처 | 확인일 | 비고 | 원문 인용 문구`. 비고가 `계산:`으로 시작하면 우리 계산값, `이미지:`로 시작하면 이미지 속 수치(캡처로 눈 확인)다.
 

@@ -1,0 +1,96 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { connectiveCommas, repeatedEndings } from '../../scripts/lib/korean-style.mjs';
+import { checkDraft, isSourced, numbersIn, styleProblems } from '../../scripts/check-claims.mjs';
+import { captureQA, claimKey, findNumberSnippet, refreshLedgerDates } from '../../scripts/verify-sources.mjs';
+import { gapAnalysis, naverSignature, suggestTags } from '../../scripts/demand-research.mjs';
+import { statusOf } from '../../scripts/blog-status.mjs';
+import { thumbnailProblems } from '../../scripts/naver-export.mjs';
+
+test('C-11: comma after a connective ending is caught; listing commas are not', () => {
+  const hits = connectiveCommas('요금은 28,000원이고, 주말은 33,000원입니다.\n평일 18시 이후, 주말은 비쌉니다. 싸지만, 위험합니다.');
+  assert.deepEqual(hits.map((h) => h.at), ['이고,', '싸지만,']);
+});
+
+test('E-2: 4+ identical endings in one passage warn; a heading resets the run', () => {
+  const run = '가입니다. 나입니다. 다입니다. 라입니다.';
+  assert.deepEqual(repeatedEndings(run), [{ ending: '입니다', count: 4 }]);
+  assert.deepEqual(repeatedEndings('가입니다. 나입니다.\n## 소제목\n다입니다. 라입니다.'), []);
+  const doc = '---\nslug: t\nfirsthand: x\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n가입니다. 나입니다.\n다입니다. 라입니다.';
+  const r = checkDraft(doc, { today: '2026-11-18' });
+  assert.equal(r.ok, true, 'warnings do not fail');
+  assert.equal(r.problems.find((p) => p.type === 'repeated_ending').level, 'warn');
+  assert.equal(checkDraft(doc, { today: '2026-11-18', strict: true }).ok, false, '--strict turns warnings into failures');
+});
+
+test('title_answer: numbers promised in the title must appear in the first paragraph', () => {
+  const bad = styleProblems('# 출장비는 얼마일까? 평일 28,000원\n출장비는 시간대마다 다릅니다.\n\n본문 28,000원');
+  assert.ok(bad.some((p) => p.type === 'title_answer'));
+  assert.deepEqual(styleProblems('# 출장비는 얼마일까? 평일 28,000원\n평일 출장비는 28,000원입니다.').filter((p) => p.type === 'title_answer'), []);
+});
+
+test('unit-aware sourcing: "4시간" is not sourced by "3~4건"; range fallback still works for big numbers', () => {
+  const keys = new Set(); const digits = new Set();
+  for (const n of numbersIn('3~4건 / 38,000원')) { keys.add(n.key); digits.add(n.digits); }
+  const [h4] = numbersIn('4시간');
+  assert.equal(isSourced(h4, keys, digits), false);
+  const [k28] = numbersIn('28,000원'); // not in ledger at all
+  assert.equal(isSourced(k28, keys, digits), false);
+  const range = numbersIn('28,000~38,000원'); // first figure has no unit
+  assert.equal(isSourced(range[1], keys, digits), true);
+});
+
+test('verify --write: matched rows get today, others keep their date; data_checked follows only when all matched', () => {
+  const text = '---\ndata_checked: 2026-10-01\nclaims:\n  - 1원 | https://a.example | 2026-10-01 | x | q\n  - 2원 | https://b.example | 2026-10-01 | y |\n---\nbody';
+  const matched = new Set([claimKey({ value: '1원', url: 'https://a.example', quote: 'q' })]);
+  const partial = refreshLedgerDates(text, matched, '2026-11-18', false);
+  assert.match(partial, /1원 \| https:\/\/a\.example \| 2026-11-18 \| x \| q/);
+  assert.match(partial, /2원 \| https:\/\/b\.example \| 2026-10-01/);
+  assert.match(partial, /data_checked: 2026-10-01/);
+  assert.match(refreshLedgerDates(text, matched, '2026-11-18', true), /data_checked: 2026-11-18/);
+});
+
+test('verify --suggest: snippet finder respects number boundaries', () => {
+  const [h4] = numbersIn('4시간');
+  assert.equal(findNumberSnippet(h4, '긴급 문의는 24시간 운영합니다'), null);
+  assert.match(findNumberSnippet(h4, '긴급 24시간. (1개당 완충 시간: 약 4시간) 구매'), /약 4시간/);
+});
+
+test('capture QA rejects dark, unhighlighted or low-resolution captures', () => {
+  assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 860 }).ok, true);
+  assert.equal(captureQA({ mean: 44, redRatio: 0.01, width: 860 }).ok, false);
+  assert.equal(captureQA({ mean: 200, redRatio: 0, width: 860 }).ok, false);
+  assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 430 }).ok, false);
+});
+
+test('demand research: gap analysis, tag suggestions, Naver signature format', () => {
+  const { covered, missing } = gapAnalysis('무선청소기 배터리 수명과 교체 비용입니다. 충전이 안 될 때', ['무선청소기 배터리 수명', '무선청소기 배터리 리필', '코드제로 충전 안됨']);
+  assert.deepEqual(missing, ['무선청소기 배터리 리필', '코드제로 충전 안됨']);
+  assert.deepEqual(covered, ['무선청소기 배터리 수명']);
+  const tags = suggestTags({ a: ['코드제로 배터리 가격', 'x y'], b: ['코드제로 배터리 가격'] }, ['기존태그'], 3);
+  assert.deepEqual(tags, ['코드제로배터리가격']);
+  // brand glued to product is still matched; tags only from queries the body answers
+  assert.deepEqual(gapAnalysis('LG전자 에어컨 기사 출장비는 28,000원입니다.', ['lg에어컨 기사 출장비']).missing, []);
+  const bySeed = { a: ['lg 기사 출장비', 'lg 인터넷 기사 출장비'], b: ['lg 기사 출장비', 'lg 인터넷 기사 출장비'] };
+  assert.deepEqual(suggestTags(bySeed, [], 10, ['lg 기사 출장비']), ['lg기사출장비']);
+  const sig = naverSignature('secret', '1700000000000', 'GET', '/keywordstool');
+  assert.match(sig, /^[A-Za-z0-9+/]{43}=$/);
+  assert.equal(sig, naverSignature('secret', '1700000000000', 'GET', '/keywordstool'));
+});
+
+test('blog-status: verdicts, next actions and the D-2 urgency gate', () => {
+  const post = (extra = '') => `---\nslug: s\ntitle: 무선청소기 배터리 교체 비용은?\ndemand: 무선청소기를 오래 쓴 사람이 교체 여부를 판단하려고 '무선청소기 배터리 교체 비용'을 검색할 때 이 글을 읽습니다.\nreader: r\nneed: n\nqueries: 무선청소기 배터리 교체 비용\npublish: 2026-11-20 08:00\n${extra}claims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n# 무선청소기 배터리 교체 비용은?\n무선청소기 배터리 교체 비용은 1원입니다.\n`;
+  const none = statusOf(post(), { today: '2026-11-19' });
+  assert.equal(none.ready, false);
+  assert.equal(none.urgent, true, 'D-1 and not ready');
+  assert.ok(none.todo.some((t) => t.includes('원문 대조 미실행')));
+  const ready = statusOf(post('firsthand: 2026-11-18 전화\n'), { today: '2026-11-19', verifyStamp: { date: '2026-11-19', problems: 0, capture_failures: [] }, suggestData: { fetched_at: '2026-11-18' } });
+  assert.deepEqual(ready.todo, []);
+  assert.equal(ready.ready, true);
+});
+
+test('thumbnail copy: no 해요체, explicit vacuum type, no ad-free chip on thumbnails', () => {
+  const cards = [{ id: 'a', kind: 'thumb', title: '청소기 배터리,\n보증 되나요?' }, { id: 'b', kind: 'thumb', title: '무선청소기 배터리,\n교체 비용은?' }];
+  assert.equal(thumbnailProblems(['../cards/a.png'], cards).length, 2);
+  assert.deepEqual(thumbnailProblems(['../cards/b.png'], cards), []);
+});

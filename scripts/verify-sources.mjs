@@ -16,6 +16,11 @@
 // - a note containing "캡처:<name>" saves an outlined capture of that quote to <evidence>/<slug>/<name>.png;
 //   add "클릭:<탭 이름>" when the quote sits in a tab or accordion that is closed by default
 //
+// Automation (so the editor does not repeat these by hand):
+//   --write    rows that matched today get today's date; data_checked: is updated when every web row matched
+//   --suggest  for numbers in the body that no row covers, search the post's source pages and print ready-to-paste rows
+//   captures   are checked automatically (not dark, highlight present, phone-legible width) and retried once
+//   stamp      <evidence>/<slug>/verify.json records when and how the post was last verified (read by blog-status)
 // Pages are loaded with a normal headless Chromium (Playwright) when available, falling back to curl; PDF sources
 // (e.g. law.go.kr annex files) are read with pdftotext.
 // No user-agent spoofing and no attempt to get around blocks: a blocked page is reported as "확인 불가".
@@ -23,7 +28,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import { numbersIn, parseDraft } from './check-claims.mjs';
+import { numbersIn, parseDraft, unsourcedNumbers } from './check-claims.mjs';
 
 const norm = (s) => s.replace(/\s+/g, ' ').trim();
 
@@ -49,13 +54,20 @@ export function matchClaim(claim, pageText) {
 }
 
 async function loadBrowser() {
+  // Local install first, then the global one — so nobody has to remember NODE_PATH=$(npm root -g).
+  const roots = [import.meta.url];
   try {
-    const require = createRequire(import.meta.url);
-    const { chromium } = require('playwright');
-    return await chromium.launch();
-  } catch {
-    return null; // Playwright not installed: fetch-only mode
+    const { execSync } = await import('node:child_process');
+    roots.push(path.join(execSync('npm root -g', { encoding: 'utf8' }).trim(), 'noop.js'));
+  } catch { /* npm missing: local only */ }
+  for (const root of roots) {
+    try {
+      const { chromium } = createRequire(root)('playwright');
+      return await chromium.launch();
+    } catch { /* try the next root */ }
   }
+  console.log('  (Playwright 없음 — 캡처 없이 원문 텍스트만 대조합니다)');
+  return null;
 }
 
 /** Plain HTTP fallback via curl (honours the environment's proxy and CA settings; default curl user agent). */
@@ -96,6 +108,65 @@ async function openSource(browser, url) {
   const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
   await page.setContent(html.replace(/<head([^>]*)>/i, `<head$1><base href="${url}">`), { waitUntil: 'domcontentloaded', timeout: 30000 }).catch(() => {});
   return { text: htmlToText(html), via: 'curl', page };
+}
+
+/** Where a number appears in a page text: a short snippet for a suggested ledger row, or null. Pure; unit-tested. */
+export function findNumberSnippet(n, pageText) {
+  const text = norm(pageText);
+  const unit = n.key.slice(n.digits.length);
+  const withCommas = Number(n.digits).toLocaleString('en-US', { maximumFractionDigits: 6 });
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const c of [`${withCommas}${unit}`, `${withCommas} ${unit}`.trim(), withCommas, n.digits]) {
+    if (c.length < 3 && !unit) continue;
+    // the figure must not be the tail of a longer number ("24시간" is not "4시간")
+    const m = new RegExp(`(?<![\\d,.])${esc(c)}`).exec(text);
+    if (m) return text.slice(Math.max(0, m.index - 18), m.index + c.length + 12).trim();
+  }
+  return null;
+}
+
+/** Rewrite the ledger: matched rows get `today`; data_checked follows when all web rows matched. Pure; unit-tested. */
+export function refreshLedgerDates(text, matchedKeys, today, allMatched) {
+  const rowKey = (value, url, quote) => `${value}|${url}|${quote}`;
+  let out = text.replace(/^(\s+-\s)(.+)$/gm, (line, lead, rest) => {
+    const parts = rest.split('|').map((x) => x.trim());
+    if (parts.length < 3 || !matchedKeys.has(rowKey(parts[0], parts[1], parts[4] ?? ''))) return line;
+    const cells = rest.split('|');
+    cells[2] = cells[2].replace(/\d{4}-\d{2}-\d{2}/, today);
+    return lead + cells.join('|');
+  });
+  if (allMatched) out = out.replace(/^data_checked:.*$/m, `data_checked: ${today}`);
+  return out;
+}
+export const claimKey = (c) => `${c.value}|${c.url}|${c.quote || ''}`;
+
+/** Capture quality gate from pixel statistics. Pure; unit-tested. */
+export function captureQA({ mean, redRatio, width }) {
+  const reasons = [];
+  if (mean < 90) reasons.push(`화면이 어둡습니다(평균 밝기 ${Math.round(mean)}) — 팝업 덮개가 찍혔을 수 있음`);
+  if (redRatio < 0.0015) reasons.push('강조 테두리가 보이지 않습니다 — 엉뚱한 영역이 찍혔을 수 있음');
+  if (width < 800) reasons.push(`폭 ${width}px — 휴대폰에서 글자가 너무 작음(800px 이상 필요)`);
+  return { ok: reasons.length === 0, reasons };
+}
+
+async function imageStats(browser, file) {
+  const page = await browser.newPage();
+  try {
+    await page.setContent(`<img id="i" src="data:image/png;base64,${fs.readFileSync(file).toString('base64')}">`);
+    return await page.evaluate(async () => {
+      const img = document.getElementById('i');
+      await img.decode();
+      const c = document.createElement('canvas'); c.width = img.naturalWidth; c.height = img.naturalHeight;
+      const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0);
+      const d = ctx.getImageData(0, 0, c.width, c.height).data;
+      let sum = 0; let red = 0; const n = d.length / 4;
+      for (let i = 0; i < d.length; i += 4) {
+        sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+        if (d[i] > 190 && d[i + 1] < 90 && d[i + 2] < 120) red++;
+      }
+      return { mean: sum / n, redRatio: red / n, width: c.width };
+    });
+  } finally { await page.close(); }
 }
 
 const KST = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul', dateStyle: 'short', timeStyle: 'short' }).format(new Date());
@@ -163,12 +234,19 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const opt = Object.fromEntries(args.filter((a) => a.startsWith('--')).map((a) => { const [k, v = 'true'] = a.slice(2).split('='); return [k, v]; }));
   const files = args.filter((a) => !a.startsWith('--'));
-  if (!files.length) { console.error('usage: node scripts/verify-sources.mjs <post.md...> [--evidence=dir]'); process.exit(2); }
+  if (!files.length) { console.error('usage: node scripts/verify-sources.mjs <post.md...> [--evidence=dir] [--write] [--suggest] [--report=file]'); process.exit(2); }
   const browser = await loadBrowser();
   let bad = 0;
   const report = [];
+  const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date());
   for (const file of files) {
-    const { claims, front } = parseDraft(fs.readFileSync(file, 'utf8'));
+    const original = fs.readFileSync(file, 'utf8');
+    const { claims, front } = parseDraft(original);
+    const matched = new Set();
+    const pageTexts = new Map();
+    let fileBad = 0;
+    let webRows = 0;
+    const qaFails = [];
     const slug = (/^slug:\s*(.+)$/m.exec(front) || [])[1] || path.basename(file, '.md');
     console.log(`\n${file}`);
     const byUrl = new Map();
@@ -176,15 +254,18 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     for (const [url, rows] of byUrl) {
       let src;
       try { src = await openSource(browser, url); } catch (e) {
-        bad += rows.length;
+        bad += rows.length; fileBad += rows.length; webRows += rows.length;
         console.log(`  확인 불가  ${url} (${e.message}) → 사람이 직접 열어 확인`);
         report.push({ file, url, status: 'unreachable', error: e.message });
         continue;
       }
+      pageTexts.set(url, src.text);
       for (const c of rows) {
+        webRows++;
         const missing = matchClaim(c, src.text);
         const status = missing.length ? 'mismatch' : /^계산:/.test(c.note) ? 'derived' : /^이미지:/.test(c.note) ? 'image' : 'ok';
-        if (status === 'mismatch') bad++;
+        if (status === 'mismatch') { bad++; fileBad++; }
+        if (status === 'ok' || status === 'derived') matched.add(claimKey(c)); // image rows need eyes: their date is not auto-refreshed
         console.log(`  ${{ ok: '일치', derived: '계산값', image: '이미지(캡처로 눈 확인)', mismatch: '불일치' }[status]}  ${c.value}${c.quote ? ` / "${c.quote}"` : ''}${missing.length ? `  → 페이지에 없음: ${missing.join(', ')}` : ''}  [${src.via}]`);
         report.push({ file, url, value: c.value, quote: c.quote || '', status, missing, via: src.via });
       }
@@ -198,12 +279,41 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           // "클릭:<탭 이름>" opens a tab/accordion first (content that is in the page but not shown by default)
           const tab = (/클릭:(\S+)/.exec(r.note) || [])[1];
           if (tab) await src.page.getByText(tab, { exact: true }).filter({ visible: true }).first().click({ timeout: 8000 }).then(() => src.page.waitForTimeout(800)).catch(() => {});
-          const ok = needle && await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
-          console.log(ok ? `  캡처 저장  ${out}` : `  캡처 실패  ${name} ("${needle}"를 화면에서 찾지 못함)`);
+          let ok = needle && await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
+          let qa = ok ? captureQA(await imageStats(browser, out)) : null;
+          if (ok && !qa.ok) { // flaky pages (late pop-ups, lazy images): one retry before failing
+            await src.page.waitForTimeout(1500);
+            ok = await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
+            qa = ok ? captureQA(await imageStats(browser, out)) : null;
+          }
+          if (!ok) { console.log(`  캡처 실패  ${name} ("${needle}"를 화면에서 찾지 못함)`); qaFails.push(name); }
+          else if (!qa.ok) { console.log(`  캡처 품질 불합격  ${out}\n     - ${qa.reasons.join('\n     - ')}`); qaFails.push(name); }
+          else console.log(`  캡처 저장  ${out}  (자동 검사 통과)`);
         }
       }
       await src.page?.close();
     }
+    bad += qaFails.length;
+    // --suggest: numbers in the body with no ledger row → look them up in this post's source pages
+    if (opt.suggest) {
+      const loose = unsourcedNumbers(original);
+      for (const n of loose) {
+        const hits = [...pageTexts].map(([url, text]) => [url, findNumberSnippet(n, text)]).filter(([, snip]) => snip);
+        if (!hits.length) { console.log(`  제안 없음  "${n.raw}" — 출처 페이지에서 찾지 못했습니다(계산값이면 비고를 "계산:"으로)`); continue; }
+        for (const [url, snip] of hits.slice(0, 2)) console.log(`  제안  - ${n.raw} | ${url} | ${today} | (설명) | ${snip}`);
+      }
+    }
+    // --write: refresh dates of rows that matched today
+    if (opt.write && matched.size) {
+      const allMatched = fileBad === 0 && matched.size === claims.filter((c) => /^https:\/\//.test(c.url) && !/^이미지:/.test(c.note)).length;
+      fs.writeFileSync(file, refreshLedgerDates(original, matched, today, allMatched));
+      console.log(`  확인일 갱신  ${matched.size}행 → ${today}${allMatched ? ' (data_checked 포함)' : ''}`);
+    }
+    // stamp for blog-status
+    const slug2 = (/^slug:\s*(.+)$/m.exec(front) || [])[1] || path.basename(file, '.md');
+    const stampDir = path.join(opt.evidence || 'docs/blog/evidence', slug2);
+    fs.mkdirSync(stampDir, { recursive: true });
+    fs.writeFileSync(path.join(stampDir, 'verify.json'), JSON.stringify({ checked_at: KST(), date: today, web_rows: webRows, matched: matched.size, image_rows: claims.filter((c) => /^https:\/\//.test(c.url) && /^이미지:/.test(c.note || '')).length, problems: fileBad, capture_failures: qaFails }, null, 2) + '\n');
   }
   await browser?.close();
   if (opt.report) fs.writeFileSync(opt.report, JSON.stringify({ checked_at: KST(), report }, null, 2));

@@ -18,10 +18,16 @@
 ## 발행 전 점검 명령
 
 ```bash
-node scripts/check-claims.mjs docs/blog/naver/0*.md
+npm run blog:demand   # 실제 검색어 수집·본문 공백 분석·태그 후보 (scripts/demand-research.mjs)
 ```
 ```bash
-NODE_PATH=$(npm root -g) node scripts/verify-sources.mjs docs/blog/naver/<글>.md --evidence=docs/blog/evidence
+npm run blog:check    # 원고 점검. WARN은 발행을 막지 않음, --strict면 실패 (scripts/check-claims.mjs)
+```
+```bash
+npm run blog:verify   # 원문 대조·캡처 QA·확인일 자동 갱신·누락 출처 제안 (scripts/verify-sources.mjs --write --suggest)
+```
+```bash
+npm run blog:status   # 발행 현황판 docs/blog/STATUS.md, D-2 미준비 시 exit 1 (scripts/blog-status.mjs)
 ```
 ```bash
 SITE_URL=https://실제도메인 node scripts/naver-export.mjs docs/blog/naver/<글>.md

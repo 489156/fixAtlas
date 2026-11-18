@@ -18,6 +18,7 @@
 //     - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-17 | 삼성 BESPOKE 제트 220W 배터리
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { connectiveCommas, repeatedEndings } from './lib/korean-style.mjs';
 
 const UNITS = ['만원', '원', '%', '㎡', 'km', 'cm', 'mm', 'kg', 'm', '건', '개월', '년', '회', '명', '시간', '배', '편'];
 const unitAlt = UNITS.map((u) => u.replace(/[%]/g, '\\$&')).join('|');
@@ -148,10 +149,33 @@ export function readerProblems(front, body) {
   const queries = field('queries').split(',').map((q) => q.trim()).filter(Boolean);
   if (queries.length) {
     // compare without spaces and with common spelling variants folded ("충전 안됨" ~ "충전이 안 될")
-    const fold = (x) => x.toLowerCase().replace(/\s+/g, '').replace(/안(됨|돼요|돼|될|되는|되나요|되면)/g, '안되').replace(/환급/g, '환불');
-    const hay = fold(body);
-    const missing = queries.filter((q) => !q.toLowerCase().split(/\s+/).every((w) => hay.includes(fold(w))));
+    const hay = foldKo(body);
+    const missing = queries.filter((q) => !q.toLowerCase().split(/\s+/).every((w) => hay.includes(foldKo(w))));
     if (missing.length / queries.length > 0.25) problems.push({ type: 'query_coverage', detail: `검색어 ${queries.length}개 중 ${missing.length}개를 본문이 다루지 않습니다: ${missing.slice(0, 5).join(' / ')}` });
+  }
+  return problems;
+}
+
+// Severity. Heuristics that can misfire report as warnings (printed, not failing) unless --strict.
+export const WARN_TYPES = new Set(['repeated_ending']);
+export const levelOf = (p) => (WARN_TYPES.has(p.type) ? 'warn' : 'fail');
+
+/** Fold for loose Korean matching: no spaces, spelling variants unified (also used by demand-research). */
+export const foldKo = (x) => x.toLowerCase().replace(/\s+/g, '').replace(/안(됨|돼요|돼|될|되는|되나요|되면)/g, '안되').replace(/환급/g, '환불');
+
+export function styleProblems(body) {
+  const problems = [];
+  for (const h of connectiveCommas(body)) problems.push({ type: 'connective_comma', detail: `연결어미 뒤 쉼표("${h.at}") — 쉼표를 빼거나 문장을 나누세요(koreanRewriting C-11): "${h.sentence.slice(0, 45)}…"` });
+  for (const r of repeatedEndings(body)) problems.push({ type: 'repeated_ending', detail: `"~${r.ending}"로 끝나는 문장이 ${r.count}개 연속 — 서술어를 바꿔 리듬을 깨세요(E-2)` });
+  // the title promises an answer: every number in the H1 must already appear in the first paragraph
+  const lines = body.split('\n');
+  const h1 = lines.findIndex((l) => /^#\s/.test(l));
+  if (h1 !== -1) {
+    const firstPara = [];
+    for (const l of lines.slice(h1 + 1)) { if (!l.trim()) { if (firstPara.length) break; continue; } if (/^(!\[|>|#)/.test(l.trim())) break; firstPara.push(l); }
+    const have = new Set(numbersIn(firstPara.join(' ')).flatMap((n) => [n.key, n.digits]));
+    const missing = numbersIn(lines[h1]).filter((n) => !have.has(n.key) && !have.has(n.digits));
+    if (missing.length) problems.push({ type: 'title_answer', detail: `제목의 숫자(${missing.map((n) => n.raw).join(', ')})가 첫 문단에 없습니다 — 제목이 약속한 답을 첫 문단에서 바로 주세요.` });
   }
   return problems;
 }
@@ -208,7 +232,25 @@ export function numbersIn(text) {
   return out;
 }
 
-export function checkDraft(text, { today = new Date().toISOString().slice(0, 10), maxAgeDays = 90 } = {}) {
+// A body number is sourced when the ledger has the same number with the same unit. The unit-free fallback exists
+// for ranges ("28,000~38,000원" leaves the first figure without a unit), so it only applies to unit-less or 4+ digit
+// figures: "4시간" must not pass because the ledger happens to contain "3~4건".
+export function isSourced(n, keys, digits) {
+  if (keys.has(n.key)) return true;
+  const unit = n.key.slice(n.digits.length);
+  return digits.has(n.digits) && (!unit || n.digits.replace('.', '').length >= 4);
+}
+
+/** Numbers in the body that no ledger row covers (same matching as checkDraft). */
+export function unsourcedNumbers(text) {
+  const { body, claims } = parseDraft(text);
+  const keys = new Set(); const digits = new Set();
+  for (const c of claims) for (const n of numbersIn(c.value)) { keys.add(n.key); digits.add(n.digits); }
+  const seen = new Set();
+  return numbersIn(body).filter((n) => !isSourced(n, keys, digits) && !seen.has(n.key) && seen.add(n.key));
+}
+
+export function checkDraft(text, { today = new Date().toISOString().slice(0, 10), maxAgeDays = 90, strict = false } = {}) {
   const { front, body, claims } = parseDraft(text);
   const problems = [];
   if (!claims.length) problems.push({ type: 'no_ledger', detail: 'front matter에 claims: 출처 기록이 없습니다.' });
@@ -230,7 +272,7 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   for (const n of numbersIn(body)) {
     // Same numeric value recorded in the ledger counts as sourced (ranges like "28,000~38,000원" leave the first
     // number without a unit, so the unit is not required to match).
-    const matched = ledgerKeys.has(n.key) || ledgerDigits.has(n.digits);
+    const matched = isSourced(n, ledgerKeys, ledgerDigits);
     if (!matched && !seen.has(n.key)) {
       seen.add(n.key);
       problems.push({ type: 'unsourced_number', detail: `본문의 "${n.raw}"가 출처 기록(claims)에 없습니다.` });
@@ -248,9 +290,11 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   problems.push(...affiliateProblems(front, body));
   problems.push(...registerProblems(front, body));
   problems.push(...readerProblems(front, body));
+  problems.push(...styleProblems(body));
   for (const m of body.matchAll(/\[\[직접 확인:([^\]]*)\]\]/g)) problems.push({ type: 'human_slot', detail: `직접 확인 칸이 비어 있습니다:${m[1].slice(0, 50)}…` });
   if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
-  return { ok: problems.length === 0, problems, claims: claims.length };
+  for (const p of problems) p.level = strict ? 'fail' : levelOf(p);
+  return { ok: problems.every((p) => p.level === 'warn'), problems, claims: claims.length };
 }
 
 // Source lists, the source heading, the byline, the AI-use line and the fixed correction policy line repeat on purpose.
@@ -305,7 +349,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const opt = Object.fromEntries(args.filter((a) => a.startsWith('--')).map((a) => a.slice(2).split('=')));
   const files = args.filter((a) => !a.startsWith('--'));
-  if (!files.length) { console.error('usage: node scripts/check-claims.mjs <draft.md...> [--today=YYYY-MM-DD] [--max-age=90]'); process.exit(2); }
+  if (!files.length) { console.error('usage: node scripts/check-claims.mjs <draft.md...> [--today=YYYY-MM-DD] [--max-age=90] [--strict]'); process.exit(2); }
   let failed = 0;
   const dups = files.length > 1 ? crossPostDuplicates(files.map((f) => fs.readFileSync(f, 'utf8'))) : [];
   for (const d of dups) console.log(`DUP   ${d.posts.map((i) => files[i]).join(' & ')}\n   - 글 사이에 같은 문장·소제목: "${d.unit.slice(0, 70)}"`);
@@ -313,9 +357,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   for (const d of near) console.log(`NEAR  ${d.posts.map((i) => files[i]).join(' & ')} (유사도 ${d.sim})\n   - "${d.a.slice(0, 60)}"\n   - "${d.b.slice(0, 60)}"`);
   if (dups.length || near.length) failed++;
   for (const f of files) {
-    const r = checkDraft(fs.readFileSync(f, 'utf8'), { today: opt.today, maxAgeDays: Number(opt['max-age'] ?? 90) });
-    console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${f}  (출처 기록 ${r.claims}건)`);
-    for (const p of r.problems) console.log(`   - [${p.type}] ${p.detail}`);
+    const r = checkDraft(fs.readFileSync(f, 'utf8'), { today: opt.today, maxAgeDays: Number(opt['max-age'] ?? 90), strict: 'strict' in opt });
+    const warns = r.problems.filter((p) => p.level === 'warn').length;
+    console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${f}  (출처 기록 ${r.claims}건${warns ? `, 경고 ${warns}` : ''})`);
+    for (const p of r.problems) console.log(`   - ${p.level === 'warn' ? 'WARN ' : ''}[${p.type}] ${p.detail}`);
     if (!r.ok) failed++;
   }
   process.exit(failed ? 1 : 0);

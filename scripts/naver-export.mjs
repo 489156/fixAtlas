@@ -138,12 +138,28 @@ export function unsourcedCardNumbers(images, cards, claims) {
   return out;
 }
 
+/** Thumbnail copy follows the post rules: 격식·평서 headline (no 해요체), explicit vacuum type, no hype. Pure. */
+export function thumbnailProblems(images, cards) {
+  const out = [];
+  for (const img of images) {
+    const card = cards.find((c) => c.id === path.basename(img, path.extname(img)));
+    if (!card || card.kind !== 'thumb') continue;
+    const text = [card.title, card.label, card.sub].filter(Boolean).join(' ').replace(/\n/g, ' ');
+    if (/요[.?!]?(\s|$)/.test(text)) out.push(`${card.id}: 해요체 문구("${text.slice(0, 30)}") — 평서·질문형 제목체로`);
+    if (/청소기/.test(text) && !/(무선|로봇|스틱|유선|핸디|물걸레|진공)\s?청소기/.test(text)) out.push(`${card.id}: "청소기"가 무선·로봇 중 무엇인지 불분명`);
+    if (/최저|무조건|100%|완벽|총정리/.test(text)) out.push(`${card.id}: 과장 표현`);
+    if (card.chip === '광고·제휴 없음' && card.kind === 'thumb') out.push(`${card.id}: 썸네일에 "광고·제휴 없음" 칩 — 고지는 본문 인용구 한 줄로`);
+  }
+  return out;
+}
+
 export function exportPost(text, { origin, preview = false, today, cards = [] } = {}) {
   if (!origin) throw new Error('SITE_URL이 없습니다. 도메인을 확정한 뒤 SITE_URL=https://... 로 실행하세요 (검토용은 --preview).');
   if (!preview && /\.example(\/|$)/.test(new URL(origin).host + '/')) throw new Error(`임시 도메인(${origin})으로는 발행본을 만들 수 없습니다. --preview로 검토만 하세요.`);
   const check = checkDraft(text, { today });
   // A preview may still have the editor's in-person slots open; everything machine-checkable must pass.
   const HUMAN_ONLY = new Set(['human_slot', 'no_firsthand']);
+  check.problems = check.problems.filter((p) => p.level !== 'warn'); // warnings are advisory
   if (preview) check.problems = check.problems.filter((p) => !HUMAN_ONLY.has(p.type));
   if (check.problems.length) throw new Error(`신뢰성 점검 실패:\n${check.problems.map((p) => `  - [${p.type}] ${p.detail}`).join('\n')}`);
 
@@ -152,6 +168,8 @@ export function exportPost(text, { origin, preview = false, today, cards = [] } 
   if (!f.slug || !f.title) throw new Error('front matter에 slug와 title이 필요합니다.');
   const ctx = { origin, slug: f.slug, links: [], images: [], photos: [], tables: [] };
   const content = mdToHtml(body, ctx);
+  const cardIssues = thumbnailProblems(ctx.images, cards);
+  if (cardIssues.length) throw new Error(`썸네일 문구 점검 실패:\n${cardIssues.map((d) => `  - ${d}`).join('\n')}`);
   const drift = unsourcedCardNumbers(ctx.images, cards, claims);
   if (drift.length) throw new Error(`카드 이미지 숫자가 출처 기록에 없습니다:\n${drift.map((d) => `  - ${d}`).join('\n')}`);
   const tags = (f.tags || '').split(',').map((t) => t.trim().replace(/^#/, '')).filter(Boolean);

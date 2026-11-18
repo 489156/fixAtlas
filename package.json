@@ -10,7 +10,11 @@
     "preview": "vite preview",
     "test": "node --test \"tests/**/*.test.mjs\" \"tests/**/*.test.ts\"",
     "sitemap": "node scripts/generate-sitemap.mjs",
-    "build:e2e": "VITE_SUPABASE_URL=http://localhost:54380 VITE_SUPABASE_ANON_KEY=anon vite build"
+    "build:e2e": "VITE_SUPABASE_URL=http://localhost:54380 VITE_SUPABASE_ANON_KEY=anon vite build",
+    "blog:check": "node scripts/check-claims.mjs docs/blog/naver/0*.md",
+    "blog:verify": "node scripts/verify-sources.mjs docs/blog/naver/0*.md --evidence=docs/blog/evidence --write --suggest",
+    "blog:demand": "for f in docs/blog/naver/0*.md; do node scripts/demand-research.mjs \"$f\"; done",
+    "blog:status": "node scripts/blog-status.mjs --out=docs/blog/STATUS.md"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

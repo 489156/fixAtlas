@@ -14,18 +14,34 @@
 
 ## 글마다 하는 일 (약 40분, 직접 확인 포함 [판단])
 
-0. **수요자 문장 확인 (상시 규칙)**: 원고 `demand:`의 한 문장(누가·상황·판단할 것·검색어)을 소리 내어 읽고, 본문의 소제목들이 그 사람의 질문에 차례로 답하는지 확인한다. 새 글이면 `_TEMPLATE.md`를 복사해 이 문장부터 쓴다.
+0. **수요자 문장 확인 (상시 규칙)**: 원고 `demand:`의 한 문장(누가·상황·판단할 것·검색어)을 소리 내어 읽고, 본문의 소제목들이 그 사람의 질문에 차례로 답하는지 확인한다. 새 글이면 `_TEMPLATE.md`를 복사해 이 문장부터 쓴다. 이어서 실제 검색어를 모으고 본문이 답하지 않는 검색어를 본다.
+   ```bash
+   node scripts/demand-research.mjs docs/blog/naver/01-battery-price.md
+   ```
+   `queries`를 시드로 구글 자동완성을 모아 `docs/research/data/suggest/<slug>.json`에 날짜와 함께 저장하고, "다루지 않는 검색어"(새 질문형 소제목 또는 별도 글 후보)와 태그 후보를 출력한다. 네이버 검색광고 API 키(`NAVER_SEARCHAD_API_KEY`·`NAVER_SEARCHAD_SECRET`·`NAVER_SEARCHAD_CUSTOMER_ID`)가 있으면 월간 검색량도 조회하고 `--write-scale`로 `scale:` 줄에 붙인다(실 API 미검증).
 
 1. **직접 확인 칸 채우기**: 원고의 `[[직접 확인: …]]`를 실제로 한 일로 바꾼다. 고객센터 문의라면 날짜, 질문, 답 요지를 적고, 사진이라면 개인정보를 가린 사진을 넣는다. front matter의 `firsthand:`에 날짜와 무엇을 했는지 적는다(예: `firsthand: 2026-11-23 LG전자 고객센터 전화 문의(질문 2개)`). 답에 금액이 있으면 출처 기록에 `직접:LG전자 고객센터 전화 2026-11-23` 형식의 줄을 추가한다. "쓴 사람" 바이라인은 한 번 정하면 모든 글에 같은 문장을 쓴다.
 2. **원문 재대조와 캡처 (전날)**
    ```bash
-   NODE_PATH=$(npm root -g) node scripts/verify-sources.mjs docs/blog/naver/01-battery-price.md --evidence=docs/blog/evidence
+   node scripts/verify-sources.mjs docs/blog/naver/01-battery-price.md --evidence=docs/blog/evidence --write --suggest
    ```
-   "불일치"가 나오면 원문을 열어 숫자·문구를 고친다. 본문, 출처 기록, (쓴다면) SNS 카드, 수정 이력을 함께 고친다. "이미지(캡처로 눈 확인)" 행은 캡처를 직접 보고 숫자를 확인한다. 캡처가 실패하거나 어둡게 나오면 한 번 더 실행한다. 확인이 끝나면 "만든 방법" 줄의 날짜 칸에 오늘 날짜를 적는다.
+   전역 Playwright를 스스로 찾으므로 `NODE_PATH`는 필요 없다. 자동으로 하는 일은 다음과 같다.
+   - 일치한 출처 기록 행의 확인일과 `data_checked`를 오늘로 바꾼다(`--write`). 불일치 행과 이미지 행은 바꾸지 않는다.
+   - 본문에는 있지만 출처 기록에 없는 숫자를 출처 페이지에서 찾아 `제안 - 값 | 주소 | 날짜 | (설명) | 원문 발췌` 행을 출력한다(`--suggest`). 그대로 붙이지 말고 설명 칸을 쓰고 발췌가 맞는지 본다.
+   - 캡처마다 밝기·빨간 강조 테두리·해상도를 검사하고 실패하면 한 번 다시 찍는다. 그래도 실패하면 실패로 보고한다.
+   - `docs/blog/evidence/<slug>/verify.json`에 실행 시각과 결과를 남긴다(`blog-status`가 읽는다).
+
+   "불일치"가 나오면 원문을 열어 숫자·문구를 고친다. 본문, 출처 기록, (쓴다면) SNS 카드, 수정 이력을 함께 고친다. "이미지(캡처로 눈 확인)" 행은 캡처를 직접 보고 숫자를 확인한 뒤 그 행의 날짜를 손으로 바꾼다. "만든 방법" 줄의 편집자 확인일은 사람이 캡처를 직접 본 날짜이므로 자동으로 채우지 않는다.
 3. **점검** (여러 글을 함께 넣어야 글 사이 중복도 잡힌다)
    ```bash
    node scripts/check-claims.mjs docs/blog/naver/0*.md
    ```
+   `WARN`(같은 어미 4연속 등)은 발행을 막지 않는다. 고칠지 사람이 판단한다. 경고까지 실패로 보려면 `--strict`를 붙인다.
+3-1. **현황판**: 모든 글의 발행일·점검·직접 확인·원문 대조·검색어 자료를 한 표로 본다.
+   ```bash
+   npm run blog:status
+   ```
+   `docs/blog/STATUS.md`를 다시 쓰고, 발행 2일 전까지 준비가 안 된 글이 있으면 종료 코드 1을 낸다(알림·CI 연결용).
 4. **붙여넣기용 페이지 만들기**: 도메인이 확정돼야 한다.
    ```bash
    SITE_URL=https://실제도메인 node scripts/naver-export.mjs docs/blog/naver/01-battery-price.md
