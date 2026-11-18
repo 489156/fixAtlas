@@ -52,3 +52,17 @@ test('Korean-style dates are not treated as numeric claims', () => {
   const keys = numbersIn('2026년 11월 17일 확인, 2025년 8월 기사, 11월 17일 기준, 보증 1년').map((n) => n.key);
   assert.deepEqual(keys, ['1년']);
 });
+
+test('site:/ internal sources and links are accepted', () => {
+  const r = checkDraft(draft([`5건 | site:/methodology | 2026-11-18 | 중앙값 공개 기준`], '같은 모델 제보가 5건 모이면 공개합니다. [방법론](site:/methodology?x=1000#body)'), { today: '2026-11-18' });
+  assert.equal(r.ok, true, JSON.stringify(r.problems));
+  const bad = checkDraft(draft([`5건 | /methodology | 2026-11-18 | x`], '5건'), { today: '2026-11-18' });
+  assert.deepEqual(bad.problems.map((p) => p.type), ['bad_source']);
+});
+
+test('a paragraph mixing 합니다체 and 해요체 fails; separate blocks and a bare "아니요." do not', () => {
+  const r = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '비율이에요. 고장률이 아닙니다.'), { today: '2026-11-18' });
+  assert.deepEqual(r.problems.map((p) => p.type), ['mixed_register']);
+  const ok = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '결론은 이렇습니다.\n\n아니요. 부품값이에요.\n| 표 | 입니다. 이에요. |'), { today: '2026-11-18' });
+  assert.equal(ok.ok, true, JSON.stringify(ok.problems));
+});

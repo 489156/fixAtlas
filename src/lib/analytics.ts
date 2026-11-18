@@ -2,6 +2,7 @@
 // A random per-browser id (localStorage) lets us count visitors and 7-day return rate.
 // Honours Do-Not-Track / Global Privacy Control. Event names are allow-listed again on the server.
 import { API_BASE, isSupabaseConfigured } from './supabase';
+import { referrerSource } from './referrer';
 
 export type EventName =
   | 'page_view' | 'search' | 'search_zero_result' | 'product_view' | 'calculator_used' | 'self_check_view'
@@ -17,7 +18,8 @@ let queue: QueuedEvent[] = [];
 /**
  * First-touch campaign attribution for this browsing session (e.g. a Naver blog post link).
  * Stored in sessionStorage only; attached to every event as `src` / `cmp` / `cnt` so the KPI panel can count
- * blog-originated visits, quote checks and submissions. No personal data is involved.
+ * blog-originated visits, quote checks and submissions. Without UTM tags the referring host is used instead
+ * (see ./referrer.ts). No personal data is involved.
  */
 function campaign(): Props {
   try {
@@ -33,7 +35,12 @@ function campaign(): Props {
       return c;
     }
     const saved = sessionStorage.getItem(UTM_KEY);
-    return saved ? (JSON.parse(saved) as Props) : {};
+    if (saved) return JSON.parse(saved) as Props;
+    // No UTM tags: fall back to the referring host (AI search, portals) so GEO referrals are countable.
+    const ref = typeof document !== 'undefined' ? referrerSource(document.referrer, location.host) : null;
+    if (!ref) return {};
+    sessionStorage.setItem(UTM_KEY, JSON.stringify(ref));
+    return ref;
   } catch {
     return {};
   }

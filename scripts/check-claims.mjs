@@ -2,7 +2,10 @@
 //   node scripts/check-claims.mjs docs/blog/naver/*.md [--today=YYYY-MM-DD] [--max-age=90]
 // Every number with a unit (원, %, m, 건, 년 ...) or any comma-grouped number in the body must appear in the
 // draft's claim ledger (front matter `claims:`), each ledger row needs an https source and a check date,
-// dates older than --max-age days are flagged, and banned hype/uncertain phrases fail the check.
+// dates older than --max-age days are flagged, banned hype/uncertain phrases fail the check, and a paragraph that
+// mixes 합니다체 and 해요체 endings fails (EDITORIAL_STANDARDS §5: one register per block).
+// A ledger source may also be `site:/path` — FixAtlas's own public page (e.g. site:/methodology for the
+// 3/5/10-report rules); scripts/naver-export.mjs resolves it to the real origin at export time.
 //
 // Ledger format (front matter):
 //   claims:
@@ -22,6 +25,20 @@ export const BANNED = [
   { re: /것\s*같(습니다|아요|다)/, why: '추측 표현 — 출처를 달거나 "표본 부족"으로 명시' },
   { re: /\b(TODO|FIXME|TBD)\b|링크 삽입 예정/, why: '미완성 표시가 남아 있음' },
 ];
+
+/** Paragraph lines that mix 합니다체 (-니다) and 해요체 (-요) sentence endings. Tables and headings are skipped. */
+export function mixedRegister(body) {
+  const out = [];
+  for (const line of body.split('\n')) {
+    if (!line.trim() || /^\s*(\||#)/.test(line)) continue;
+    const sentences = line.replace(/^>\s?/, '').split(/(?<=[.!?])\s+/).map((x) => x.replace(/\*\*/g, '').trim());
+    const ends = sentences.filter((x) => !/^(아니요|네|예)[.!?]$/.test(x));
+    const formal = ends.some((x) => /니다[.!?]$/.test(x));
+    const polite = ends.some((x) => /요[.!?]$/.test(x));
+    if (formal && polite) out.push(line.trim().slice(0, 60));
+  }
+  return out;
+}
 
 export function parseDraft(text) {
   const m = /^---\n([\s\S]*?)\n---\n?/.exec(text);
@@ -43,7 +60,7 @@ const norm = (digits, unit = '') => `${digits.replace(/,/g, '')}${unit}`;
 
 export function numbersIn(text) {
   const cleaned = text
-    .replace(/https?:\/\/\S+/g, ' ')            // URLs
+    .replace(/(https?:\/\/|site:\/)\S+/g, ' ')  // URLs (incl. site:/ internal links)
     .replace(/\]\([^)]*\)/g, ']')                // markdown link targets
     .replace(DATE_RE, ' ')                       // dates
     .replace(/^\s*\d+\.\s/gm, ' ')               // ordered-list markers
@@ -66,7 +83,7 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   const ledgerDigits = new Set();
   for (const c of claims) {
     for (const n of numbersIn(c.value)) { ledgerKeys.add(n.key); ledgerDigits.add(n.digits); }
-    if (!/^https:\/\//.test(c.url)) problems.push({ type: 'bad_source', detail: `${c.value}: https 출처 URL이 없습니다.` });
+    if (!/^(https:\/\/|site:\/)/.test(c.url)) problems.push({ type: 'bad_source', detail: `${c.value}: https 출처 URL(또는 site:/ 자체 페이지)이 없습니다.` });
     if (!/^\d{4}-\d{2}-\d{2}$/.test(c.date)) problems.push({ type: 'bad_date', detail: `${c.value}: 확인일(YYYY-MM-DD)이 없습니다.` });
     else {
       const age = (Date.parse(today) - Date.parse(c.date)) / 86400000;
@@ -89,6 +106,7 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
     const hit = b.re.exec(body);
     if (hit) problems.push({ type: 'banned_phrase', detail: `"${hit[0]}" — ${b.why}` });
   }
+  for (const line of mixedRegister(body)) problems.push({ type: 'mixed_register', detail: `한 문단에 합니다체·해요체 혼용: "${line}…"` });
   return { ok: problems.length === 0, problems, claims: claims.length };
 }
 
