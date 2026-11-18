@@ -31,7 +31,7 @@ const source = live ? 'live API' : 'seed catalog';
 
 const today = new Date().toISOString().slice(0, 10);
 const urls = [
-  ['/', '1.0'], ['/search', '0.5'], ['/calculator', '0.7'], ['/submit-repair', '0.6'], ['/community', '0.5'],
+  ['/', '1.0'], ['/search', '0.5'], ['/calculator', '0.7'], ['/submit-repair', '0.6'], ['/community', '0.5'], ['/methodology', '0.6'],
   ...products.map((p) => [`/products/${p.category}/${p.slug}`, '0.8']),
 ];
 const xml = `<?xml version="1.0" encoding="UTF-8"?>

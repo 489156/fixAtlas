@@ -91,6 +91,7 @@ export function Layout() {
           <p className="text-xs text-gray-500">{t('layout.legalNotice')}</p>
           <p className="text-xs text-gray-500">{t('layout.safetyNotice')}</p>
           <p className="text-xs text-gray-500">{t('layout.reviewNotice')}</p>
+          <p className="text-xs"><Link to="/methodology" className="text-gray-600 underline">수리비 데이터 방법론</Link></p>
           <AffiliateSlot />
         </div>
       </footer>

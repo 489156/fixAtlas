@@ -15,7 +15,7 @@ const unitAlt = UNITS.map((u) => u.replace(/[%]/g, '\\$&')).join('|');
 // number not glued to a preceding letter/hyphen/dot (part numbers like DJ96-00242D, versions like V10) and,
 // if no unit follows, not glued to a following letter either (e.g. "220W").
 const NUM_RE = new RegExp(`(?<![A-Za-z0-9\\-.])(\\d{1,3}(?:,\\d{3})+|\\d+(?:\\.\\d+)?)\\s?(${unitAlt})?(?![A-Za-z0-9])`, 'g');
-const DATE_RE = /\b\d{4}[-.]\d{1,2}(?:[-.]\d{1,2})?\b/g;
+const DATE_RE = /\b\d{4}[-.]\d{1,2}(?:[-.]\d{1,2})?\b|\d{4}년(?:\s?\d{1,2}월)?(?:\s?\d{1,2}일)?|\d{1,2}월\s?\d{1,2}일/g;
 
 export const BANNED = [
   { re: /최저가\s*보장|무조건|100%\s*(보장|해결)|확실히\s*(싸|저렴)|업계\s*최저/, why: '과장 표현(표시광고 위험)' },

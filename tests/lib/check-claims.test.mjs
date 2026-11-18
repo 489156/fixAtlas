@@ -47,3 +47,8 @@ test('banned phrases: hype, guessing, leftover placeholders', () => {
     assert.ok(r.problems.some((p) => p.type === 'banned_phrase'), body);
   }
 });
+
+test('Korean-style dates are not treated as numeric claims', () => {
+  const keys = numbersIn('2026년 11월 17일 확인, 2025년 8월 기사, 11월 17일 기준, 보증 1년').map((n) => n.key);
+  assert.deepEqual(keys, ['1년']);
+});

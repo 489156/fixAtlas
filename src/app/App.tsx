@@ -12,6 +12,7 @@ import { Auth } from './pages/Auth';
 import { Admin } from './pages/Admin';
 import { ConfigMissing } from './components/ConfigMissing';
 import { NotFound } from './pages/NotFound';
+import { Methodology } from './pages/Methodology';
 import { isSupabaseConfigured } from '../lib/supabase';
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="community/new" element={<CommunityNew />} />
           <Route path="auth" element={<Auth />} />
           <Route path="admin" element={<Admin />} />
+          <Route path="methodology" element={<Methodology />} />
 
           {/* RFP example paths → current routes */}
           <Route path="submit-repair-report" element={<Navigate to="/submit-repair" replace />} />

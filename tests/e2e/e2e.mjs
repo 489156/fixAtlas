@@ -152,6 +152,12 @@ try {
   ok('H1 blog UTM recorded on landing page_view', tagged.some((e) => e.name === 'page_view' && e.props.src === 'naver_blog' && e.props.cnt === 'cta'));
   ok('H2 attribution carried to a later action on another page (calculator)', tagged.some((e) => e.name === 'calculator_used'));
 
+  // ---- M. Methodology page (cited by blog posts for FixAtlas's own rules)
+  await page.goto(`${BASE}/methodology`); await page.waitForTimeout(500);
+  t = await text();
+  ok('M1 methodology page states the 3/5/10 sample rules and exclusions', t.includes('3건 미만') && t.includes('5건 이상') && t.includes('10건 이상') && t.includes('계산에서 빼는 것'));
+  ok('M2 footer links to methodology', (await page.locator('footer a[href="/methodology"]').count()) === 1);
+
   // ---- G. Analytics: events were recorded, search text stored, no user ids
   await page.waitForTimeout(2200);
   const names = new Set(db.events.map((e) => e.name));
