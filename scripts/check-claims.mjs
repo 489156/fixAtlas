@@ -117,6 +117,37 @@ export function registerProblems(front, body) {
   return problems;
 }
 
+// ---- Reader-facing structure (user review 2026-11-18, docs/blog/LESSONS.md) ----
+// Titles must say something (a predicate or a question), not list nouns; "청소기" must say which kind; a prose line
+// with 3+ sentences reads as a wall of text on Naver mobile; every post needs a demand brief (who reads it, what they
+// need, which natural-language queries it answers) and the body must actually cover those queries.
+const CATEGORY_OK = /(무선|로봇|스틱|유선|핸디|물걸레|진공)\s?청소기/;
+export function readerProblems(front, body) {
+  const problems = [];
+  const title = (/^#\s+(.+)$/m.exec(body) || [])[1]?.trim() ?? '';
+  const core = title.replace(/\s*\([^)]*\)\s*$/, '');
+  if (title && !/[?？]|(니다|습니다|다|까|요)$/.test(core)) problems.push({ type: 'title_style', detail: `제목이 명사 나열로 끝납니다 — 질문이나 서술로: "${title}"` });
+  if (/청소기/.test(title) && !CATEGORY_OK.test(title) && !/(제트|코드제로|로보락|다이슨)/.test(title)) problems.push({ type: 'ambiguous_category', detail: `제목의 "청소기"가 무선·로봇 중 무엇인지 불분명합니다: "${title}"` });
+  for (const line of body.split('\n')) {
+    const t = line.trim();
+    if (!t || /^(\||#|!\[|>|-\s|\d+\.\s)/.test(t) || /\[\[직접 확인:/.test(t) || /^(만든 방법|바로잡기|쓴 사람|수정 이력|출처)\s*:/.test(t)) continue;
+    const n = t.split(/(?<=[.!?])\s+/).filter((x) => x.trim().length > 1).length;
+    if (n >= 3) problems.push({ type: 'dense_paragraph', detail: `한 줄에 ${n}문장 — 모바일에서는 1~2문장마다 줄을 바꾸세요: "${t.slice(0, 40)}…"` });
+  }
+  if (!/^title:/m.test(front)) return problems; // demand brief applies to publishable posts (they carry a title)
+  const field = (k) => (new RegExp(`^${k}:[ \\t]*(.+)$`, 'm').exec(front) || [])[1]?.trim() ?? '';
+  for (const k of ['reader', 'need', 'queries']) if (!field(k)) problems.push({ type: 'no_demand_brief', detail: `front matter ${k}:가 없습니다(누가 읽고, 무엇이 급하고, 어떤 문장으로 검색하는지).` });
+  const queries = field('queries').split(',').map((q) => q.trim()).filter(Boolean);
+  if (queries.length) {
+    // compare without spaces and with common spelling variants folded ("충전 안됨" ~ "충전이 안 될")
+    const fold = (x) => x.toLowerCase().replace(/\s+/g, '').replace(/안(됨|돼요|돼|될|되는|되나요|되면)/g, '안되').replace(/환급/g, '환불');
+    const hay = fold(body);
+    const missing = queries.filter((q) => !q.toLowerCase().split(/\s+/).every((w) => hay.includes(fold(w))));
+    if (missing.length / queries.length > 0.25) problems.push({ type: 'query_coverage', detail: `검색어 ${queries.length}개 중 ${missing.length}개를 본문이 다루지 않습니다: ${missing.slice(0, 5).join(' / ')}` });
+  }
+  return problems;
+}
+
 /** Paragraph lines that mix 합니다체 (-니다) and 해요체 (-요) sentence endings. Tables and headings are skipped. */
 export function mixedRegister(body) {
   const out = [];
@@ -149,8 +180,12 @@ export function parseDraft(text) {
 
 const norm = (digits, unit = '') => `${digits.replace(/,/g, '')}${unit}`;
 
+// "16만 원" / "12만 9천 원" / "13만~16만 원" are written for readers; compare them as plain won amounts.
+const KO_MONEY = /(\d+)\s?만(?:\s?(\d)\s?천)?(\s?원)?/g;
+const koMoney = (t) => t.replace(KO_MONEY, (m, man, cheon, won) => `${(Number(man) * 10000 + Number(cheon || 0) * 1000).toLocaleString('en-US')}${won ? '원' : ''}`);
+
 export function numbersIn(text) {
-  const cleaned = text
+  const cleaned = koMoney(text)
     .replace(/(https?:\/\/|site:\/)\S+/g, ' ')  // URLs (incl. site:/ internal links)
     .replace(/\]\([^)]*\)/g, ']')                // markdown link targets
     .replace(DATE_RE, ' ')                       // dates
@@ -204,6 +239,7 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   }
   problems.push(...affiliateProblems(front, body));
   problems.push(...registerProblems(front, body));
+  problems.push(...readerProblems(front, body));
   for (const m of body.matchAll(/\[\[직접 확인:([^\]]*)\]\]/g)) problems.push({ type: 'human_slot', detail: `직접 확인 칸이 비어 있습니다:${m[1].slice(0, 50)}…` });
   if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
   return { ok: problems.length === 0, problems, claims: claims.length };

@@ -7,15 +7,18 @@ import { checkDraft, crossPostDuplicates, crossPostNearDuplicates } from '../../
 const SITE = 'https://fixatlas.kr';
 const post = (body, extraClaims = []) => `---
 slug: 2026-11-test
-title: 테스트 글
+title: 테스트 글입니다
 tags: 가, 나, 다
+reader: 테스트 독자
+need: 테스트
+queries: 테스트
 firsthand: 2026-11-18 테스트
 claims:
   - 28,000원 | https://www.lge.co.kr/support/visit-center-reservation?seq=182 | 2026-11-17 | 평일
   - 5건 | site:/methodology | 2026-11-18 | 공개 기준
 ${extraClaims.map((c) => `  - ${c}`).join('\n')}
 ---
-# 테스트 글
+# 테스트 글입니다
 ${body}`;
 
 test('site:/ links resolve to the origin with UTM tags; placement comes from the fragment', () => {
