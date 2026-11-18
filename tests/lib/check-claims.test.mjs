@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { checkDraft, numbersIn, parseDraft } from '../../scripts/check-claims.mjs';
+import { checkDraft, crossPostDuplicates, numbersIn, parseDraft } from '../../scripts/check-claims.mjs';
 
-const draft = (claims, body) => `---\nslug: t\nclaims:\n${claims.map((c) => `  - ${c}`).join('\n')}\n---\n${body}`;
+const draft = (claims, body) => `---\nslug: t\nfirsthand: 2026-11-18 테스트\nclaims:\n${claims.map((c) => `  - ${c}`).join('\n')}\n---\n${body}`;
 const SRC = 'https://www.lge.co.kr/support/visit-center-reservation?seq=182';
 
 test('ledger is parsed from front matter', () => {
   const { claims } = parseDraft(draft([`28,000원 | ${SRC} | 2026-11-17 | LG 출장비`], 'x'));
-  assert.deepEqual(claims, [{ value: '28,000원', url: SRC, date: '2026-11-17', note: 'LG 출장비' }]);
+  assert.deepEqual(claims, [{ value: '28,000원', url: SRC, date: '2026-11-17', note: 'LG 출장비', quote: '' }]);
 });
 
 test('numbers: units, comma groups and ranges are claims; part numbers, model names, dates, list markers are not', () => {
@@ -65,4 +65,33 @@ test('a paragraph mixing 합니다체 and 해요체 fails; separate blocks and a
   assert.deepEqual(r.problems.map((p) => p.type), ['mixed_register']);
   const ok = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '결론은 이렇습니다.\n\n아니요. 부품값이에요.\n| 표 | 입니다. 이에요. |'), { today: '2026-11-18' });
   assert.equal(ok.ok, true, JSON.stringify(ok.problems));
+});
+
+test('5th ledger field is a verbatim quote; 직접: sources are accepted for in-person checks', () => {
+  const { claims } = parseDraft(draft([`28,000원 | ${SRC} | 2026-11-17 | 평일 | 거리에 상관없이 동일하게`], 'x'));
+  assert.equal(claims[0].quote, '거리에 상관없이 동일하게');
+  const r = checkDraft(draft([`5분 | 직접:LG전자 고객센터 전화 2026-11-18 | 2026-11-18 | 대기 시간`], '상담 연결까지 5분 걸렸어요.'), { today: '2026-11-18' });
+  assert.equal(r.ok, true, JSON.stringify(r.problems));
+});
+
+test('template/AI clichés, unfilled in-person slots and a missing firsthand record fail', () => {
+  for (const body of ['**한 줄 결론**: 28,000원입니다.', '오늘은 출장비에 대해 알아보겠습니다.', '## 자주 묻는 질문', '자세히 보기 → 링크', '⚠ 주의하세요.']) {
+    const r = checkDraft(draft([`28,000원 | ${SRC} | 2026-11-17 | x`], body), { today: '2026-11-18' });
+    assert.ok(r.problems.some((p) => p.type === 'cliche'), body);
+  }
+  const slot = checkDraft(draft([`1원 | https://a.example | 2026-11-17 | x`], '[[직접 확인: 고객센터에 전화해 물어볼 것]]'), { today: '2026-11-18' });
+  assert.deepEqual(slot.problems.map((p) => p.type), ['human_slot']);
+  const noFirst = checkDraft('---\nslug: t\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n본문', { today: '2026-11-18' });
+  assert.deepEqual(noFirst.problems.map((p) => p.type), ['no_firsthand']);
+  const blank = checkDraft('---\nslug: t\nfirsthand:\ndata_checked: 2026-11-18\nclaims:\n  - 1원 | https://a.example | 2026-11-17 | x\n---\n본문', { today: '2026-11-18' });
+  assert.deepEqual(blank.problems.map((p) => p.type), ['no_firsthand'], 'an empty firsthand: must not borrow the next line');
+});
+
+test('sentences and headings copied across posts are reported; source list lines are not', () => {
+  const a = draft([], '## 출장비 기준\n이 문장은 두 글에 똑같이 들어가 있는 문장입니다.\n- 고장도감: [방법론](site:/methodology)');
+  const b = draft([], '## 출장비 기준\n이 문장은 두 글에 똑같이 들어가 있는 문장입니다.\n- 고장도감: [방법론](site:/methodology)');
+  const c = draft([], '전혀 다른 내용으로 쓴 세 번째 글의 문장입니다.');
+  const d = crossPostDuplicates([a, b, c]);
+  assert.deepEqual(d.map((x) => x.unit).sort(), ['## 출장비 기준', '이 문장은 두 글에 똑같이 들어가 있는 문장입니다.']);
+  assert.deepEqual(d[0].posts, [0, 1]);
 });

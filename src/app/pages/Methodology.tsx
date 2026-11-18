@@ -3,7 +3,7 @@ import { SEO } from '../components/SEO';
 
 // Public methodology page. Blog posts cite this page for FixAtlas's own rules (sample thresholds, exclusions).
 // Keep it in sync with supabase/functions/_shared/stats.ts and docs/blog/EDITORIAL_STANDARDS.md.
-export const METHODOLOGY_VERSION = 'v1.0';
+export const METHODOLOGY_VERSION = 'v1.1';
 export const METHODOLOGY_DATE = '2026-11-18';
 
 const section = 'bg-white rounded-xl p-6 shadow-sm border border-gray-200';
@@ -65,13 +65,23 @@ export function Methodology() {
           <p className="text-gray-700">영수증이나 견적서를 함께 올린 제보는 운영자가 확인한 뒤 "인증"으로 표시합니다. 이미지는 비공개로 보관하며 공개 화면에는 나오지 않습니다. 제보자의 계정 정보도 공개하지 않습니다.</p>
         </section>
 
+        <section className={section} aria-labelledby="ai-h" id="ai">
+          <h2 id="ai-h" className="text-xl font-bold text-gray-900 mb-3">글과 데이터에 AI를 쓰는 범위</h2>
+          <ul className="list-disc pl-5 space-y-1 text-gray-700">
+            <li><strong>AI가 하는 일</strong>: 블로그 글 초안과 문장 다듬기, 출처 페이지의 숫자·문구가 기록과 같은지 자동 대조.</li>
+            <li><strong>사람이 하는 일</strong>: 발행 전에 출처 원문과 캡처를 직접 다시 확인하고, 고객센터 문의·사진 촬영 같은 직접 확인을 글마다 1건 이상 넣습니다.</li>
+            <li><strong>AI가 하지 않는 일</strong>: 수리비 통계 계산(정해진 규칙으로 계산), 제보 승인·인증, 고장 사진 생성. 생성 이미지는 실물 사진처럼 쓰지 않습니다.</li>
+            <li>각 글의 "만든 방법" 줄에 AI가 한 일과 사람이 확인한 날짜를 적습니다.</li>
+          </ul>
+        </section>
+
         <section className={section} aria-labelledby="m-limit">
           <h2 id="m-limit" className="text-xl font-bold text-gray-900 mb-3">한계</h2>
           <p className="text-gray-700">제보는 실제로 수리를 겪은 사람이 남기므로 모든 소유자를 대표하지 않습니다. 그래서 "고장률"이 아니라 "제보된 수리비"로만 표현합니다. 지역·업체·부품 수급에 따라 실제 비용은 달라질 수 있습니다.</p>
         </section>
 
         <p className="text-sm text-gray-500">
-          변경 이력: {METHODOLOGY_VERSION} ({METHODOLOGY_DATE}) 최초 공개. ·{' '}
+          변경 이력: v1.0 (2026-11-18) 최초 공개 · {METHODOLOGY_VERSION} ({METHODOLOGY_DATE}) AI 사용 범위 추가. ·{' '}
           <Link to="/search" className="text-blue-600 underline">제품·증상 검색</Link> ·{' '}
           <Link to="/submit-repair" className="text-blue-600 underline">수리비 제보하기</Link>
         </p>

@@ -51,6 +51,7 @@ export function frontFields(front) {
 
 function inline(text, ctx) {
   let s = esc(text);
+  s = s.replace(/\[\[직접 확인:([^\]]*)\]\]/g, '<span class="human-slot">직접 확인 필요:$1</span>');
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, target) => {
     const href = resolveSite(target.replace(/&amp;/g, '&'), ctx);
@@ -79,10 +80,10 @@ export function mdToHtml(md, ctx) {
       const [, alt, src] = m;
       if (src.startsWith('photo:')) {
         ctx.photos.push(alt);
-        html.push(`<div class="photo-slot">📷 직접 촬영 사진 자리 — ${esc(alt)}<br><small>${esc(src.slice(6))}</small></div>`);
+        html.push(`<div class="photo-slot">직접 촬영 사진 자리 — ${esc(alt)}<br><small>${esc(src.slice(6))}</small></div>`);
       } else {
         ctx.images.push(src);
-        html.push(`<figure><img src="${esc(path.basename(src))}" alt="${esc(alt)}"><figcaption>${esc(alt)}</figcaption></figure>`);
+        html.push(`<figure><img src="${esc(`${ctx.slug}-${path.basename(src)}`)}" alt="${esc(alt)}"><figcaption>${esc(alt)}</figcaption></figure>`);
       }
       i++; continue;
     }
@@ -137,7 +138,10 @@ export function exportPost(text, { origin, preview = false, today, cards = [] } 
   if (!origin) throw new Error('SITE_URL이 없습니다. 도메인을 확정한 뒤 SITE_URL=https://... 로 실행하세요 (검토용은 --preview).');
   if (!preview && /\.example(\/|$)/.test(new URL(origin).host + '/')) throw new Error(`임시 도메인(${origin})으로는 발행본을 만들 수 없습니다. --preview로 검토만 하세요.`);
   const check = checkDraft(text, { today });
-  if (!check.ok) throw new Error(`신뢰성 점검 실패:\n${check.problems.map((p) => `  - [${p.type}] ${p.detail}`).join('\n')}`);
+  // A preview may still have the editor's in-person slots open; everything machine-checkable must pass.
+  const HUMAN_ONLY = new Set(['human_slot', 'no_firsthand']);
+  if (preview) check.problems = check.problems.filter((p) => !HUMAN_ONLY.has(p.type));
+  if (check.problems.length) throw new Error(`신뢰성 점검 실패:\n${check.problems.map((p) => `  - [${p.type}] ${p.detail}`).join('\n')}`);
 
   const { front, body, claims } = parseDraft(text);
   const f = frontFields(front);
@@ -178,6 +182,7 @@ export function renderPage(post, { preview }) {
   #post blockquote { margin:1rem 0; padding:12px 14px; border-left:4px solid var(--accent); background:#eff6ff; }
   #post figure { margin:1rem 0; } #post img { max-width:100%; border-radius:8px; }
   #post figcaption { color:var(--muted); font-size:.85rem; }
+  .human-slot { display:block; background:#fef2f2; border:2px dashed #e11d48; color:#9f1239; padding:10px 12px; border-radius:8px; }
   .photo-slot { border:2px dashed #d1d5db; border-radius:8px; padding:16px; color:var(--muted); margin:1rem 0; }
   a { color:var(--accent); } code { background:#f3f4f6; padding:1px 4px; border-radius:4px; }
   .muted { color:var(--muted); font-size:.9rem; }
@@ -198,7 +203,7 @@ ${post.content}
   <ol>
     <li>위 본문을 선택해 복사 → 스마트에디터 본문에 붙여넣기. 깨진 표는 에디터의 표 기능으로 다시 만듭니다.</li>
     <li>파란 박스(인용) 문단은 에디터의 인용구로 바꿉니다. 소제목은 굵게·크게 또는 소제목 스타일로 맞춥니다.</li>
-    <li>카드 이미지는 같은 폴더의 PNG를 표시된 자리에 업로드합니다. 첫 카드를 대표 이미지로 지정합니다.</li>
+    <li>이미지는 같은 폴더의 PNG(원문 캡처)를 표시된 자리에 업로드합니다. 첫 캡처나 직접 찍은 사진을 대표 이미지로 지정합니다.</li>
     <li>점선 박스는 직접 찍은 사진 자리입니다. 없으면 박스를 지우고 발행합니다(개인정보는 가립니다).</li>
     <li>태그를 입력하고, 발행 설정에서 예약 발행 시간을 지정합니다.</li>
   </ol>
@@ -226,7 +231,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       for (const img of post.images) {
         const src = path.resolve(path.dirname(file), img);
         if (!fs.existsSync(src)) throw new Error(`이미지가 없습니다: ${src} (node scripts/render-cards.mjs 로 생성)`);
-        fs.copyFileSync(src, path.join(outDir, path.basename(img)));
+        fs.copyFileSync(src, path.join(outDir, `${post.slug}-${path.basename(img)}`)); // slug prefix: two posts may capture the same source page
       }
       const out = path.join(outDir, `${post.slug}.html`);
       fs.writeFileSync(out, renderPage(post, { preview }));

@@ -5,7 +5,13 @@
 // dates older than --max-age days are flagged, banned hype/uncertain phrases fail the check, and a paragraph that
 // mixes 합니다체 and 해요체 endings fails (EDITORIAL_STANDARDS §5: one register per block).
 // A ledger source may also be `site:/path` — FixAtlas's own public page (e.g. site:/methodology for the
-// 3/5/10-report rules); scripts/naver-export.mjs resolves it to the real origin at export time.
+// 3/5/10-report rules); scripts/naver-export.mjs resolves it to the real origin at export time — or
+// `직접:<what/when>` for something the editor did in person (a phone call, a photo, a visit).
+// Optional 5th ledger field = a verbatim phrase from the source (checked live by scripts/verify-sources.mjs).
+//
+// Reader-trust checks (EDITORIAL_STANDARDS §9): template/AI-cliché phrases, unfilled [[직접 확인: ...]] slots,
+// a missing `firsthand:` record (every post needs at least one thing the editor did in person), and — when several
+// posts are checked together — sentences or headings copied across posts.
 //
 // Ledger format (front matter):
 //   claims:
@@ -24,6 +30,18 @@ export const BANNED = [
   { re: /최저가\s*보장|무조건|100%\s*(보장|해결)|확실히\s*(싸|저렴)|업계\s*최저/, why: '과장 표현(표시광고 위험)' },
   { re: /것\s*같(습니다|아요|다)/, why: '추측 표현 — 출처를 달거나 "표본 부족"으로 명시' },
   { re: /\b(TODO|FIXME|TBD)\b|링크 삽입 예정/, why: '미완성 표시가 남아 있음' },
+];
+
+// Phrases that make a post read as template/AI-generated (editorial judgment, see EDITORIAL_STANDARDS §9).
+export const CLICHES = [
+  { re: /한\s?줄\s?(결론|요약)|세\s?줄\s?요약|결론부터\s?말/, why: '요약 라벨 — 첫 문장이 바로 답하게 쓰기' },
+  { re: /총정리|완벽\s?정리|A\s?to\s?Z|꿀팁|필수\s?체크/, why: '양산형 제목·소제목 상투어' },
+  { re: /알아보(겠습니다|ㄹ까요|도록\s?하겠|았습니다)|살펴보(겠습니다|ㄹ까요|았습니다)/, why: '진행 안내 상투어 — 바로 내용으로' },
+  { re: /도움이\s?되(셨|었)(길|기를|으면)|마무리하며|정리해\s?보았|참고하시기\s?바랍니다/, why: '맺음 상투어' },
+  { re: /자주\s?묻는\s?질문|^#+\s*FAQ|^Q[.:]\s/m, why: 'FAQ 블록 — 실제 받은 질문만 본문 소제목으로' },
+  { re: /편집자\s?확인\s?기록/, why: '시스템 라벨 — 확인 과정은 본문 문장과 캡처로 보여 주기' },
+  { re: /→|➡|👉/, why: '화살표 링크 — 문장 안에 링크를 넣기' },
+  { re: /[⚠📷✅❌📌💡🔥✔️]/u, why: '장식 이모지 — "주의:"처럼 글자로' },
 ];
 
 /** Paragraph lines that mix 합니다체 (-니다) and 해요체 (-요) sentence endings. Tables and headings are skipped. */
@@ -49,8 +67,8 @@ export function parseDraft(text) {
   for (const line of front.split('\n')) {
     if (/^claims:\s*$/.test(line)) { inClaims = true; continue; }
     if (inClaims && /^\s+-\s/.test(line)) {
-      const [value, url, date, note] = line.replace(/^\s+-\s/, '').split('|').map((s) => (s ?? '').trim());
-      claims.push({ value, url, date, note: note ?? '' });
+      const [value, url, date, note, quote] = line.replace(/^\s+-\s/, '').split('|').map((s) => (s ?? '').trim());
+      claims.push({ value, url, date, note: note ?? '', quote: quote ?? '' });
     } else if (inClaims && /^\S/.test(line)) inClaims = false;
   }
   return { front, body, claims };
@@ -75,7 +93,7 @@ export function numbersIn(text) {
 }
 
 export function checkDraft(text, { today = new Date().toISOString().slice(0, 10), maxAgeDays = 90 } = {}) {
-  const { body, claims } = parseDraft(text);
+  const { front, body, claims } = parseDraft(text);
   const problems = [];
   if (!claims.length) problems.push({ type: 'no_ledger', detail: 'front matter에 claims: 출처 기록이 없습니다.' });
 
@@ -83,7 +101,7 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
   const ledgerDigits = new Set();
   for (const c of claims) {
     for (const n of numbersIn(c.value)) { ledgerKeys.add(n.key); ledgerDigits.add(n.digits); }
-    if (!/^(https:\/\/|site:\/)/.test(c.url)) problems.push({ type: 'bad_source', detail: `${c.value}: https 출처 URL(또는 site:/ 자체 페이지)이 없습니다.` });
+    if (!/^(https:\/\/|site:\/|직접:)/.test(c.url)) problems.push({ type: 'bad_source', detail: `${c.value}: https 출처 URL(또는 site:/ 자체 페이지, 직접: 직접 확인 기록)이 없습니다.` });
     if (!/^\d{4}-\d{2}-\d{2}$/.test(c.date)) problems.push({ type: 'bad_date', detail: `${c.value}: 확인일(YYYY-MM-DD)이 없습니다.` });
     else {
       const age = (Date.parse(today) - Date.parse(c.date)) / 86400000;
@@ -107,7 +125,32 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
     if (hit) problems.push({ type: 'banned_phrase', detail: `"${hit[0]}" — ${b.why}` });
   }
   for (const line of mixedRegister(body)) problems.push({ type: 'mixed_register', detail: `한 문단에 합니다체·해요체 혼용: "${line}…"` });
+  for (const c of CLICHES) {
+    const hit = c.re.exec(body);
+    if (hit) problems.push({ type: 'cliche', detail: `"${hit[0]}" — ${c.why}` });
+  }
+  for (const m of body.matchAll(/\[\[직접 확인:([^\]]*)\]\]/g)) problems.push({ type: 'human_slot', detail: `직접 확인 칸이 비어 있습니다:${m[1].slice(0, 50)}…` });
+  if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
   return { ok: problems.length === 0, problems, claims: claims.length };
+}
+
+// Source lists, the source heading, the byline and the AI-use line are meant to repeat across posts.
+const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(쓴 사람|작성|만든 방법)\s*[:：]/.test(l.trim());
+
+/** Sentences (20+ chars) or H2/H3 headings that appear in two or more of the given posts. */
+export function crossPostDuplicates(texts) {
+  const seen = new Map();
+  texts.forEach((text, i) => {
+    const { body } = parseDraft(text);
+    const units = new Set();
+    for (const line of body.split('\n')) {
+      if (!line.trim() || isSourceLine(line) || /^\s*\|/.test(line) || /\[\[직접 확인:/.test(line)) continue; // open slots are instructions, not prose
+      if (/^#{2,3}\s/.test(line)) { units.add(line.trim()); continue; }
+      for (const s of line.replace(/^>\s?/, '').split(/(?<=[.!?])\s+/)) if (s.trim().length >= 20) units.add(s.trim());
+    }
+    for (const u of units) seen.set(u, [...(seen.get(u) || []), i]);
+  });
+  return [...seen].filter(([, idx]) => idx.length > 1).map(([unit, idx]) => ({ unit, posts: idx }));
 }
 
 // ---- CLI ----
@@ -117,6 +160,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const files = args.filter((a) => !a.startsWith('--'));
   if (!files.length) { console.error('usage: node scripts/check-claims.mjs <draft.md...> [--today=YYYY-MM-DD] [--max-age=90]'); process.exit(2); }
   let failed = 0;
+  const dups = files.length > 1 ? crossPostDuplicates(files.map((f) => fs.readFileSync(f, 'utf8'))) : [];
+  for (const d of dups) console.log(`DUP   ${d.posts.map((i) => files[i]).join(' & ')}\n   - 글 사이에 같은 문장·소제목: "${d.unit.slice(0, 70)}"`);
+  if (dups.length) failed++;
   for (const f of files) {
     const r = checkDraft(fs.readFileSync(f, 'utf8'), { today: opt.today, maxAgeDays: Number(opt['max-age'] ?? 90) });
     console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${f}  (출처 기록 ${r.claims}건)`);
