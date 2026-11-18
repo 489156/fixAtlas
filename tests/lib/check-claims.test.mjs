@@ -105,3 +105,19 @@ test('near-duplicate sentences across posts are reported (same CTA with a word c
   assert.equal(hits.length, 1);
   assert.deepEqual(hits[0].posts, [0, 1]);
 });
+
+test('affiliate links: disclosure first, definitive wording, no "광고·제휴 없음", ≤2 links, after the first table', async () => {
+  const { affiliateProblems, AFF_DISCLOSURE } = await import('../../scripts/check-claims.mjs');
+  const SC = AFF_DISCLOSURE['shopping-connect'];
+  const link = (u = 'https://naver.me/abc') => `[정품 배터리 보기](aff:shopping-connect:${u})`;
+  const ok = `# 제목\n${SC}\n\n| 배터리 | 가격 |\n|---|---|\n| A | 1원 |\n\n${link()}`;
+  assert.deepEqual(affiliateProblems('affiliate: shopping-connect', ok), []);
+  const types = (front, body) => affiliateProblems(front, body).map((p) => p.detail.slice(0, 12));
+  assert.equal(affiliateProblems('affiliate: none', ok).length, 1, 'conflict-of-interest posts carry no affiliate links');
+  assert.ok(affiliateProblems('affiliate: shopping-connect', ok.replace(SC, '광고·제휴 없음. 수수료 없음')).length >= 2, 'mandatory sentence missing + no-ad claim');
+  assert.ok(types('affiliate: coupang', `# t\n이 글로 구매하면 수수료를 받을 수 있습니다.\n| a |\n|---|\n${link().replace('shopping-connect', 'coupang')}`).some((d) => d.startsWith('고지가 조건부')));
+  assert.ok(types('affiliate: shopping-connect', `# t\n${SC}\n${link()}\n| a |\n|---|`).some((d) => d.startsWith('제휴 링크가 첫')), 'link before the data table');
+  assert.ok(types('affiliate: shopping-connect', `${ok}\n${link()}`).some((d) => d.startsWith('같은 제휴 링크')), 'duplicate product link');
+  assert.ok(types('affiliate: shopping-connect', `${ok}\n${link('http://x.y/1')}\n${link('https://a.b/2')}`).length >= 2, 'non-https and >2 links');
+  assert.deepEqual(affiliateProblems('affiliate: none', '# t\n본문'), [], 'no links → nothing to check');
+});

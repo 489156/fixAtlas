@@ -5,6 +5,8 @@
 // Kinds: summary | checklist (SNS cards) | thumb (blog thumbnail: question + one big verified number + a strip of the
 // official-page capture that shows that number, so the click hook and its evidence travel together).
 // `chip` is per card (e.g. "광고·제휴 없음"); omit it when the post's disclosure may change (affiliate links).
+// thumb options: evidenceY = pixels (at 1080 width) to skip from the top of the capture so the strip starts on a
+// clean line and shows only the highlighted figure; evidenceHeight = strip height (default 270).
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -36,8 +38,8 @@ function thumbHtml(card, specDir) {
   .big{font-size:164px;font-weight:900;letter-spacing:-5px;line-height:1;color:#dc2626}
   .sub{font-size:36px;font-weight:700;color:#111827;margin-top:14px}
   .evlabel{margin-top:auto;background:#111827;color:#fff;font-size:28px;font-weight:700;padding:12px 72px}
-  .ev{position:relative;height:270px;overflow:hidden}
-  .ev img{width:100%;position:absolute;left:0;top:50%;transform:translateY(-50%)}
+  .ev{position:relative;height:${card.evidenceHeight ?? 270}px;overflow:hidden}
+  .ev img{width:100%;position:absolute;left:0;${card.evidenceY != null ? `top:${-card.evidenceY}px` : 'top:50%;transform:translateY(-50%)'}}
 </style></head><body>
   <div class="head"><div class="brand">고장도감 FixAtlas</div><h1>${esc(card.title)}</h1></div>
   <div class="num"><div class="label">${esc(card.label)}</div><div class="big">${esc(card.big)}</div>${card.sub ? `<div class="sub">${esc(card.sub)}</div>` : ''}</div>

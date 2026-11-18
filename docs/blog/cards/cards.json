@@ -180,12 +180,14 @@
   {
     "id": "01-battery-thumb",
     "kind": "thumb",
-    "title": "청소기 배터리,\n보증으로 될까?",
+    "title": "청소기 배터리,\n보증 되나요?",
     "label": "삼성 BESPOKE 제트 220W 정품",
     "big": "160,000원",
     "sub": "LG A9/A9S 129,000원 · 회원할인가 104,000원",
     "evidence": "../evidence/2026-11-battery-price/samsung-220w.png",
-    "evidenceLabel": "공식몰 캡처 2026.11.18"
+    "evidenceLabel": "공식몰 캡처 2026.11.18",
+    "evidenceY": 120,
+    "evidenceHeight": 190
   },
   {
     "id": "02-lg-fee-thumb",
@@ -195,16 +197,20 @@
     "big": "28,000원",
     "sub": "평일 18시 이후·주말·공휴일 33,000원",
     "evidence": "../evidence/2026-11-lg-visit-fee/lg-fee.png",
-    "evidenceLabel": "LG 공식 안내 캡처 2026.11.18"
+    "evidenceLabel": "LG 공식 안내 캡처 2026.11.18",
+    "evidenceY": 140,
+    "evidenceHeight": 245
   },
   {
     "id": "03-defects-thumb",
     "kind": "thumb",
-    "title": "로봇청소기 하자 분쟁,\n회복은 절반뿐",
+    "title": "로봇청소기 하자 분쟁,\n회복은 절반 남짓",
     "label": "하자 피해를 환급·수리로 회복한 비율",
     "big": "56.5%",
     "sub": "계약·거래 피해는 84.1%",
     "evidence": "../evidence/2026-11-robot-defect/kca-recovery.png",
-    "evidenceLabel": "한국소비자원 캡처 2026.11.18"
+    "evidenceLabel": "한국소비자원 2025.8 보도자료 · 2026.11.18 캡처",
+    "evidenceY": 145,
+    "evidenceHeight": 300
   }
 ]

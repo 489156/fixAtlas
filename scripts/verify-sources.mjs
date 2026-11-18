@@ -16,7 +16,8 @@
 // - a note containing "캡처:<name>" saves an outlined capture of that quote to <evidence>/<slug>/<name>.png;
 //   add "클릭:<탭 이름>" when the quote sits in a tab or accordion that is closed by default
 //
-// Pages are loaded with a normal headless Chromium (Playwright) when available, falling back to curl.
+// Pages are loaded with a normal headless Chromium (Playwright) when available, falling back to curl; PDF sources
+// (e.g. law.go.kr annex files) are read with pdftotext.
 // No user-agent spoofing and no attempt to get around blocks: a blocked page is reported as "확인 불가".
 import fs from 'node:fs';
 import path from 'node:path';
@@ -60,12 +61,19 @@ async function loadBrowser() {
 /** Plain HTTP fallback via curl (honours the environment's proxy and CA settings; default curl user agent). */
 async function fetchHtml(url) {
   const { execFile } = await import('node:child_process');
-  return new Promise((resolve, reject) => {
-    execFile('curl', ['-sS', '-L', '-m', '40', '--fail', url], { maxBuffer: 20 * 1024 * 1024 }, (err, stdout, stderr) => {
-      if (err) reject(new Error((stderr || err.message).trim().slice(0, 120)));
-      else resolve(stdout);
-    });
+  const os = await import('node:os');
+  const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')), 'src.bin');
+  await new Promise((resolve, reject) => {
+    execFile('curl', ['-sS', '-L', '-m', '60', '--fail', '-o', tmp, url], (err, _o, stderr) => (err ? reject(new Error((stderr || err.message).trim().slice(0, 120))) : resolve()));
   });
+  const head = fs.readFileSync(tmp).subarray(0, 5).toString('latin1');
+  if (head === '%PDF-') {
+    // official annexes (e.g. law.go.kr 별표) are PDFs: extract text with poppler's pdftotext
+    return new Promise((resolve, reject) => {
+      execFile('pdftotext', [tmp, '-'], { maxBuffer: 50 * 1024 * 1024 }, (err, stdout) => (err ? reject(new Error('PDF text extraction failed (install poppler-utils)')) : resolve({ pdf: stdout })));
+    });
+  }
+  return fs.readFileSync(tmp, 'utf8');
 }
 
 const htmlToText = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ')
@@ -73,7 +81,7 @@ const htmlToText = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S
 
 /** Returns { text, via, page? } — page is kept open for evidence capture when the browser path worked. */
 async function openSource(browser, url) {
-  if (browser) {
+  if (browser && !/flDownload|\.pdf(\?|$)/i.test(url)) {
     const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 }); // phone-width layout at 2x: captures stay legible on phones
     try {
       const res = await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });
@@ -82,6 +90,7 @@ async function openSource(browser, url) {
     await page.close();
   }
   const html = await fetchHtml(url);
+  if (typeof html === 'object' && html.pdf) return { text: html.pdf, via: 'pdf' }; // no page to capture
   if (!browser) return { text: htmlToText(html), via: 'curl' };
   // Render the HTML the server sent to curl so it can still be captured as evidence (styles may be missing).
   const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });

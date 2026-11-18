@@ -44,6 +44,48 @@ export const CLICHES = [
   { re: /[⚠📷✅❌📌💡🔥✔️]/u, why: '장식 이모지 — "주의:"처럼 글자로' },
 ];
 
+// ---- Affiliate links (docs/research/R14, EDITORIAL_STANDARDS §10) ----
+// Syntax in drafts: [텍스트](aff:<program>:<https url>). Front matter: `affiliate: <program>[, <program>]` lists the
+// programs used, or `affiliate: none` for posts where a purchase link would be a conflict of interest (fees, disputes).
+export const AFF_DISCLOSURE = {
+  // Naver Shopping Connect mandates this exact sentence, before the title / at the very top of the body.
+  'shopping-connect': '이 포스팅은 네이버 쇼핑 커넥트 활동의 일환으로, 판매 발생 시 수수료를 제공받습니다.',
+};
+export const AFF_PROGRAMS = ['shopping-connect', 'coupang', 'linkprice'];
+const NO_AD_CLAIM = /광고(나|·|,)?\s*제휴\s*(없이|없음|는\s*없)|제휴\s*없(이|음)/;
+
+export function affiliateProblems(front, body) {
+  const problems = [];
+  const decl = (/^affiliate:[ \t]*(.+)$/m.exec(front) || [])[1]?.trim() ?? '';
+  const links = [...body.matchAll(/\]\(aff:([a-z-]+):([^)\s]+)\)/g)].map((m) => ({ program: m[1], url: m[2], index: m.index }));
+  if (!links.length) return problems;
+  const declared = decl.split(',').map((x) => x.trim()).filter(Boolean);
+  if (decl === 'none' || !declared.length) {
+    problems.push({ type: 'affiliate', detail: `제휴 링크 ${links.length}개가 있지만 front matter affiliate:가 ${decl || '없음'}입니다(이해충돌 글이면 링크를 빼세요).` });
+    return problems;
+  }
+  for (const l of links) {
+    if (!AFF_PROGRAMS.includes(l.program)) problems.push({ type: 'affiliate', detail: `알 수 없는 제휴 프로그램: ${l.program}` });
+    else if (!declared.includes(l.program)) problems.push({ type: 'affiliate', detail: `front matter affiliate:에 ${l.program}이 없습니다.` });
+    if (!/^https:\/\//.test(l.url)) problems.push({ type: 'affiliate', detail: `제휴 링크는 프로그램이 발급한 https 주소 그대로 써야 합니다(단축·리다이렉트 금지): ${l.url.slice(0, 40)}` });
+  }
+  if (links.length > 2) problems.push({ type: 'affiliate', detail: `제휴 링크 ${links.length}개 — 글당 2개까지` });
+  const urls = links.map((l) => l.url);
+  if (new Set(urls).size !== urls.length) problems.push({ type: 'affiliate', detail: '같은 제휴 링크를 한 글에 두 번 넣었습니다(쇼핑 커넥트 금지 행위).' });
+  if (NO_AD_CLAIM.test(body)) problems.push({ type: 'affiliate', detail: '제휴 링크가 있는 글에 "광고·제휴 없음" 류 문장이 남아 있습니다.' });
+  if (/<(script|iframe)\b/i.test(body)) problems.push({ type: 'affiliate', detail: '스크립트·iframe 배너 금지 — 텍스트 링크만(쿠팡 스크립트의 방문 정보 수집 사례, R14).' });
+  // disclosure: the first paragraph after the H1, definitive wording, program-mandated sentence where one exists
+  const first = body.replace(/^#\s.*$/m, '').split('\n').map((l) => l.trim()).find((l) => l && !l.startsWith('!['));
+  const required = declared.map((d) => AFF_DISCLOSURE[d]).filter(Boolean);
+  for (const sentence of required) if (!first?.includes(sentence)) problems.push({ type: 'affiliate', detail: `본문 첫 줄에 필수 고지 문구가 없습니다: "${sentence}"` });
+  if (!first || !/수수료/.test(first)) problems.push({ type: 'affiliate', detail: '본문 첫 줄에 수수료를 받는다는 고지가 없습니다(공정위 지침: 제목 또는 첫 부분).' });
+  else if (/받을\s*수\s*있/.test(first)) problems.push({ type: 'affiliate', detail: '고지가 조건부 표현("받을 수 있음")입니다 — 공정위 지침상 불명확. "받습니다"로 단정하세요.' });
+  // placement: only after the first data table (the reader sees the evidence before any purchase link)
+  const firstTable = body.search(/^\|/m);
+  if (firstTable === -1 || links[0].index < firstTable) problems.push({ type: 'affiliate', detail: '제휴 링크가 첫 데이터 표보다 앞에 있습니다 — 근거(표) 다음에 두세요.' });
+  return problems;
+}
+
 /** Paragraph lines that mix 합니다체 (-니다) and 해요체 (-요) sentence endings. Tables and headings are skipped. */
 export function mixedRegister(body) {
   const out = [];
@@ -129,13 +171,14 @@ export function checkDraft(text, { today = new Date().toISOString().slice(0, 10)
     const hit = c.re.exec(body);
     if (hit) problems.push({ type: 'cliche', detail: `"${hit[0]}" — ${c.why}` });
   }
+  problems.push(...affiliateProblems(front, body));
   for (const m of body.matchAll(/\[\[직접 확인:([^\]]*)\]\]/g)) problems.push({ type: 'human_slot', detail: `직접 확인 칸이 비어 있습니다:${m[1].slice(0, 50)}…` });
   if (!/^firsthand:[ \t]*\S/m.test(front)) problems.push({ type: 'no_firsthand', detail: 'front matter에 firsthand:(편집자가 직접 한 확인: 전화·촬영·방문 등, 날짜 포함)가 없습니다.' });
   return { ok: problems.length === 0, problems, claims: claims.length };
 }
 
-// Source lists, the source heading, the byline and the AI-use line are meant to repeat across posts.
-const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(쓴 사람|작성|만든 방법)\s*[:：]/.test(l.trim());
+// Source lists, the source heading, the byline, the AI-use line and the fixed correction policy line repeat on purpose.
+const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(쓴 사람|작성|만든 방법|바로잡기)\s*[:：]/.test(l.trim());
 
 const grams = (t) => { const x = t.replace(/[\s.,!?·()'"]/g, ''); const g = new Set(); for (let i = 0; i < x.length - 2; i++) g.add(x.slice(i, i + 3)); return g; };
 const jaccard = (a, b) => { let n = 0; for (const g of a) if (b.has(g)) n++; return n / (a.size + b.size - n || 1); };

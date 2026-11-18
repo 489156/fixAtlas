@@ -54,8 +54,12 @@ function inline(text, ctx) {
   s = s.replace(/\[\[직접 확인:([^\]]*)\]\]/g, '<span class="human-slot">직접 확인 필요:$1</span>');
   s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, label, target) => {
-    const href = resolveSite(target.replace(/&amp;/g, '&'), ctx);
-    if (/^https?:/.test(href)) ctx.links.push({ label, href, cta: /\/submit-repair/.test(href) });
+    const raw = target.replace(/&amp;/g, '&');
+    const aff = /^aff:[a-z-]+:(https:\/\/.+)$/.exec(raw);
+    // affiliate URLs are used exactly as the program issued them (no UTM, no redirect: programs ban link tampering)
+    const href = aff ? aff[1] : resolveSite(raw, ctx);
+    if (/^https?:/.test(href)) ctx.links.push({ label, href, cta: /\/submit-repair/.test(href), affiliate: Boolean(aff) });
+    if (aff) return `<a href="${esc(href)}" rel="sponsored nofollow">${label}</a>`;
     return `<a href="${esc(href)}">${label}</a>`;
   });
   return s;
