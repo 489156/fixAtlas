@@ -230,6 +230,8 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
     }
     // only one highlight per capture: clear outlines and phrase boxes left by an earlier capture of the same page
     document.querySelectorAll('[data-fx-overlay]').forEach((x) => x.remove());
+    document.querySelectorAll('[data-fx-target]').forEach((x) => x.removeAttribute('data-fx-target'));
+    target.setAttribute('data-fx-target', '1');
     document.querySelectorAll('[data-fx-outline]').forEach((x) => { x.style.outline = ''; x.removeAttribute('data-fx-outline'); });
     // a block taller than the screen (a court ruling, a long policy paragraph) would be cropped around its middle and
     // the quoted phrase could fall outside the picture: box the phrase itself and centre the capture on it
@@ -246,6 +248,7 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
         let mark = null;
         try { mark = document.createElement('span'); mark.setAttribute('data-fx-outline', '1'); range.surroundContents(mark); } catch { mark = null; }
         const anchor = mark || range.startContainer.parentElement;
+        target.removeAttribute('data-fx-target'); anchor.setAttribute('data-fx-target', '1');
         anchor.scrollIntoView({ block: 'center', behavior: 'instant' });
         if (mark) { mark.style.outline = '3px solid #e11d48'; mark.style.outlineOffset = '3px'; }
         const q = (mark || range).getBoundingClientRect();
@@ -279,6 +282,16 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
   }, [needle, nextImage]);
   await page.waitForTimeout(300); // lazy images
   if (!box) return false;
+  // the page can reflow while it settles (late images, banners collapsing): read the target's position again now,
+  // so the crop follows the highlighted text instead of where it was a moment ago
+  const settled = await page.evaluate(() => {
+    const t = document.querySelector('[data-fx-target]');
+    if (!t) return null;
+    t.scrollIntoView({ block: 'center', behavior: 'instant' });
+    const r = t.getBoundingClientRect();
+    return r.width && r.height ? { x: r.x - (t.matches('span[data-fx-outline]') ? 6 : 0), y: r.y - (t.matches('span[data-fx-outline]') ? 6 : 0), w: r.width + (t.matches('span[data-fx-outline]') ? 12 : 0), h: r.height + (t.matches('span[data-fx-outline]') ? 12 : 0) } : null;
+  }).catch(() => null);
+  if (settled) Object.assign(box, settled);
   // full phone-width crop (reads like a phone screenshot), with a little context above and below the target
   const padY = 70;
   const vp = page.viewportSize();
