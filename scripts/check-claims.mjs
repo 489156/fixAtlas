@@ -92,7 +92,7 @@ export function affiliateProblems(front, body) {
 // Blog posts are written in 격식체 (합쇼체). 해요체 sentence endings fail unless front matter says `register: polite`.
 // Narration of the editor's/AI's own work ("열어 대조했고 캡처해 붙였어요") reads like an assistant reporting to a user;
 // the same facts belong in source lines and image captions (user review 2026-11-18).
-const WORK_REPORT = /대조했|캡처해\s*붙였|열어\s*(확인|대조)|맞춰\s*봤|한\s*줄씩|옮겨\s*봤|정리해\s*봤/;
+const WORK_REPORT = /대조했|캡처해\s*붙였|열어\s*(확인|대조)|맞춰\s*봤|한\s*줄씩|옮겨\s*봤|정리해\s*봤|이번\s*조사|찾지\s*못했|확인하지\s*못했|찾지\s*못해/;
 
 function proseSentences(body) {
   const out = [];
