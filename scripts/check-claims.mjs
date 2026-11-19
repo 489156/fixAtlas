@@ -159,7 +159,7 @@ export function readerProblems(front, body) {
 }
 
 // Severity. Heuristics that can misfire report as warnings (printed, not failing) unless --strict.
-export const WARN_TYPES = new Set(['repeated_ending']);
+export const WARN_TYPES = new Set(['repeated_ending', 'guide_nonaffiliate']);
 /** A cited case counts only with a checkable source (web page or our own site) and a verbatim quote verify-sources can find. */
 export const hasCase = (claims) => claims.some((c) => /^사례:/.test(c.note || '') && /^(https:\/\/|site:\/)/.test(c.url) && Boolean((c.quote || '').trim()));
 // Reading pages or captures, comparing, searching, dating a check, writing prose: computer work, never a person slot.
@@ -168,6 +168,68 @@ export const levelOf = (p) => (WARN_TYPES.has(p.type) ? 'warn' : 'fail');
 
 /** Fold for loose Korean matching: no spaces, spelling variants unified (also used by demand-research). */
 export const foldKo = (x) => x.toLowerCase().replace(/\s+/g, '').replace(/안(됨|돼요|돼|될|되는|되나요|되면)/g, '안되').replace(/환급/g, '환불');
+
+// ---- Situational repair guides (front matter kind: guide) — EDITORIAL_STANDARDS §12 ----
+// Traffic light (tier): green = the reader may do it; yellow = may do it with conditions (renter consent, shut-off,
+// building rules); red = a registered/licensed professional's job, so the guide gives reasons and costs, never steps.
+export const TIERS = ['green', 'yellow', 'red'];
+
+/** Body split by ##/### headings: [{ heading, lines }]; the part before the first heading has heading ''. */
+export function sectionsOf(body) {
+  const out = [{ heading: '', lines: [] }];
+  for (const line of body.split('\n')) {
+    const m = /^#{2,3}\s+(.*)$/.exec(line.trim());
+    if (m) out.push({ heading: m[1].trim(), lines: [] });
+    else out[out.length - 1].lines.push(line);
+  }
+  return out;
+}
+
+export function guideProblems(front, body) {
+  const f = (k) => (new RegExp(`^${k}:[ \\t]*(.*)$`, 'm').exec(front) || [])[1]?.trim() ?? '';
+  if (f('kind') !== 'guide') return [];
+  const problems = [];
+  const tier = f('tier');
+  if (!TIERS.includes(tier)) problems.push({ type: 'guide_tier', detail: 'tier:가 green·yellow·red 중 하나가 아닙니다(신호등 등급, EDITORIAL_STANDARDS §12).' });
+  const basis = f('legal_basis');
+  if ((tier === 'yellow' || tier === 'red') && !(/https:\/\/\S+/.test(basis) && /\d{4}-\d{2}-\d{2}/.test(basis))) {
+    problems.push({ type: 'guide_legal_basis', detail: '노랑·빨강 가이드는 legal_basis:에 근거 조문·원문 주소(https)·확인일(YYYY-MM-DD)이 있어야 합니다.' });
+  }
+  const secs = sectionsOf(body);
+  // first-screen summary: difficulty, time, DIY cost, technician cost — within the first 25 non-empty lines
+  const top = body.split('\n').filter((l) => l.trim()).slice(0, 25).join('\n');
+  if (!(/난이도/.test(top) && /시간/.test(top) && /기사/.test(top))) {
+    problems.push({ type: 'guide_summary', detail: '첫 화면 요약칸(난이도·시간·직접 할 때 비용·기사 비용·등급)이 본문 앞부분에 없습니다.' });
+  }
+  if (!secs.some((x) => /멈추|멈춤|기사를 불러야|맡겨야/.test(x.heading))) {
+    problems.push({ type: 'guide_stop', detail: '멈춤 조건 절(제목에 "멈추"·"기사를 불러야" 등)이 없습니다.' });
+  }
+  const tools = secs.find((x) => /준비물/.test(x.heading));
+  if (tier !== 'red' && !tools) problems.push({ type: 'guide_tools', detail: '준비물 절(공구 용도·규격, 살 것·빌릴 것·다이소로 충분한 것)이 없습니다.' });
+  const cost = secs.find((x) => /비용|얼마/.test(x.heading) && x.lines.some((l) => /^\s*\|/.test(l)));
+  const table = cost ? cost.lines.filter((l) => /^\s*\|/.test(l)).join('\n') : '';
+  if (!cost || !/직접/.test(table) || !/기사|업체|맡기/.test(table)) {
+    problems.push({ type: 'guide_cost', detail: '직접 할 때와 기사에게 맡길 때를 나란히 둔 비용표가 없습니다(제목에 "비용"·"얼마"가 든 절의 표).' });
+  } else if (tier !== 'red' && !/공구/.test(table)) {
+    problems.push({ type: 'guide_cost', detail: '비용표에 공구 구입비 줄이 없습니다 — 공구를 새로 사면 기사보다 비싸지는 경우까지 보여 주세요.' });
+  }
+  if (tier === 'red') {
+    for (const x of secs) {
+      if (/신청|절차|문의|분쟁|합의|요청/.test(x.heading)) continue; // "how to request a pro" lists are fine
+      if (x.lines.some((l) => /^\s*\d+\.\s/.test(l))) {
+        problems.push({ type: 'guide_red_steps', detail: `빨강 등급 글에 번호 단계가 있습니다("${x.heading || '도입부'}") — 방법은 쓰지 않고 이유와 비용만 씁니다.` });
+      }
+    }
+    if (/가스/.test(body) && !/공급사/.test(body)) problems.push({ type: 'guide_gas', detail: '가스 작업 글에는 "가스 공급사(도시가스사)에 신청" 문장이 있어야 합니다.' });
+  }
+  const aff = (body.match(/\]\(aff:/g) || []).length;
+  if (aff) {
+    const toolText = tools ? tools.lines.join('\n') : '';
+    if ((toolText.match(/\]\(aff:/g) || []).length < aff) problems.push({ type: 'guide_affiliate_place', detail: '제휴 링크는 준비물 절 안에만 둡니다.' });
+    if (!/다이소|대여|빌리|집에 있는/.test(toolText)) problems.push({ type: 'guide_nonaffiliate', detail: '제휴 링크가 있는 준비물 절에 비제휴 경로(다이소·대여·집에 있는 공구)가 없습니다.' });
+  }
+  return problems;
+}
 
 export function styleProblems(body) {
   const problems = [];
@@ -302,6 +364,7 @@ export function checkDraft(text, { today = todayKST(), maxAgeDays = 90, strict =
   problems.push(...registerProblems(front, body));
   problems.push(...readerProblems(front, body));
   problems.push(...styleProblems(body));
+  problems.push(...guideProblems(front, body));
   for (const m of body.matchAll(SLOT_RE)) {
     const owner = slotOwner(m[1]);
     if (COMPUTER_TASK.test(m[2])) problems.push({ type: 'ai_task_in_slot', detail: `사람 칸에 컴퓨터 작업이 들어 있습니다 — AI가 수행하고 결과를 본문에 쓰세요:${m[2].slice(0, 50)}…` });

@@ -125,3 +125,36 @@ test('blog-status: unread image rows become an [AI] task; one shared decision is
   const table = renderTable([a, b], '2026-11-18');
   assert.equal(table.match(/\[판단\] a, b: 바이라인 정하기/g).length, 1);
 });
+
+test('repair guides: tier, legal basis, summary, stop, tools, DIY-vs-pro cost table, red steps, affiliate placement', async () => {
+  const { guideProblems } = await import('../../scripts/check-claims.mjs');
+  const front = (extra) => `slug: g\nkind: guide\n${extra}`;
+  const good = `| 난이도 | 시간 | 직접 하면 | 기사에게 맡기면 |\n|---|---|---|---|\n| 쉬움 | 30분 | 3만 원 | 8만 원 |
+## 이럴 땐 멈추고 기사를 부르십시오
+- 밸브가 잠기지 않을 때
+## 준비물
+| 준비물 | 구하는 방법 |
+|---|---|
+| 멍키 스패너 | 다이소 |
+## 어떻게 바꿉니까?
+1. 밸브를 잠급니다.
+## 직접 하면 얼마, 맡기면 얼마입니까?
+| 항목 | 직접 | 기사 |
+|---|---|---|
+| 공구 | 0원 | — |`;
+  const types = (fm, body) => guideProblems(fm, body).map((p) => p.type);
+  assert.deepEqual(types(front('tier: green'), good), []);
+  assert.deepEqual(guideProblems('slug: x\n', good), [], 'non-guide posts are untouched');
+  assert.deepEqual(types(front('tier: blue'), good), ['guide_tier']);
+  assert.deepEqual(types(front('tier: yellow\nlegal_basis: 민법 제615조'), good), ['guide_legal_basis']);
+  assert.deepEqual(types(front('tier: yellow\nlegal_basis: 민법 제615조 | https://www.law.go.kr/x | 2026-11-19'), good), []);
+  assert.ok(types(front('tier: green'), good.replace('## 이럴 땐 멈추고 기사를 부르십시오', '## 주의')).includes('guide_stop'));
+  assert.ok(types(front('tier: green'), good.replace('| 공구 | 0원 | — |', '| 부품 | 3만 원 | 8만 원 |')).includes('guide_cost'), 'tool purchase row is required');
+  assert.ok(types(front('tier: green'), good.replace(/\| 난이도[\s\S]*?\| 쉬움 \| 30분 \| 3만 원 \| 8만 원 \|\n/, '')).includes('guide_summary'));
+  const red = types(front('tier: red\nlegal_basis: 전기공사업법 제3조 | https://www.law.go.kr/y | 2026-11-19'), good);
+  assert.ok(red.includes('guide_red_steps'), 'a red guide must not teach steps');
+  const withAff = good.replace('1. 밸브를 잠급니다.', '1. 밸브를 잠급니다. [스패너](aff:coupang:https://link.coupang.com/a/x)');
+  assert.ok(types(front('tier: green'), withAff).includes('guide_affiliate_place'));
+  const inTools = good.replace('| 멍키 스패너 | 다이소 |', '| [멍키 스패너](aff:coupang:https://link.coupang.com/a/x) | 쿠팡 |');
+  assert.deepEqual(types(front('tier: green'), inTools), ['guide_nonaffiliate']);
+});
