@@ -143,8 +143,9 @@ export function refreshLedgerDates(text, matchedKeys, today, allMatched) {
 export const claimKey = (c) => `${c.value}|${c.url}|${c.quote || ''}`;
 
 /** Capture quality gate from pixel statistics. Pure; unit-tested. */
-export function captureQA({ mean, redRatio, width, clipped = false }) {
+export function captureQA({ mean, redRatio, width, clipped = false, broken = false }) {
   const reasons = [];
+  if (broken) reasons.push('이미지가 로드되지 않았습니다(깨진 이미지 아이콘) — 그래프·표 수치가 보이지 않음');
   if (clipped) reasons.push('대상이 화면 폭을 넘어 일부가 잘렸습니다 — 표·그래프의 오른쪽 숫자가 빠졌을 수 있음');
   if (mean < 90) reasons.push(`화면이 어둡습니다(평균 밝기 ${Math.round(mean)}) — 팝업 덮개가 찍혔을 수 있음`);
   if (redRatio < 0.0015) reasons.push('강조 테두리가 보이지 않습니다 — 엉뚱한 영역이 찍혔을 수 있음');
@@ -270,7 +271,9 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
       target.style.outline = ''; target.removeAttribute('data-fx-outline');
       continue; // hidden or covered: try the next candidate
     }
-    return { x: r.x, y: r.y, w: r.width, h: r.height, clipped: r.left < -1 || r.right > innerWidth + 1 };
+    // an image that failed to load renders as a broken-image icon inside a perfectly bright, outlined box
+    const broken = target.tagName === 'IMG' && !(target.complete && target.naturalWidth > 0);
+    return { x: r.x, y: r.y, w: r.width, h: r.height, clipped: r.left < -1 || r.right > innerWidth + 1, broken };
     }
     return null;
   }, [needle, nextImage]);
@@ -292,7 +295,7 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   await framed.screenshot({ path: outFile, fullPage: true });
   await framed.close();
-  return { clipped: box.clipped };
+  return { clipped: box.clipped, broken: box.broken };
 }
 
 // ---- CLI ----
@@ -346,11 +349,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
           const tab = (/클릭:(\S+)/.exec(r.note) || [])[1];
           if (tab) await src.page.getByText(tab, { exact: true }).filter({ visible: true }).first().click({ timeout: 8000 }).then(() => src.page.waitForTimeout(800)).catch(() => {});
           let ok = needle && await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
-          let qa = ok ? captureQA({ ...(await imageStats(browser, out)), clipped: ok.clipped }) : null;
+          let qa = ok ? captureQA({ ...(await imageStats(browser, out)), clipped: ok.clipped, broken: ok.broken }) : null;
           if (ok && !qa.ok) { // flaky pages (late pop-ups, lazy images): one retry before failing
             await src.page.waitForTimeout(1500);
             ok = await captureEvidence(browser, src.page, url, needle, out, Boolean(nextImg));
-            qa = ok ? captureQA({ ...(await imageStats(browser, out)), clipped: ok.clipped }) : null;
+            qa = ok ? captureQA({ ...(await imageStats(browser, out)), clipped: ok.clipped, broken: ok.broken }) : null;
           }
           if (!ok) { console.log(`  캡처 실패  ${name} ("${needle}"를 화면에서 찾지 못함)`); qaFails.push(name); }
           else if (!qa.ok) { console.log(`  캡처 품질 불합격  ${out}\n     - ${qa.reasons.join('\n     - ')}`); qaFails.push(name); }

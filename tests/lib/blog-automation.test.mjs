@@ -62,6 +62,7 @@ test('capture QA rejects dark, unhighlighted or low-resolution captures', () => 
   assert.equal(captureQA({ mean: 200, redRatio: 0, width: 860 }).ok, false);
   assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 430 }).ok, false);
   assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 860, clipped: true }).ok, false, 'a table cut off at the right edge fails');
+  assert.equal(captureQA({ mean: 200, redRatio: 0.01, width: 860, broken: true }).ok, false, 'a chart image that never loaded fails');
 });
 
 test('demand research: gap analysis, tag suggestions, Naver signature format', () => {

@@ -11,7 +11,7 @@ scale: 구글 자동완성(2026-11-19)에서 '반다리 세면대'에 '수전 �
 queries: 반다리 세면대 수전 교체, 세면대 수전 교체 비용, 세면대 수전 교체 방법, 세면대 수전 교체 셀프, 세면대 수전 교체 공구, 세면대 수전 교체 집주인, 세면대 폽업 교체, 세면대 팝업 교체, 세면대 팝업 고장, 세면대 팝업 안올라옴, 세면대 수전 폽업 교체, 세면대 원홀 투홀, 반다리 세면대 분리, 세면대 폽업 교체 비용
 tier: yellow
 tier_note: 소유자는 초록이지만 이 글의 독자에 세입자가 포함되므로 노랑. 세입자는 집주인에게 먼저 알리고 동의를 받으며 떼어 낸 부품을 보관한다
-legal_basis: 민법 제623조·제626조·제634조·제654조(제615조 준용) | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415 | 2026-11-19 확인; 수도법 제14조 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284311 | 2026-11-19 확인; 대법원 2012. 6. 14. 선고 2010다89876 판결 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-19 확인
+legal_basis: 민법 제623조·제626조·제634조·제654조(제615조 준용) | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-19 확인; 수도법 제14조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-19 확인; 대법원 2012. 6. 14. 선고 2010다89876 판결 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-19 확인
 conditions: 세입자는 교체 전에 집주인에게 알리고 동의를 받으며 떼어 낸 수전·폽업을 보관한다. 앵글밸브가 잠기지 않으면 그 자리에서 멈춘다. 공동주택은 관리사무소의 단수·공사 안내를 따른다. 설치 1년 안의 제품은 제조사 AS를 먼저 받는다
 tools: 살 것: 새 세면 수전(원홀·4인치 구분), 폽업·트랩 부속(벽배수·바닥배수 구분) / 빌릴 것: 세면대 렌치(손이 닿지 않을 때) / 집에 있거나 다이소로 충분한 것: 멍키스패너, 손전등, 대야, 수건
 difficulty: 보통
@@ -59,14 +59,14 @@ claims:
   - 높이 조정 | https://solutions.moen.com/FAQ's/FAQ's-Troubleshooting/General/Pop-up_drain_assembly_not_closing_or_opening_properly | 2026-11-19 | 조정 순서 | Place the drain plug in the full open position, then loosen the lift rod strap screw and adjust the lift rod height
   - 반다리세면기 PB-70H 높이 표기 | https://image2.hanssem.com/company/doc/scm/scm_catalog_BASTEM_250519.pdf | 2026-11-19 | 한샘 BATHEM 카탈로그 반다리세면기 | W520 × D430 × H500
   - 긴다리세면기 PB-70 높이 표기 | https://image2.hanssem.com/company/doc/scm/scm_catalog_BASTEM_250519.pdf | 2026-11-19 | 한샘 BATHEM 카탈로그 긴다리세면기 | W520 × D430 × H800
-  - 수도법 제14조 인증 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284311 | 2026-11-19 | 수도용 자재·제품 위생안전기준 인증 | 물에 접촉하는 수도용 자재나 제품을 제조 또는 수입하려는 자는
-  - 수도법 제14조 판매 금지 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284311 | 2026-11-19 | 미인증 제품 공급·판매 금지 | 판매하여서는 아니 된다
-  - 수도법 제14조 표시 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284311 | 2026-11-19 | 인증 표시 의무 | 인증을 받은 사실을 수도용 자재나 제품 및 그 포장에 표시하여야 한다
-  - 민법 제623조 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415 | 2026-11-19 | 임대인의 의무 | 그 사용, 수익에 필요한 상태를 유지하게 할 의무를 부담한다
-  - 민법 제634조 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415 | 2026-11-19 | 임차인의 통지의무 | 임차인은 지체없이 임대인에게 이를 통지하여야 한다
-  - 민법 제626조 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415 | 2026-11-19 | 필요비 상환 | 임차물의 보존에 관한 필요비를 지출한 때에는 임대인에 대하여 그 상환을 청구할 수 있다
-  - 민법 제615조·제654조 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415 | 2026-11-19 | 원상회복(임대차 준용) | 차주가 차용물을 반환하는 때에는 이를 원상에 회복하여야 한다
-  - 민법 제654조 | https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=284415 | 2026-11-19 | 준용 규정 | 제615조 내지 제617조의 규정은 임대차에 이를 준용한다
+  - 수도법 제14조 인증 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-19 | 수도용 자재·제품 위생안전기준 인증 | 물에 접촉하는 수도용 자재나 제품을 제조 또는 수입하려는 자는
+  - 수도법 제14조 판매 금지 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-19 | 미인증 제품 공급·판매 금지 | 판매하여서는 아니 된다
+  - 수도법 제14조 표시 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-19 | 인증 표시 의무 | 인증을 받은 사실을 수도용 자재나 제품 및 그 포장에 표시하여야 한다
+  - 민법 제623조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-19 | 임대인의 의무 | 그 사용, 수익에 필요한 상태를 유지하게 할 의무를 부담한다
+  - 민법 제634조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-19 | 임차인의 통지의무 | 임차인은 지체없이 임대인에게 이를 통지하여야 한다
+  - 민법 제626조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-19 | 필요비 상환 | 임차물의 보존에 관한 필요비를 지출한 때에는 임대인에 대하여 그 상환을 청구할 수 있다
+  - 민법 제615조·제654조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-19 | 원상회복(임대차 준용) | 차주가 차용물을 반환하는 때에는 이를 원상에 회복하여야 한다
+  - 민법 제654조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-19 | 준용 규정 | 제615조 내지 제617조의 규정은 임대차에 이를 준용한다
   - 2010다89876 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-19 | 사례: 대법원 2012-06-14 선고 판결(가구전시장 바닥 결로, 임대인 수선의무 — 수전과 같은 수선의무 기준) | 별비용을 들이지 아니하고도 손쉽게 고칠 수 있을 정도의 사소한 것
   - 원심 파기 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-19 | 사례: 같은 판결의 결론 | 원심판결의 본소에 관한 원고(반소피고) 패소 부분을 파기하고
   - 6년 / 16년 | https://www.mt.co.kr/estate/2026/06/27/2026062414343360002 | 2026-11-19 | 사례: 머니투데이 2026-06-27 보도, 서울 아파트 전세 세입자(익명)의 원상회복 수리비 다툼 — 수전과 같은 원상회복 기준이 적용된 사례 | 16년 된 자재의 자연스러운 노후화라고 주장했지만
