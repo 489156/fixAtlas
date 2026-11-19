@@ -1,6 +1,6 @@
 {
  "slug": "2026-11-lg-visit-fee",
- "fetched_at": "2026-11-18",
+ "fetched_at": "2026-11-19",
  "source": "google-autocomplete (hl=ko, gl=kr)",
  "seeds": [
   "lg 출장비",
@@ -49,5 +49,39 @@
    "lg 인터넷 기사 출장비",
    "lg에어컨 기사 출장비"
   ]
+ },
+ "naver": {
+  "volumes_fetched_at": "2026-11-19",
+  "volumes": {
+   "lg냉장고출장비": {
+    "pc": "< 10",
+    "mobile": 10
+   },
+   "lg세탁기출장비": {
+    "pc": "< 10",
+    "mobile": 10
+   },
+   "lg에어컨출장비": {
+    "pc": "< 10",
+    "mobile": "< 10"
+   },
+   "lg전자출장비": {
+    "pc": 10,
+    "mobile": 20
+   },
+   "lg출장비": {
+    "pc": "< 10",
+    "mobile": "< 10"
+   },
+   "lg기사출장비": {
+    "pc": "< 10",
+    "mobile": "< 10"
+   },
+   "lg서비스센터출장비": {
+    "pc": 10,
+    "mobile": 40
+   }
+  },
+  "related": []
  }
 }

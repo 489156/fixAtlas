@@ -120,10 +120,11 @@ async function naverOpenApi(keywords) {
   return { trends: mergeTrends(batches), blogTotal };
 }
 
-async function naverVolumes(keywords) {
+export async function naverVolumes(keywords) {
   const { NAVER_SEARCHAD_API_KEY: key, NAVER_SEARCHAD_SECRET: secret, NAVER_SEARCHAD_CUSTOMER_ID: customer } = process.env;
   if (!key || !secret || !customer) return null;
   const out = {};
+  const related = new Map(); // other keywords the tool suggests, with their own volumes — candidates for titles/tags
   for (let i = 0; i < keywords.length; i += 5) { // the keyword tool accepts up to 5 hint keywords per call
     const batch = keywords.slice(i, i + 5).map((k) => k.replace(/\s+/g, ''));
     const uri = '/keywordstool';
@@ -131,8 +132,16 @@ async function naverVolumes(keywords) {
     const data = await curlJson(`https://api.searchad.naver.com${uri}?hintKeywords=${encodeURIComponent(batch.join(','))}&showDetail=1`, [
       `X-Timestamp: ${ts}`, `X-API-KEY: ${key}`, `X-Customer: ${customer}`, `X-Signature: ${naverSignature(secret, ts, 'GET', uri)}`,
     ]);
-    for (const row of data?.keywordList || []) if (batch.includes(row.relKeyword)) out[row.relKeyword] = { pc: row.monthlyPcQcCnt, mobile: row.monthlyMobileQcCnt };
+    // the API echoes keywords with Latin letters upper-cased ("lg출장비" → "LG출장비"): match case-insensitively
+    const want = new Map(batch.map((k) => [k.toUpperCase(), k]));
+    for (const row of data?.keywordList || []) {
+      const k = want.get(String(row.relKeyword).toUpperCase());
+      if (k) out[k] = { pc: row.monthlyPcQcCnt, mobile: row.monthlyMobileQcCnt };
+      else related.set(row.relKeyword, { pc: row.monthlyPcQcCnt, mobile: row.monthlyMobileQcCnt });
+    }
   }
+  const n = (v) => (typeof v === 'number' ? v : 5); // "< 10" → 5
+  out._related = [...related].map(([k, v]) => ({ k, ...v, total: n(v.pc) + n(v.mobile) })).sort((a, b) => b.total - a.total).slice(0, 30);
   return out;
 }
 
@@ -192,8 +201,14 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       saved.naver = { ...(saved.naver || {}), volumes_fetched_at: new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date()), volumes };
       fs.writeFileSync(path.join(opt.out || 'docs/research/data/suggest', `${slug}.json`), JSON.stringify(saved, null, 1) + '\n');
     }
+    const rel = volumes._related || []; delete volumes._related;
+    if (!opt.from) {
+      saved.naver.volumes = volumes; saved.naver.related = rel;
+      fs.writeFileSync(path.join(opt.out || 'docs/research/data/suggest', `${slug}.json`), JSON.stringify(saved, null, 1) + '\n');
+    }
     console.log('\n네이버 월간 검색량 (PC / 모바일):');
     for (const [k, v] of Object.entries(volumes)) console.log(`  - ${k}: ${v.pc} / ${v.mobile}`);
+    if (rel.length) console.log(`\n연관 키워드 상위 10 (월간 PC+모바일): ${rel.slice(0, 10).map((r) => `${r.k} ${r.total}`).join(', ')}`);
     if (opt['write-scale'] && Object.keys(volumes).length) {
       const date = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date());
       const note = `네이버 월간 검색량(PC/모바일, ${date}): ${Object.entries(volumes).map(([k, v]) => `${k} ${v.pc}/${v.mobile}`).join(', ')}`;
