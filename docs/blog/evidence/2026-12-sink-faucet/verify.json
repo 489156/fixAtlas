@@ -1,11 +1,9 @@
 {
-  "checked_at": "2026-11-19 13:20",
+  "checked_at": "2026-11-19 14:06",
   "date": "2026-11-19",
-  "web_rows": 38,
-  "matched": 33,
+  "web_rows": 39,
+  "matched": 39,
   "image_rows": 0,
-  "problems": 5,
-  "capture_failures": [
-    "ruling"
-  ]
+  "problems": 0,
+  "capture_failures": []
 }

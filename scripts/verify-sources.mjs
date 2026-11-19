@@ -180,6 +180,9 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
   await page.evaluate(() => Promise.all([...document.images].map((i) => (i.complete ? 0
     : new Promise((r) => { i.addEventListener('load', r); i.addEventListener('error', r); setTimeout(r, 8000); }))))).catch(() => {});
   const box = await page.evaluate(([needle, nextImage]) => {
+    // sites with CSS scroll-behavior: smooth animate scrollIntoView, so positions read right after it are stale
+    document.documentElement.style.scrollBehavior = 'auto';
+    if (document.body) document.body.style.scrollBehavior = 'auto';
     const all = [...document.querySelectorAll('body *')].filter((el) => {
       const r = el.getBoundingClientRect();
       return r.width > 0 && r.height > 0 && (el.textContent || '').replace(/\s+/g, ' ').includes(needle);
@@ -196,7 +199,7 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
       if (!img) continue;
       target = img;
     }
-    target.scrollIntoView({ block: 'center' });
+    target.scrollIntoView({ block: 'center', behavior: 'instant' });
     // wide tables/charts overflow a phone viewport and get cut off on the right: shrink the target to the screen width,
     // then scroll it into view horizontally. Anything still outside the viewport is reported as clipped.
     const vw = innerWidth - 16;
@@ -215,7 +218,7 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
       }
       r0 = target.getBoundingClientRect();
       if (r0.width > vw) target.style.zoom = String(vw / r0.width);
-      target.scrollIntoView({ block: 'center', inline: 'start' });
+      target.scrollIntoView({ block: 'center', inline: 'start', behavior: 'instant' });
       r0 = target.getBoundingClientRect();
       if (r0.left < 0 || r0.right > innerWidth) window.scrollBy(r0.left - 8, 0);
     }
@@ -224,8 +227,39 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
       const pos = getComputedStyle(x).position;
       if (pos === 'fixed' || pos === 'sticky') x.style.visibility = 'hidden';
     }
-    // only one highlight per capture: clear outlines left by an earlier capture of the same page
+    // only one highlight per capture: clear outlines and phrase boxes left by an earlier capture of the same page
+    document.querySelectorAll('[data-fx-overlay]').forEach((x) => x.remove());
     document.querySelectorAll('[data-fx-outline]').forEach((x) => { x.style.outline = ''; x.removeAttribute('data-fx-outline'); });
+    // a block taller than the screen (a court ruling, a long policy paragraph) would be cropped around its middle and
+    // the quoted phrase could fall outside the picture: box the phrase itself and centre the capture on it
+    if (!nextImage && target.getBoundingClientRect().height > innerHeight * 0.6) {
+      const nodes = []; let text = '';
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) { nodes.push([n, text.length]); text += n.textContent; }
+      const at = text.indexOf(needle);
+      if (at >= 0) {
+        const locate = (pos) => { let i = nodes.length - 1; while (i > 0 && nodes[i][1] > pos) i--; return [nodes[i][0], pos - nodes[i][1]]; };
+        const range = document.createRange();
+        range.setStart(...locate(at)); range.setEnd(...locate(at + needle.length));
+        // wrap the phrase in an inline mark so the outline moves with the text if the page reflows (fonts, lazy images)
+        let mark = null;
+        try { mark = document.createElement('span'); mark.setAttribute('data-fx-outline', '1'); range.surroundContents(mark); } catch { mark = null; }
+        const anchor = mark || range.startContainer.parentElement;
+        anchor.scrollIntoView({ block: 'center', behavior: 'instant' });
+        if (mark) { mark.style.outline = '3px solid #e11d48'; mark.style.outlineOffset = '3px'; }
+        const q = (mark || range).getBoundingClientRect();
+        if (q.width && q.height && q.top >= 0 && q.bottom <= innerHeight) {
+          if (!mark) { // phrase crosses elements: fall back to a positioned box
+            const box = document.createElement('div');
+            box.setAttribute('data-fx-overlay', '1');
+            Object.assign(box.style, { position: 'absolute', left: `${q.left + scrollX - 6}px`, top: `${q.top + scrollY - 6}px`,
+              width: `${q.width + 12}px`, height: `${q.height + 12}px`, border: '3px solid #e11d48', zIndex: '2147483647', pointerEvents: 'none' });
+            document.body.appendChild(box);
+          }
+          return { x: q.left - 6, y: q.top - 6, w: q.width + 12, h: q.height + 12, clipped: false };
+        }
+      }
+    }
     target.setAttribute('data-fx-outline', '1');
     target.style.outline = '3px solid #e11d48';
     target.style.outlineOffset = '4px';
