@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1300" viewBox="0 0 900 1300" font-family="'Noto Sans KR', 'WenQuanYi Zen Hei', sans-serif">
+  <title>싱크대 수전 구조도 — 고장도감 제작</title>
+  <desc>원홀(거위목) 수전과 벽붙이 수전의 부품과 급수 연결 순서. 부품 이름과 연결 규격은 대림바스 DL-K1615·DL-K1612 시공도면과 대림바스 AS부품몰 부품 설명 기준.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0f172a"/>
+    </marker>
+    <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="14" height="14" fill="#e7e5e4"/>
+      <line x1="0" y1="0" x2="0" y2="14" stroke="#d6d3d1" stroke-width="6"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="1300" fill="#ffffff"/>
+
+  <!-- header -->
+  <text x="40" y="62" font-size="38" font-weight="700" fill="#0f172a">싱크대 수전, 물이 지나가는 길</text>
+  <text x="40" y="100" font-size="24" fill="#475569">고장도감 제작 구조도 · 실제 비율이 아닙니다</text>
+
+  <!-- panel A: one-hole -->
+  <rect x="20" y="120" width="860" height="640" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="44" y="166" font-size="30" font-weight="700" fill="#0f172a">① 원홀(거위목) 수전: 상판 구멍 1개</text>
+
+  <!-- counter -->
+  <rect x="60" y="380" width="780" height="24" fill="#a8a29e"/>
+  <text x="836" y="368" font-size="24" fill="#334155" text-anchor="end">싱크 상판 · 설치구멍 Ø38</text>
+
+  <!-- spout -->
+  <path d="M330 280 V250 C330 218 350 206 392 206 H556 C584 206 600 220 600 244 V250" fill="none" stroke="#94a3b8" stroke-width="24" stroke-linecap="round"/>
+  <rect x="580" y="246" width="40" height="58" rx="9" fill="#64748b"/>
+  <line x1="626" y1="284" x2="652" y2="284" stroke="#0f172a" stroke-width="2"/>
+  <text x="658" y="293" font-size="28" fill="#0f172a">헤드(토수구)</text>
+
+  <!-- body + cartridge -->
+  <rect x="305" y="276" width="50" height="104" rx="10" fill="#94a3b8" stroke="#334155" stroke-width="2"/>
+  <rect x="313" y="290" width="34" height="50" rx="4" fill="#ccfbf1" stroke="#0f766e" stroke-width="3" stroke-dasharray="6 4"/>
+  <line x1="268" y1="315" x2="312" y2="315" stroke="#0f766e" stroke-width="2"/>
+  <text x="262" y="310" font-size="28" fill="#0f766e" font-weight="700" text-anchor="end">카트리지</text>
+  <text x="262" y="340" font-size="22" fill="#0f766e" text-anchor="end">(본체 안)</text>
+
+  <!-- lever -->
+  <g transform="rotate(-14 355 296)">
+    <rect x="352" y="287" width="92" height="18" rx="9" fill="#64748b" stroke="#334155" stroke-width="2"/>
+  </g>
+  <line x1="448" y1="300" x2="470" y2="318" stroke="#0f172a" stroke-width="2"/>
+  <text x="476" y="332" font-size="28" fill="#0f172a">손잡이(레버)</text>
+
+  <!-- shank + fixing nut -->
+  <rect x="318" y="404" width="24" height="70" fill="#94a3b8" stroke="#334155" stroke-width="2"/>
+  <rect x="294" y="420" width="72" height="26" rx="4" fill="#475569"/>
+  <line x1="250" y1="433" x2="292" y2="433" stroke="#0f172a" stroke-width="2"/>
+  <text x="244" y="430" font-size="28" fill="#0f172a" text-anchor="end">고정 너트</text>
+  <text x="244" y="460" font-size="22" fill="#475569" text-anchor="end">(상판 아래에서 조임)</text>
+
+  <!-- pull-out hose + weight -->
+  <path d="M330 474 V560" fill="none" stroke="#78716c" stroke-width="6" stroke-dasharray="8 6"/>
+  <rect x="314" y="560" width="32" height="40" rx="6" fill="#57534e"/>
+  <text x="330" y="628" font-size="20" fill="#57534e" text-anchor="middle">무게추</text>
+  <text x="330" y="652" font-size="20" fill="#57534e" text-anchor="middle">(당겨 쓰는 헤드만)</text>
+
+  <!-- supply hoses -->
+  <path d="M322 474 C322 560 196 530 196 616" fill="none" stroke="#dc2626" stroke-width="10" stroke-linecap="round"/>
+  <path d="M338 474 C338 560 474 530 474 616" fill="none" stroke="#2563eb" stroke-width="10" stroke-linecap="round"/>
+  <text x="196" y="520" font-size="26" fill="#dc2626" text-anchor="end">온수 호스</text>
+  <text x="474" y="520" font-size="26" fill="#2563eb">냉수 호스</text>
+
+  <!-- hose nuts (G1/2) -->
+  <rect x="182" y="606" width="28" height="22" rx="3" fill="#334155"/>
+  <rect x="460" y="606" width="28" height="22" rx="3" fill="#334155"/>
+  <text x="560" y="600" font-size="22" fill="#334155">호스 끝 나사 G1/2</text>
+  <line x1="556" y1="606" x2="492" y2="616" stroke="#334155" stroke-width="2"/>
+
+  <!-- angle valves -->
+  <rect x="176" y="628" width="40" height="40" rx="8" fill="#a8a29e" stroke="#57534e" stroke-width="2"/>
+  <rect x="216" y="638" width="30" height="20" rx="4" fill="#f59e0b"/>
+  <rect x="454" y="628" width="40" height="40" rx="8" fill="#a8a29e" stroke="#57534e" stroke-width="2"/>
+  <rect x="494" y="638" width="30" height="20" rx="4" fill="#f59e0b"/>
+  <text x="166" y="656" font-size="26" fill="#0f172a" text-anchor="end">앵글밸브</text>
+  <text x="534" y="656" font-size="26" fill="#0f172a">앵글밸브(먼저 잠금)</text>
+
+  <!-- wall pipes -->
+  <rect x="186" y="668" width="20" height="74" fill="url(#hatch)" stroke="#78716c" stroke-width="2"/>
+  <rect x="464" y="668" width="20" height="74" fill="url(#hatch)" stroke="#78716c" stroke-width="2"/>
+  <text x="335" y="718" font-size="24" fill="#57534e" text-anchor="middle">벽 속 급수 배관</text>
+
+  <!-- panel B: wall-mounted -->
+  <rect x="20" y="780" width="860" height="400" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text x="44" y="826" font-size="30" font-weight="700" fill="#0f172a">② 벽붙이 수전: 벽에서 바로 연결</text>
+
+  <rect x="60" y="850" width="780" height="310" fill="url(#hatch)" opacity="0.7"/>
+  <text x="826" y="1146" font-size="24" fill="#57534e" text-anchor="end">벽</text>
+
+  <!-- concealed pipes -->
+  <path d="M250 960 V1150" stroke="#78716c" stroke-width="10" stroke-dasharray="12 8"/>
+  <path d="M610 960 V1150" stroke="#78716c" stroke-width="10" stroke-dasharray="12 8"/>
+  <text x="430" y="1140" font-size="22" fill="#57534e" text-anchor="middle">벽 속 배관(보이지 않음)</text>
+
+  <!-- connections -->
+  <circle cx="250" cy="935" r="28" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+  <circle cx="610" cy="935" r="28" fill="#cbd5e1" stroke="#334155" stroke-width="2"/>
+  <!-- body -->
+  <rect x="250" y="915" width="360" height="40" rx="18" fill="#94a3b8" stroke="#334155" stroke-width="2"/>
+  <rect x="404" y="921" width="52" height="28" rx="4" fill="#ccfbf1" stroke="#0f766e" stroke-width="3" stroke-dasharray="6 4"/>
+  <!-- lever -->
+  <rect x="418" y="866" width="24" height="50" rx="8" fill="#64748b" stroke="#334155" stroke-width="2"/>
+  <!-- spout -->
+  <path d="M430 955 V1040" stroke="#94a3b8" stroke-width="22" stroke-linecap="round"/>
+  <rect x="414" y="1036" width="32" height="34" rx="6" fill="#64748b"/>
+
+  <line x1="456" y1="880" x2="490" y2="880" stroke="#0f172a" stroke-width="2"/>
+  <text x="496" y="890" font-size="26" fill="#0f172a">손잡이</text>
+  <line x1="458" y1="962" x2="664" y2="1006" stroke="#0f766e" stroke-width="2"/>
+  <rect x="664" y="984" width="170" height="70" rx="8" fill="#f8fafc" opacity="0.92"/>
+  <text x="672" y="1012" font-size="26" fill="#0f766e" font-weight="700">카트리지</text>
+  <text x="672" y="1042" font-size="20" fill="#0f766e">(본체 안)</text>
+  <line x1="408" y1="1053" x2="372" y2="1053" stroke="#0f172a" stroke-width="2"/>
+  <text x="366" y="1062" font-size="26" fill="#0f172a" text-anchor="end">토수구</text>
+  <line x1="222" y1="935" x2="196" y2="935" stroke="#0f172a" stroke-width="2"/>
+  <text x="190" y="928" font-size="24" fill="#0f172a" text-anchor="end">연결부</text>
+  <text x="190" y="956" font-size="20" fill="#475569" text-anchor="end">(G1/2 나사)</text>
+
+  <!-- footer -->
+  <text x="40" y="1222" font-size="26" font-weight="700" fill="#0f172a">원홀 수전에서 물이 지나는 순서</text>
+  <text x="40" y="1256" font-size="24" fill="#0f172a">벽 속 배관 · 앵글밸브 · 냉수·온수 호스 · 카트리지 · 헤드</text>
+  <text x="40" y="1288" font-size="18" fill="#64748b">부품 이름·연결 규격: 대림바스 DL-K1615(원홀)·DL-K1612(벽붙이) 시공도면, 대림바스 AS부품몰 설명</text>
+</svg>

@@ -202,6 +202,15 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
     if (r0.width > vw || r0.right > innerWidth || r0.left < 0) {
       const imgs = target.tagName === 'IMG' ? [target] : [...target.querySelectorAll('img')];
       for (const im of imgs) { im.style.maxWidth = `${vw}px`; im.style.height = 'auto'; }
+      // text that does not wrap (nowrap/pre blocks, e.g. law.go.kr ruling summaries): make it wrap first — shrinking
+      // it would leave unreadable text. Only tables and images that still overflow are scaled down.
+      if (target.tagName !== 'IMG') {
+        for (const el of [target, ...target.querySelectorAll('*')]) {
+          if (['TABLE', 'IMG', 'SVG', 'CANVAS'].includes(el.tagName) || el.closest('table')) continue;
+          el.style.whiteSpace = 'normal'; el.style.overflowWrap = 'anywhere'; el.style.maxWidth = '100%'; el.style.width = 'auto';
+        }
+        target.style.maxWidth = `${vw}px`;
+      }
       r0 = target.getBoundingClientRect();
       if (r0.width > vw) target.style.zoom = String(vw / r0.width);
       target.scrollIntoView({ block: 'center', inline: 'start' });
