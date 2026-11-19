@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { connectiveCommas, repeatedEndings } from '../../scripts/lib/korean-style.mjs';
 import { checkDraft, isSourced, numbersIn, styleProblems } from '../../scripts/check-claims.mjs';
 import { captureQA, claimKey, findNumberSnippet, refreshLedgerDates } from '../../scripts/verify-sources.mjs';
-import { gapAnalysis, naverSignature, suggestTags } from '../../scripts/demand-research.mjs';
+import { gapAnalysis, mergeTrends, naverSignature, suggestTags, trendBatches } from '../../scripts/demand-research.mjs';
 import { renderTable, statusOf } from '../../scripts/blog-status.mjs';
 import { thumbnailProblems } from '../../scripts/naver-export.mjs';
 
@@ -157,4 +157,17 @@ test('repair guides: tier, legal basis, summary, stop, tools, DIY-vs-pro cost ta
   assert.ok(types(front('tier: green'), withAff).includes('guide_affiliate_place'));
   const inTools = good.replace('| 멍키 스패너 | 다이소 |', '| [멍키 스패너](aff:coupang:https://link.coupang.com/a/x) | 쿠팡 |');
   assert.deepEqual(types(front('tier: green'), inTools), ['guide_nonaffiliate']);
+});
+
+test('DataLab: batches carry the anchor; merged trends share one scale', () => {
+  assert.deepEqual(trendBatches(['a', 'b', 'c', 'd', 'e', 'f']), [['a', 'b', 'c', 'd', 'e'], ['a', 'f']]);
+  const months = (v) => Array.from({ length: 24 }, (_, i) => ({ period: `p${i}`, ratio: i < 12 ? v : v * 2 }));
+  // batch 2 measured the anchor at half the scale of batch 1; after merging, f must still be comparable to b
+  const merged = mergeTrends([
+    [{ title: 'a', data: months(10) }, { title: 'b', data: months(20) }],
+    [{ title: 'a', data: months(5) }, { title: 'f', data: months(10) }],
+  ]);
+  assert.equal(merged.a.mean, 100);
+  assert.equal(merged.b.mean, merged.f.mean, 'same relative interest after rescaling');
+  assert.ok(merged.b.last12 > merged.b.prev12, 'rising trend detected');
 });

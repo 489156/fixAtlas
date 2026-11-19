@@ -184,14 +184,16 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
       const r = el.getBoundingClientRect();
       return r.width > 0 && r.height > 0 && (el.textContent || '').replace(/\s+/g, ' ').includes(needle);
     });
-    const el = all.sort((a, b) => (a.textContent || '').length - (b.textContent || '').length)[0];
-    if (!el) return null;
+    // several elements can carry the same text (a hidden mobile menu, a cart summary, the real price): try them
+    // smallest-first and keep the first one a reader would actually see
+    const cands = all.sort((a, b) => (a.textContent || '').length - (b.textContent || '').length).slice(0, 10);
+    for (const el of cands) {
     let target = el.closest('tr, li, dd, p, section') || el;
     if (nextImage) {
       // the first sizeable image that comes after the anchor text in document order
       const img = [...document.querySelectorAll('img')].find((im) => (im.getBoundingClientRect().width > 300 || im.naturalWidth > 300)
         && (el.compareDocumentPosition(im) & Node.DOCUMENT_POSITION_FOLLOWING));
-      if (!img) return null;
+      if (!img) continue;
       target = img;
     }
     target.scrollIntoView({ block: 'center' });
@@ -230,8 +232,13 @@ async function captureEvidence(browser, page, url, needle, outFile, nextImage = 
     const r = target.getBoundingClientRect();
     // refuse to capture something the reader would not see (e.g. text inside a closed tab)
     const hit = document.elementFromPoint(Math.min(r.x + r.width / 2, innerWidth - 1), Math.min(Math.max(r.y + 4, 0), innerHeight - 1));
-    if (!r.width || !r.height || !hit || !(target.contains(hit) || hit.contains(target))) return null;
+    if (!r.width || !r.height || !hit || !(target.contains(hit) || hit.contains(target))) {
+      target.style.outline = ''; target.removeAttribute('data-fx-outline');
+      continue; // hidden or covered: try the next candidate
+    }
     return { x: r.x, y: r.y, w: r.width, h: r.height, clipped: r.left < -1 || r.right > innerWidth + 1 };
+    }
+    return null;
   }, [needle, nextImage]);
   await page.waitForTimeout(300); // lazy images
   if (!box) return false;
