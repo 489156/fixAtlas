@@ -1,12 +1,12 @@
 ---
 slug: 2026-11-battery-price
 title: 무선청소기 배터리 교체 비용은? LG·다이슨 12만 9천 원, 삼성 16만 원
-tags: 삼성청소기배터리, lg청소기배터리, 다이슨v8배터리, 코드제로배터리, 다이슨배터리, 다이슨v10배터리, 다이슨배터리교체, 무선청소기배터리, 청소기배터리교체, 무선청소기배터리수명
+tags: 삼성청소기배터리, lg청소기배터리, 다이슨청소기배터리, lg코드제로배터리, 다이슨v8배터리, 코드제로배터리, 다이슨배터리, 다이슨v10배터리, 다이슨배터리교체, 무선청소기배터리
 demand: LG 코드제로·삼성 제트·다이슨 V 시리즈·샤오미 미홀 같은 무선청소기를 2년 안팎 써서 사용 시간이 줄어든 사람이 내 모델에 맞는 정품 배터리 번호와 값, 무상 교체 여부, 직접 교체와 센터 교체 중 무엇이 나은지 판단하려고 '삼성청소기배터리'나 '다이슨v8배터리'를 검색할 때 이 글을 읽습니다.
 reader: LG 코드제로·삼성 제트·다이슨 V 시리즈·샤오미 미홀 같은 무선(스틱형)청소기를 2년 안팎 써서 사용 시간이 줄어든 사람
 need: 내 모델에 맞는 정품 배터리 번호와 값, 무상 교체 여부, 직접 교체·센터 교체·호환·리필 중 무엇을 고를지 한 번에 판단
 urgency: 중간 — 매일 쓰는 청소기가 금방 꺼지고 10만 원대 지출을 결정해야 함
-scale: 네이버 월간 검색량(PC/모바일, 2026-11-20): 삼성청소기배터리 300/3,120, lg청소기배터리 320/2,570, 다이슨v8배터리 350/1,730, 코드제로배터리 260/1,590, 다이슨배터리 210/1,040, 다이슨v10배터리 160/840, 다이슨배터리교체 80/640, 다이슨v11배터리 70/390, 무선청소기배터리 80/280, 샤크청소기배터리 40/280, 청소기배터리교체 30/100 · AS 질의: 다이슨as 670/3,080, 삼성청소기as 100/750, lg청소기as 100/560 · 다나와 2026 상반기 무선청소기 판매 비중 LG 31%·삼성 10%·다이슨 7%(2026-07-27 발행) · LG 고객지원 「배터리 교체 주기」 문서 조회 250,422회(2026-11-18)
+scale: 네이버 월간 검색량(PC/모바일, 2026-11-20): 삼성청소기배터리 300/3,120, lg청소기배터리 320/2,570, 다이슨v8배터리 350/1,730, 코드제로배터리 260/1,590, 다이슨배터리 210/1,040, 다이슨v10배터리 160/840, 다이슨배터리교체 80/640, 다이슨v11배터리 70/390, 무선청소기배터리 80/280, 샤크청소기배터리 40/280, 청소기배터리교체 30/100 · 연관 키워드(합계): 다이슨AS센터 23,200, 다이슨청소기배터리 3,540, LG코드제로배터리 2,930 · AS 질의: 다이슨as 670/3,080, 삼성청소기as 100/750, lg청소기as 100/560 · 다나와 2026 상반기 무선청소기 판매 비중 LG 31%·삼성 10%·다이슨 7%(2026-07-27 발행) · LG 고객지원 「배터리 교체 주기」 문서 조회 250,422회(2026-11-18)
 queries: 삼성 청소기 배터리, LG 청소기 배터리, 다이슨 V8 배터리, 코드제로 배터리, 다이슨 배터리 교체, 다이슨 V10 배터리, 무선청소기 배터리 수명, 청소기 배터리 교체 비용, 무선청소기 배터리 리필, 다이슨 AS
 affiliate: pending
 firsthand: 2026-11-18 LG전자 고객센터 문의 회신(코드제로 배터리 무상보증 기간·조건, 센터 교체 시 기술료)
@@ -75,7 +75,7 @@ claims:
   - 2,300mAh | https://www.lg.com/ca_en/care-accessories/vacuum-cleaners/battery-adapter-charger/eac63382208/ | 2026-11-20 | LG 캐나다 공식: EAC63382208(19~22년형 A9/A9S) 용량 | CordZero™ A9 Vacuum Cleaner Battery (2,300mAh)
   - 263개 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-20 | EAC63382208(19~22년형) 적용 모델 수 | 사용 가능한 모델 (총 263개)
   - 111,000원 / 105,400원 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/cov30090401 | 2026-11-20 | LG A5 배터리 COV30090401 정상가·회원할인가(할인율 5%, 용량 표기 없음) | COV30090401
-  - 단자 모양 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-20 | 이미지: A9/A9S 배터리는 충전 단자에 동그란 구멍 3개, A9S 배터리는 사각 구멍에 사각 홈 4개(이미지 alt로 판독) 캡처:lg-terminal@다음이미지 | 구매하시기 전에 사용하시는 청소기의 동일한 배터리인지 확인해 주세요
+  - 단자 모양 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-20 | 이미지: 캡처 판독(2026-11-20) — 왼쪽 "A9/A9S 배터리"(라벨 EAC63382208) 동그란 단자 3개, 오른쪽 "A9S배터리"(라벨 EAC63382216) 사각 단자 안 홈 4개 캡처:lg-terminal@다음이미지 | 구매하시기 전에 사용하시는 청소기의 동일한 배터리인지 확인해 주세요
   - 교체 주기 미지정 | https://www.lge.co.kr/support/solutions-20150332172261 | 2026-11-20 | LG 고객지원(2026-05-29): 기간 기준 교체 주기 없음. solutions-20150373882418의 '권장 주기 2년'과 다름 | 기간에 따른 권장 교체 주기는 별도로 지정되어 있지 않습니다
   - 36,900원 | https://prod.danawa.com/info/?pcode=14014652 | 2026-11-20 | 다나와 최저가: 다이슨 V8 호환 4000mAh(비정품, 판매처 4곳) | 다이슨 V8 호환 4000mAh 배터리
   - 60,610원 | https://prod.danawa.com/info/?pcode=116353126 | 2026-11-20 | 다나와 최저가: LG 코드제로 A9 호환 배터리(비정품, 판매처 5곳) | LG 코드제로 A9 호환 배터리
@@ -87,6 +87,7 @@ claims:
   - 2년 | https://www.consumernews.co.kr/news/articleView.html?idxno=689058 | 2026-11-20 | 사례: 소비자가만드는신문 2023-09-26, 소비자고발센터 무선청소기 불만 30여 건 중 배터리 재고 부족으로 교체 지연(24개월 초과) | 배터리 재고 부족으로 교체 지연
   - 2년 | https://www.consumernews.co.kr/news/articleView.html?idxno=689058 | 2026-11-20 | 소비자가만드는신문 2023-09-26 조사: 배터리 보증 삼성·LG 2년(24개월 초과) | 배터리 보증기간은 삼성전자와 LG전자가 2년으로 긴 편이다
   - 100,000원 | https://dpg.danawa.com/news/view?boardSeq=63&listSeq=6039621 | 2026-11-20 | 계산: 원문 "10만 원대" — 다나와 기사의 미홀 M22 가격대 | 10만 원대 안팎의 가격으로
+  - #1 vacuum brand | https://s202.q4cdn.com/977000893/files/doc_financials/2025/ar/SN-2025-Annual-Report.pdf | 2026-11-20 | 샤크닌자 2025년 연차보고서: Circana 집계 미국 진공청소기 금액 기준 1위 | Shark is the #1 vacuum brand in the United States in dollar sales
   - 500회 / 80% | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-20 | LG 코드제로 배터리 수명 | 500회 완충·방전(1Cycle) 시 초기 성능의 약 80% 수준
   - 2년 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-20 | 교체 권장 주기 | 배터리 교체 권장 주기는 2년
   - A9 사용 시간 | https://www.lge.co.kr/support/solutions-20150373882418 | 2026-11-20 | 2019~2022년형 A9 배터리 1개 완충 기준 | A9 제품: 터보 모드(약 6분)
@@ -170,6 +171,9 @@ claims:
 상반기 상위 5개에 삼성 모델이 없어 2025년 연간 7위인 비스포크 제트를 함께 넣었습니다.
 다이슨은 상위 5개에 든 모델이 없어 배터리 검색이 가장 많은 V8 계열의 최신형으로 대신했습니다.
 
+해외 시장에서 공개된 순위는 브랜드 단위입니다.
+그중 샤크닌자 2025년 연차보고서는 Circana 집계를 인용해 "Shark is the #1 vacuum brand in the United States in dollar sales"라고 적었습니다(미국, 금액 기준, 유선·무선 포함).
+
 흡입력 단위도 제각각이어서 LG·삼성은 W, 미홀은 Pa입니다.
 단위가 달라 서로 직접 비교할 수 없으니 같은 브랜드 안에서만 견주십시오.
 
@@ -192,12 +196,14 @@ LG는 출시 연도로 배터리를 나눕니다.
 2019~2022년 출시 A9·A9S는 옛 배터리와 2023년 배터리를 모두 쓸 수 있습니다.
 
 판매 1위 AX920BWE는 2024년 모델이라 EAC63382216을 사야 합니다.
-2019~2022년형에 쓰던 EAC63382208은 이 모델에 맞는다는 안내가 없습니다.
+LG 안내는 2023년 이후 A9S에 2023년 배터리만 적고 있어 옛 배터리(EAC63382208)는 맞지 않을 수 있습니다.
 
 EAC63382216 상품 페이지의 사용 가능 모델은 164개, 2019~2022년용 EAC63382208은 263개입니다.
 배터리를 빼면 본체 안쪽 라벨에 모델명이 적혀 있으니 목록과 맞춰 보십시오.
-LG 상품 페이지 그림을 보면 충전 단자 모양도 다릅니다.
-A9 배터리는 동그란 구멍 3개, A9S 배터리는 사각 구멍에 홈이 4개입니다.
+LG 상품 페이지 사진을 보면 충전 단자 모양도 다릅니다.
+2019~2022년용(EAC63382208)은 동그란 단자 3개, 2023년 이후 A9S용(EAC63382216)은 사각 단자 안에 홈 4개입니다.
+
+![LG 코드제로 배터리 두 종류의 단자 모양 비교(LG전자 상품 페이지, 2026년 11월 20일 화면)](../evidence/2026-11-battery-price/lg-terminal.png)
 
 ![LG전자 EAC63382216 배터리 상품 페이지의 정상가와 회원할인가(2026년 11월 20일 화면)](../evidence/2026-11-battery-price/lg-216.png)
 
@@ -263,7 +269,7 @@ LG전자는 코드제로 배터리가 500회 완충·방전 뒤 초기 성능의
 셋째, 충전기를 꽂아 둘지는 제조사 지침이 서로 다릅니다.
 LG는 "충전 거치대의 어댑터를 항상 꽂아둔 채로 관리해 주세요"라고 안내합니다.
 삼성 담당자는 오래 쓰지 않을 때 "콘센트를 빼고 보관하시는 것이 배터리 수명에 유리해요"라고 했습니다.
-다이슨 V11 설명서는 "방전 후 바로 충전하지 마십시오"라고 적어 다 쓴 직후 뜨거운 배터리의 충전을 피하게 합니다.
+다이슨 V11 설명서는 배터리 수명을 늘리려면 "방전 후 바로 충전하지 마십시오"라고 적습니다.
 다이슨 해외 안내는 한 달에 한 번 완전히 방전하라고도 권합니다(TechRadar 인용).
 회사마다 지침이 다르므로 내 제품 제조사 지침을 따르십시오.
 
@@ -345,8 +351,7 @@ LG전자 고객센터 회신도 "청소기를 서비스센터로 직접 가져�
 다이슨은 2023년 1~10월 1372소비자상담센터 불만이 864건으로 1년 전보다 66.8% 늘었습니다.
 그중 청소기가 181건이었고 "급격한 배터리 소모에 따른 짧은 작동 시간" 불만이 주를 이뤘습니다(한국소비자연맹 집계).
 
-이후 다이슨은 센터를 52개로 늘리고 평균 처리 시간이 1.6일이라고 발표했습니다.
-두 수치 모두 회사가 발표한 값입니다.
+다이슨은 2026년 현재 서비스센터 52개를 운영하고 평균 AS 처리 시간이 1.6일이라고 발표했습니다.
 
 배터리 재고도 문제입니다.
 2023년 소비자고발센터에 들어온 무선청소기 불만 30여 건에는 "배터리 재고 부족으로 교체 지연"이 있었습니다.
@@ -412,7 +417,7 @@ LG전자는 2026년 10월 1일부터 11월 30일까지 '배터리턴' 캠페인�
 - 다이슨 배터리 가격 기록 [블로그](https://earn-on-everything.com/entry/%EB%8B%A4%EC%9D%B4%EC%8A%A8-%EC%B2%AD%EC%86%8C%EA%B8%B0-v6-v7-v8-v10-%EB%B0%B0%ED%84%B0%EB%A6%AC-%EC%85%80%ED%94%84-%EA%B5%90%EC%B2%B4-%EB%B0%A9%EB%B2%95-%EA%B5%AC%EB%A7%A4-%EB%B0%A9%EB%B2%95/)(2026년 8월 6일 확인), TechRadar [V8 Cyclone](https://www.techradar.com/home/vacuums/dyson-just-released-the-vacuum-we-actually-wanted-an-upgraded-v8-that-costs-basically-the-same-as-the-original)·[배터리 관리](https://www.techradar.com/home/vacuums/how-to-preserve-your-dyson-vacuum-battery)·[V10 배터리](https://www.techradar.com/news/james-dyson-promises-15-year-battery-life-for-the-cyclone-v10-cordless-vacuum), ZDNet Korea [다이슨 프리미엄 센터](https://zdnet.co.kr/view/?no=20250609135532)(2025년 6월 9일)·[직구품 AS](https://zdnet.co.kr/view/?no=20191113154413)(2019년 11월 13일)
 - LG전자 [배터리턴 기획전](https://www.lge.co.kr/benefits/exhibitions/detail-PE01017005), [교체 주기 안내](https://www.lge.co.kr/support/solutions-20150332172261), LG 해외 공식 [EAC63382216](https://www.lg.com/au/vacuum-cleaners/vacuum-cleaner-accessories/eac63382216/)·[EAC63382208](https://www.lg.com/ca_en/care-accessories/vacuum-cleaners/battery-adapter-charger/eac63382208/), 삼성전자 [AI 제트 Lite 사양](https://www.samsung.com/sec/support/model/VS28D950AIW/)·[AI 제트 400W 사양](https://www.samsung.com/sec/support/model/VS90F40CSK/), 삼성전자서비스 [배터리 목록](https://www.samsungsvc.co.kr/shop/product?category=10424&directory=10770)
 - 다나와 호환 배터리 [다이슨 V8용](https://prod.danawa.com/info/?pcode=14014652)·[LG A9용](https://prod.danawa.com/info/?pcode=116353126), 소비자가만드는신문 [2023년 9월 26일](https://www.consumernews.co.kr/news/articleView.html?idxno=689058)·[2026년 1월 18일](https://www.consumernews.co.kr/news/articleView.html?idxno=747459)
-- 샤크닌자 [공식몰](https://www.sharkninja.co.kr/), iFixit [Dyson V8 Animal Battery Replacement](https://www.ifixit.com/Guide/Dyson+V8+Animal+Battery+Replacement/130540)
+- 샤크닌자 [2025년 연차보고서](https://s202.q4cdn.com/977000893/files/doc_financials/2025/ar/SN-2025-Annual-Report.pdf), [공식몰](https://www.sharkninja.co.kr/), iFixit [Dyson V8 Animal Battery Replacement](https://www.ifixit.com/Guide/Dyson+V8+Animal+Battery+Replacement/130540)
 - 보도 [SR타임스](https://www.srtimes.kr/news/articleView.html?idxno=180168), [세계일보](https://www.segye.com/newsView/20260626513467)(2026년 6월 27일), [아시아경제](https://view.asiae.co.kr/article/2026012914485055863)(2026년 1월 29일), [ZDNet Korea](https://zdnet.co.kr/view/?no=20251215083853)(2025년 12월 15일), [세이프타임즈](https://www.safetimes.co.kr/news/articleView.html?idxno=201324)(2023년 2월 15일), [연합뉴스](https://v.daum.net/v/20231115144117456)(2023년 11월 15일)
 - 서울시 [2차 전지 배출 안내](https://news.seoul.go.kr/env/archives/565185)
 - 수리기록 [수리비 데이터 방법론 v1.1](site:/methodology#sources)

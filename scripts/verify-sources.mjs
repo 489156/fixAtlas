@@ -131,7 +131,7 @@ async function robotsAllowed(url) {
   const u = new URL(url);
   if (!robotsCache.has(u.origin)) {
     const { execFile } = await import('node:child_process');
-    const txt = await new Promise((resolve) => {
+    const get = () => new Promise((resolve) => {
       execFile('curl', ['-sS', '-L', '-m', '20', '-w', '\n%{http_code}', `${u.origin}/robots.txt`], { maxBuffer: 5 * 1024 * 1024 }, (err, stdout) => {
         if (err) return resolve(null);
         const i = stdout.lastIndexOf('\n'); const code = Number(stdout.slice(i + 1));
@@ -139,6 +139,8 @@ async function robotsAllowed(url) {
         resolve(code >= 400 && code < 500 && code !== 401 && code !== 403 ? '' : null);
       });
     });
+    let txt = await get();
+    if (txt === null) { await new Promise((r) => setTimeout(r, 3000)); txt = await get(); } // one retry: a flaky fetch is not a "closed" signal
     robotsCache.set(u.origin, txt);
   }
   const txt = robotsCache.get(u.origin);
