@@ -378,7 +378,7 @@ export function checkDraft(text, { today = todayKST(), maxAgeDays = 90, strict =
 }
 
 // Source lists, the source heading, the byline, the AI-use line and the fixed correction policy line repeat on purpose.
-const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(>\s*)?(쓴 사람|작성|만든 방법|바로잡기)\s*[:：]/.test(l.trim()) || /^(>\s*)?광고·제휴 없이 작성한 글입니다/.test(l.trim());
+const isSourceLine = (l) => /^\s*-\s.*\]\(/.test(l) || /^#+\s*출처/.test(l) || /^(>\s*)?(쓴 사람|작성|만든 방법|바로잡기)\s*[:：]/.test(l.trim()) || /^(>\s*)?(광고|협찬)·제휴 없이 작성한 글입니다/.test(l.trim());
 
 const grams = (t) => { const x = t.replace(/[\s.,!?·()'"]/g, ''); const g = new Set(); for (let i = 0; i < x.length - 2; i++) g.add(x.slice(i, i + 3)); return g; };
 const jaccard = (a, b) => { let n = 0; for (const g of a) if (b.has(g)) n++; return n / (a.size + b.size - n || 1); };

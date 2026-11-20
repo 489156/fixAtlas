@@ -152,7 +152,7 @@ export function thumbnailProblems(images, cards) {
     if (/요[.?!]?(\s|$)/.test(text)) out.push(`${card.id}: 해요체 문구("${text.slice(0, 30)}") — 평서·질문형 제목체로`);
     if (/청소기/.test(text) && !/(무선|로봇|스틱|유선|핸디|물걸레|진공)\s?청소기/.test(text)) out.push(`${card.id}: "청소기"가 무선·로봇 중 무엇인지 불분명`);
     if (/최저|무조건|100%|완벽|총정리/.test(text)) out.push(`${card.id}: 과장 표현`);
-    if (card.chip === '광고·제휴 없음' && card.kind === 'thumb') out.push(`${card.id}: 썸네일에 "광고·제휴 없음" 칩 — 고지는 본문 인용구 한 줄로`);
+    if (/^(광고|협찬)·제휴 없음$/.test(card.chip || '') && card.kind === 'thumb') out.push(`${card.id}: 썸네일에 "광고·제휴 없음" 칩 — 고지는 본문 인용구 한 줄로`);
   }
   return out;
 }

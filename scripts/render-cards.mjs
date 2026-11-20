@@ -41,7 +41,7 @@ function thumbHtml(card, specDir) {
   .ev{position:relative;height:${card.evidenceHeight ?? 270}px;overflow:hidden}
   .ev img{width:100%;position:absolute;left:0;${card.evidenceY != null ? `top:${-card.evidenceY}px` : 'top:50%;transform:translateY(-50%)'}}
 </style></head><body>
-  <div class="head"><div class="brand">고장도감 FixAtlas</div><h1>${esc(card.title)}</h1></div>
+  <div class="head"><div class="brand">수리기록</div><h1>${esc(card.title)}</h1></div>
   <div class="num"><div class="label">${esc(card.label)}</div><div class="big">${esc(card.big)}</div>${card.sub ? `<div class="sub">${esc(card.sub)}</div>` : ''}</div>
   ${ev ? `<div class="evlabel">${esc(card.evidenceLabel)}</div><div class="ev"><img src="${ev}"></div>` : ''}
 </body></html>`;
@@ -87,7 +87,7 @@ function html(card) {
   body.dense li span{font-size:27px}
   body.dense .safety{margin-top:20px;font-size:28px;padding:14px 20px}
 </style></head><body class="${(card.items?.length ?? 0) > 3 || (card.rows?.length ?? 0) > 5 ? 'dense' : ''}">
-  <div class="top"><span class="brand">고장도감 FixAtlas</span>${card.chip ? `<span class="chip">${esc(card.chip)}</span>` : ''}</div>
+  <div class="top"><span class="brand">수리기록</span>${card.chip ? `<span class="chip">${esc(card.chip)}</span>` : ''}</div>
   <div class="eyebrow">${esc(card.eyebrow)}</div>
   <h1>${esc(card.title)}</h1>
   ${body}

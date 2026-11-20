@@ -1,6 +1,6 @@
 ---
 name: fixatlas-anti-slop-ko
-description: Use for every FixAtlas (고장도감) Korean text before it is shown to the operator or published — Naver blog
+description: Use for every FixAtlas (수리기록) Korean text before it is shown to the operator or published — Naver blog
   drafts, repair guides, glossary entries, SNS cards, site copy, reports. Applies the anti-slop-writing doctrine and the
   humanizer pattern list to Korean, together with this repository's rules (demand sentence, formal register, no work-report
   sentences, verified numbers, verifiable case). Runs the deterministic checks first, then one judged review pass.

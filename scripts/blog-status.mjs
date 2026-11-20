@@ -38,6 +38,7 @@ export function statusOf(text, { today, verifyStamp = null, suggestData = null }
   const demandAge = suggestData?.fetched_at ? days(today, suggestData.fetched_at) : null;
 
   const todo = [];
+  if (field(front, 'hold')) todo.push(`[AI] 보류: ${field(front, 'hold')}`);
   if (fails.length) todo.push(`[AI] 기계 점검 실패 ${fails.length}건 수정 (check-claims)`);
   if (!field(front, 'demand')) todo.push('[AI] 수요자 문장(demand) 작성');
   const judge = slotList.filter((x) => x.owner === '판단').length;

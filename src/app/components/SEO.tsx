@@ -12,7 +12,7 @@ interface SEOProps {
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const defaultTitle = 'FixAtlas / 고장도감 - 로봇청소기·무선청소기 수리비·고장 제보';
+const defaultTitle = 'FixAtlas / 수리기록 - 로봇청소기·무선청소기 수리비·고장 제보';
 const defaultDescription =
   '수리비 견적 받기 전에, 같은 모델 사용자들이 실제로 얼마에 고쳤는지 확인하세요. 로봇청소기·무선청소기 고장 증상, 수리비 제보, 자가점검, 수리 vs 교체 계산기.';
 

@@ -13,14 +13,14 @@ export function Methodology() {
     <>
       <SEO
         title="수리비 데이터 방법론"
-        description="고장도감이 수리비 범위를 계산하고 공개하는 기준: 표본 3건·5건·10건 규칙, 제외 기준, 공식 가격 확인 방법, 갱신 주기."
+        description="수리기록이 수리비 범위를 계산하고 공개하는 기준: 표본 3건·5건·10건 규칙, 제외 기준, 공식 가격 확인 방법, 갱신 주기."
       />
       <article className="max-w-3xl mx-auto space-y-6 pb-24 md:pb-8 leading-relaxed">
         <header className="space-y-2">
           <p className="text-sm text-gray-500">방법론 {METHODOLOGY_VERSION} · {METHODOLOGY_DATE} 기준 · 광고·제휴 없음</p>
           <h1 className="text-3xl font-bold text-gray-900">수리비 데이터는 이렇게 계산하고 공개합니다</h1>
           <p className="text-gray-700">
-            고장도감의 숫자는 두 종류입니다. <strong>사용자가 제보한 실제 지불액</strong>과, 제조사·공식몰·정부 기관이 공개한
+            수리기록의 숫자는 두 종류입니다. <strong>사용자가 제보한 실제 지불액</strong>과, 제조사·공식몰·정부 기관이 공개한
             <strong> 공식·공개 기준가격</strong>입니다. 두 숫자는 섞지 않고 따로 표시합니다.
           </p>
         </header>
