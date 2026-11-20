@@ -172,3 +172,15 @@ test('DataLab: batches carry the anchor; merged trends share one scale', () => {
   assert.equal(merged.b.mean, merged.f.mean, 'same relative interest after rescaling');
   assert.ok(merged.b.last12 > merged.b.prev12, 'rising trend detected');
 });
+
+test('Korean anti-slop detectors fire on AI-style sentences and spare earned ones', async () => {
+  const { slopPhrases } = await import('../../scripts/lib/korean-style.mjs');
+  const cats = (s) => slopPhrases(s).map((h) => h.cat);
+  assert.ok(cats('이 서비스는 단순한 비교 사이트가 아니라 플랫폼입니다.').some((c) => c.startsWith('부정 병렬')));
+  assert.ok(cats('수리비 공개는 소비자 보호에 중요한 역할을 합니다.').includes('부풀린 의미'));
+  assert.ok(cats('핵심은 바로 원문 대조입니다.').includes('무대 세우기(staging)'));
+  assert.ok(cats('결론적으로 직접 교체가 유리합니다.').includes('공식형 맺음'));
+  assert.ok(cats('가장 합리적인 선택이라고 할 수 있습니다.').includes('빈 완충 표현'));
+  assert.deepEqual(cats('집주인에게 그 비용을 돌려 달라고 할 수 있습니다.'), [], 'a legal right is not a hedge');
+  assert.deepEqual(cats('카트리지만 바꾸면 부품 18,000원이 듭니다.'), []);
+});

@@ -20,7 +20,7 @@
 //     - 160,000원 | https://www.samsungsvc.co.kr/shop/product/0000090680 | 2026-11-17 | 삼성 BESPOKE 제트 220W 배터리
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { SLOT_LINE, SLOT_RE, connectiveCommas, repeatedEndings, slotOwner } from './lib/korean-style.mjs';
+import { SLOT_LINE, SLOT_RE, connectiveCommas, repeatedEndings, slopPhrases, slotOwner } from './lib/korean-style.mjs';
 
 const UNITS = ['만원', '원', '%', '㎡', 'km', 'cm', 'mm', 'kg', 'm', '건', '개월', '년', '회', '명', '시간', '배', '편'];
 const unitAlt = UNITS.map((u) => u.replace(/[%]/g, '\\$&')).join('|');
@@ -159,7 +159,7 @@ export function readerProblems(front, body) {
 }
 
 // Severity. Heuristics that can misfire report as warnings (printed, not failing) unless --strict.
-export const WARN_TYPES = new Set(['repeated_ending', 'guide_nonaffiliate']);
+export const WARN_TYPES = new Set(['repeated_ending', 'guide_nonaffiliate', 'slop_phrase']);
 /** A cited case counts only with a checkable source (web page or our own site) and a verbatim quote verify-sources can find. */
 export const hasCase = (claims) => claims.some((c) => /^사례:/.test(c.note || '') && /^(https:\/\/|site:\/)/.test(c.url) && Boolean((c.quote || '').trim()));
 // Reading pages or captures, comparing, searching, dating a check, writing prose: computer work, never a person slot.
@@ -365,6 +365,8 @@ export function checkDraft(text, { today = todayKST(), maxAgeDays = 90, strict =
   problems.push(...readerProblems(front, body));
   problems.push(...styleProblems(body));
   problems.push(...guideProblems(front, body));
+  // Korean anti-slop detectors (warnings: keep the sentence when nearby text earns it — .claude/skills/fixatlas-anti-slop-ko)
+  for (const h of slopPhrases(body)) problems.push({ type: 'slop_phrase', detail: `${h.cat} "${h.at}": "${h.sentence.slice(0, 60)}…" — 구체적 수치·출처·작동 방식으로 바꾸거나, 근거가 바로 옆에 있으면 유지` });
   for (const m of body.matchAll(SLOT_RE)) {
     const owner = slotOwner(m[1]);
     if (COMPUTER_TASK.test(m[2])) problems.push({ type: 'ai_task_in_slot', detail: `사람 칸에 컴퓨터 작업이 들어 있습니다 — AI가 수행하고 결과를 본문에 쓰세요:${m[2].slice(0, 50)}…` });

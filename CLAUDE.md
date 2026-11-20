@@ -33,6 +33,16 @@
 
 상세: `docs/blog/EDITORIAL_STANDARDS.md`(§4~§11), 사용자 검수 교훈 `docs/blog/LESSONS.md`, 발행 절차 `docs/blog/naver/README.md`.
 
+## 프로젝트 스킬 (`.claude/skills`, 항상 로드 — 운영자 지시 2026-11-20)
+
+목록과 출처는 `.claude/skills/README.md`. 아래 경우에는 해당 스킬을 반드시 쓴다.
+
+- **한국어 글을 운영자에게 보여 주거나 발행하기 전**: `fixatlas-anti-slop-ko`. 블로그 원고, 수리 가이드, 용어 사전, SNS 카드, 사이트 문구, 보고서 모두 해당한다. 점검기(`check-claims`의 `slop_phrase` 포함) → 판단 1회 → 다시 점검. 근거 원리는 `anti-slop-writing`(구체적 사실이 부풀린 의미를 이긴다, 지어내지 않는다)과 `humanizer`.
+- **"완료·통과·고침"이라고 보고하기 전**: `verification-before-completion`. 그 메시지 안에서 실행한 명령의 결과(`npm test`, `check-claims`, `verify-sources`)를 근거로 말한다.
+- **전략·우선순위를 정하거나 운영자 제안에 동의·반대하기 전**: `strategy-red-team`, `thinking-steel-manning`(반대 논거를 먼저 세움), 유인 구조가 걸리면 `thinking-second-order`.
+- **글감·검색 노출**: `content-strategy`(검색량으로 우선순위), `ai-seo`(AI 답변 인용), 사이트 정본 페이지는 `schema`.
+- **서비스 기획**: `value-proposition`, `identify-assumptions-new`, `market-sizing`. 수치는 [unverified]·가정 표시 규칙을 따른다.
+
 ## 발행 전 점검 명령
 
 ```bash
