@@ -1,6 +1,6 @@
 {
   "layout": {
-    "brand": "FixAtlas",
+    "brand": "fixRecord",
     "tagline": "Repair guide",
     "navHome": "Home",
     "navSearch": "Search",
@@ -9,7 +9,7 @@
     "navCommunity": "Community",
     "navAdmin": "Admin",
     "navSubmitShort": "Report",
-    "legalNotice": "Information on FixAtlas is reference material based on user reports and public sources. Actual repair costs, warranty coverage, parts availability and safety depend on the product, region, repair provider and manufacturer policy.",
+    "legalNotice": "Information on fixRecord is reference material based on user reports and public sources. Actual repair costs, warranty coverage, parts availability and safety depend on the product, region, repair provider and manufacturer policy.",
     "safetyNotice": "Work involving high voltage, batteries, refrigerant, gas or waterproofing is hazardous. Use a professional or an official service center.",
     "reviewNotice": "Reviews must be factual. Posts containing abuse, false statements, personal data or defamation may be restricted.",
     "login": "Log in",

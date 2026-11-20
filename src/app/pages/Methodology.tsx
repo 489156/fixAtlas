@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 import { SEO } from '../components/SEO';
 
-// Public methodology page. Blog posts cite this page for FixAtlas's own rules (sample thresholds, exclusions).
+// Public methodology page. Blog posts cite this page for 수리기록 (fixRecord)'s own rules (sample thresholds, exclusions).
 // Keep it in sync with supabase/functions/_shared/stats.ts and docs/blog/EDITORIAL_STANDARDS.md.
 export const METHODOLOGY_VERSION = 'v1.1';
 export const METHODOLOGY_DATE = '2026-11-18';

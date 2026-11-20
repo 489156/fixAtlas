@@ -1,6 +1,6 @@
-# FixAtlas(수리기록, 2026-11-20 고장도감에서 변경) — 작업 안내
+# 수리기록(fixRecord) — 작업 안내
 
-가전·가구 수리비를 사용자 제보와 공식 자료로 비교하는 서비스다. React/Vite 사이트(`src/`)와 Supabase Edge Function(`supabase/`), 네이버 블로그 원고(`docs/blog/`)가 있다. 기획 문서는 `docs/BLOG_PLAN.md`와 `docs/PLAN_REINFORCEMENT.md`, 조사 자료는 `docs/research/`에 있다.
+가전·가구 수리비를 사용자 제보와 공식 자료로 비교하는 서비스다. 이름: 한국어 '수리기록'(2026-11-20 고장도감에서 변경), 영문 'fixRecord'(2026-11-20 fixAtlas에서 변경, 운영자 승인). 저장소·코드 식별자(`fixatlas:` 저장 키, `fixatlas-anti-slop-ko`)와 임시 도메인 `fixatlas.example`은 그대로 둔다(도메인 결정 보류). React/Vite 사이트(`src/`)와 Supabase Edge Function(`supabase/`), 네이버 블로그 원고(`docs/blog/`)가 있다. 기획 문서는 `docs/BLOG_PLAN.md`와 `docs/PLAN_REINFORCEMENT.md`, 조사 자료는 `docs/research/`에 있다.
 
 ## 블로그 글 상시 규칙 (운영자 지시, 2026-11-18)
 
@@ -31,6 +31,7 @@
 - 접근이 막힌 컴퓨터 작업(로그인·robots 차단 등)도 [AI] 몫이다. 사람에게 넘길 것은 "접근을 허용할지"라는 [판단]이나 키 발급 같은 [현장]뿐이다.
 - 할 일 목록과 보고에는 항상 담당 표시([AI]·[판단]·[현장])를 붙인다(`npm run blog:status`).
 - robots.txt가 막는 사이트는 자동으로 훑거나 대량 질의하지 않는다. 막힌 곳의 접근 방식을 바꿀지는 [판단]으로 올린다.
+- **조사는 국내외를 끝까지 찾는다(운영자 지시 2026-11-20).** 온라인에서 확인하지 못한 정보는 독자도 확인할 수 없다. 공식 원문이 막히면 같은 사실을 공개한 다른 1차 자료(설명서 PDF, 보도자료, 판매처 상품 페이지, 해외 공식 자료, 공공 DB·API)를 차례로 찾는다. '찾을 수 없다'는 시도한 경로를 모두 적은 뒤에만 쓴다.
 
 상세: `docs/blog/EDITORIAL_STANDARDS.md`(§4~§11), 사용자 검수 교훈 `docs/blog/LESSONS.md`, 발행 절차 `docs/blog/naver/README.md`.
 

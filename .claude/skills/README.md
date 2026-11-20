@@ -2,10 +2,10 @@
 
 Claude Code loads every skill in this folder for sessions in this repository: their descriptions are always in context
 and the full text loads when a task matches. Selected on 2026-11-20 from the operator's skill bundle for this project's
-purpose — verified, demand-first Korean repair-cost content and the FixAtlas service plan. Files are copied unchanged
+purpose — verified, demand-first Korean repair-cost content and the 수리기록 (fixRecord, formerly FixAtlas) service plan. Files are copied unchanged
 except that test fixtures (`evals/`) were left out. All are MIT-licensed; sources are in each SKILL.md `metadata`.
 
-| Skill | Source | Used for in FixAtlas |
+| Skill | Source | Used for in 수리기록 (fixRecord) |
 |---|---|---|
 | fixatlas-anti-slop-ko | this repository | Korean anti-slop gate for every post, guide, glossary entry and report (wraps the two below) |
 | anti-slop-writing | adewale/anti-slop-writing | Doctrine: concrete detail over inflated significance, relation over rhythm, no invented facts |
