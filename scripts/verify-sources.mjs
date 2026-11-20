@@ -25,6 +25,7 @@
 // Pages are loaded with a normal headless Chromium (Playwright) when available, falling back to curl; PDF sources
 // (e.g. law.go.kr annex files) are read with pdftotext.
 // No user-agent spoofing and no attempt to get around blocks: a blocked page is reported as "확인 불가".
+// robots.txt is read first (generic "*" group); a disallowed URL is never opened and is reported as "확인 불가".
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -92,8 +93,61 @@ async function fetchHtml(url) {
 const htmlToText = (html) => html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ')
   .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;|&rsquo;|&lsquo;/g, "'");
 
+/**
+ * robots.txt rules for the generic agent ("User-agent: *"): does this path stay allowed? Longest match wins and Allow
+ * beats Disallow on a tie (RFC 9309); "*" and "$" are honoured. Pure; unit-tested.
+ * This tool sends no custom user agent, so only the "*" group applies to it.
+ */
+export function robotsAllows(robotsTxt, pathAndQuery) {
+  const groups = [];
+  let cur = null, lastWasAgent = false;
+  for (const raw of String(robotsTxt || '').split(/\r?\n/)) {
+    const line = raw.replace(/#.*/, '').trim();
+    const m = /^([A-Za-z-]+)\s*:\s*(.*)$/.exec(line);
+    if (!m) continue;
+    const key = m[1].toLowerCase(), val = m[2].trim();
+    if (key === 'user-agent') {
+      if (!lastWasAgent || !cur) { cur = { agents: [], rules: [] }; groups.push(cur); }
+      cur.agents.push(val.toLowerCase()); lastWasAgent = true;
+    } else {
+      lastWasAgent = false;
+      if (cur && (key === 'allow' || key === 'disallow')) cur.rules.push({ allow: key === 'allow', pat: val });
+    }
+  }
+  const rules = groups.filter((g) => g.agents.includes('*')).flatMap((g) => g.rules).filter((r) => r.pat !== '');
+  let best = null;
+  for (const r of rules) {
+    const re = new RegExp('^' + r.pat.replace(/[.+?^{}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\\\$$/, '$'));
+    if (!re.test(pathAndQuery)) continue;
+    const len = r.pat.replace(/[*$]/g, '').length;
+    if (!best || len > best.len || (len === best.len && r.allow)) best = { len, allow: r.allow };
+  }
+  return best ? best.allow : true;
+}
+
+const robotsCache = new Map();
+/** Fetches and caches a host's robots.txt. 401/403/5xx or no answer = treat the host as closed; 404 = open. */
+async function robotsAllowed(url) {
+  const u = new URL(url);
+  if (!robotsCache.has(u.origin)) {
+    const { execFile } = await import('node:child_process');
+    const txt = await new Promise((resolve) => {
+      execFile('curl', ['-sS', '-L', '-m', '20', '-w', '\n%{http_code}', `${u.origin}/robots.txt`], { maxBuffer: 5 * 1024 * 1024 }, (err, stdout) => {
+        if (err) return resolve(null);
+        const i = stdout.lastIndexOf('\n'); const code = Number(stdout.slice(i + 1));
+        if (code >= 200 && code < 300) return resolve(stdout.slice(0, i));
+        resolve(code >= 400 && code < 500 && code !== 401 && code !== 403 ? '' : null);
+      });
+    });
+    robotsCache.set(u.origin, txt);
+  }
+  const txt = robotsCache.get(u.origin);
+  return txt !== null && robotsAllows(txt, u.pathname + u.search);
+}
+
 /** Returns { text, via, page? } — page is kept open for evidence capture when the browser path worked. */
 async function openSource(browser, url) {
+  if (!(await robotsAllowed(url))) throw new Error('robots.txt가 이 주소의 자동 조회를 막습니다 — 다른 1차 자료로 바꾸세요');
   if (browser && !/flDownload|\.pdf(\?|$)/i.test(url)) {
     const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 }); // phone-width layout at 2x: captures stay legible on phones
     try {
@@ -317,7 +371,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const opt = Object.fromEntries(args.filter((a) => a.startsWith('--')).map((a) => { const [k, v = 'true'] = a.slice(2).split('='); return [k, v]; }));
   const files = args.filter((a) => !a.startsWith('--'));
   if (!files.length) { console.error('usage: node scripts/verify-sources.mjs <post.md...> [--evidence=dir] [--write] [--suggest] [--report=file]'); process.exit(2); }
-  const browser = await loadBrowser();
+  let browser = await loadBrowser();
   let bad = 0;
   const report = [];
   const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date());
@@ -335,11 +389,20 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     for (const c of claims) if (/^https:\/\//.test(c.url)) byUrl.set(c.url, [...(byUrl.get(c.url) || []), c]);
     for (const [url, rows] of byUrl) {
       let src;
-      try { src = await openSource(browser, url); } catch (e) {
+      try { src = await openSource(browser, url); } catch (e0) {
+        // a crashed headless browser takes every later page with it: relaunch once and retry this page
+        let e = e0;
+        if (browser && /has been closed|Target closed|disposeBrowserContext|Browser closed/i.test(e0.message)) {
+          await browser.close().catch(() => {});
+          browser = await loadBrowser();
+          try { src = await openSource(browser, url); e = null; } catch (e1) { e = e1; }
+        }
+        if (!e) { /* recovered */ } else {
         bad += rows.length; fileBad += rows.length; webRows += rows.length;
         console.log(`  확인 불가  ${url} (${e.message}) → 주소를 고치거나 같은 내용의 다른 원문(PDF·보도자료)을 찾아 바꿀 것`);
         report.push({ file, url, status: 'unreachable', error: e.message });
         continue;
+        }
       }
       pageTexts.set(url, src.text);
       for (const c of rows) {

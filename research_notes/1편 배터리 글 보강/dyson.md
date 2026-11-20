@@ -24,7 +24,7 @@
 
 **1-1. 국내 공식몰 가격(제3자 블로그가 공식몰을 확인한 값)**
 - 값: V6 967810-24, V7 968670-02, V8 슬림 969106-01, V10 969352-02, V11 970145-04 모두 129,000원, 다섯 모델 모두 품절(블로그 확인일 2026-08-06)
-- URL: https://earn-on-everything.com/entry/%EB%8B%A4%EC%9D%B4%EC%8A%A8-%EC%B2%AD%EC%86%8C%EA%B8%B0-v6-v7-v8-v10-%EB%B0%B0%ED%84%B0%EB%A6%AC-%EC%85%80%ED%94%84-%EA%B5%90%EC%B2%B4-%EB%B0%A9%EB%B2%95-%EA%B5%AC%EB%A7%A4-%EB%B0%A9%EB%B2%95/ (글 갱신 2026-08-05 표기, 2023-09-19 최초 작성)
+- URL: https://earn-on-everything.com/entry/%EB%8B%A4%EC%9D%B4%EC%8A%A8-%EC%B2%AD%EC%86%8C%EA%B8%B0-v6-v7-v8-v10-%EB%B0%B0%ED%84%B0%EB%A6%AC-%EC%85%80%ED%94%84-%EA%B5%90%EC%B2%B4-%EB%B0%A9%EB%B2%95-%EA%B5%AC%EB%A7%A4-%EB%B0%A9%EB%B2%95/ (페이지 날짜 표기 2026-08-05·2023-09-19)
 - 인용: "V6~V11 모두 129,000원" / "2026-08-06 다이슨 공식 사이트에서 확인한 값입니다"
 - 로딩: curl 200, Chromium 200 (검증 결과는 8절)
 - 신뢰도: 중간 이하. 제휴 링크가 붙은 정보성 블로그이며 공식 원문은 차단으로 대조하지 못했습니다. 원고에는 "다이슨 공식몰 표시가(제3자 확인, 2026-08 기준)"처럼 출처 성격을 밝히는 편이 안전합니다.
@@ -258,9 +258,10 @@ URL
   - 60분 | https://zdnet.co.kr/view/?no=20210525135243 | 2026-11-20 | V15 디텍트·V12 디텍트 슬림 2021-05-25 국내 출시, 일반 모드 사용 시간 | 모두 일반 모드로 사용시 60분 이용 가능하며
   - 129만원 | https://zdnet.co.kr/view/?no=20210525135243 | 2026-11-20 | 계산: 원문 129만원 표기 — V15 디텍트 국내 출시가(V12 디텍트 슬림 109만원) | V15 디텍트 무게는 3kg며, 가격은 129만원이다.
   - 70분 | https://m.seoul.co.kr/news/2022/09/27/20220927019009 | 2026-11-20 | Gen5 디텍트 국내 공개(2022-09) 최장 연속 사용 시간(Chromium 시간 초과, curl 200) | 최장 70분 연속 사용이 가능하다
-  - 월 1회 완전 방전 | https://www.techradar.com/home/vacuums/how-to-preserve-your-dyson-vacuum-battery | 2026-11-20 | TechRadar 2026-01-15가 인용한 다이슨 배터리 관리 페이지 권고(다이슨 원문은 차단) | drain to completely empty at least once a month
+  - 완전 방전 once a month | https://www.techradar.com/home/vacuums/how-to-preserve-your-dyson-vacuum-battery | 2026-11-20 | TechRadar 2026-01-15가 인용한 다이슨 배터리 관리 페이지 권고(다이슨 원문은 차단) | drain to completely empty at least once a month
   - 3°C | https://www.techradar.com/home/vacuums/how-to-preserve-your-dyson-vacuum-battery | 2026-11-20 | 3°C 미만에서 작동·충전 안 됨(TechRadar 인용) | won't charge or operate if the temperature is below 37F / 3C
   - Auto·Normal 모드 | https://www.techradar.com/home/vacuums/how-to-preserve-your-dyson-vacuum-battery | 2026-11-20 | 다이슨 문구 인용: 평소엔 Auto·Normal, Max·Boost는 짧게 | designed to be used in Auto or Normal mode for everyday cleaning
+  - 식힌 뒤 충전(BMS) | https://www.techradar.com/home/vacuums/how-to-preserve-your-dyson-vacuum-battery | 2026-11-20 | 다이슨 Head of Electrical Power Systems Amit Gupta 설명: BMS가 배터리가 식은 뒤 충전 시작 | will only initiate charging once it has cooled to the recommended level
   - 80% | https://www.techradar.com/news/james-dyson-promises-15-year-battery-life-for-the-cyclone-v10-cordless-vacuum | 2026-11-20 | James Dyson 2018-03 발언(V10 출시): 15년 매일 사용 시 80% | Fifteen years of daily use might get you down to 80% battery
   - 800 cycles | https://www.techradar.com/news/james-dyson-promises-15-year-battery-life-for-the-cyclone-v10-cordless-vacuum | 2026-11-20 | 같은 기사: V10 배터리 충전 사이클 800회 | battery is good for 800 charge cycles
 
@@ -275,7 +276,7 @@ URL
 6. 2024~2026년 직구·병행수입품 처리 정책 — 공식 문서는 설명서의 "구입한 국가에서 사용할 때만 유효" 문구, 언론은 2019년 기사뿐. 블로그 글은 근거 미표시.
 7. 다이슨 해외 지원 페이지의 교체 신호("12회 이상 깜빡임", "MAX가 아닌 모드에서도 사용 시간 감소")와 V8 나사 3개 교체 안내 원문 — 다이슨 사이트 차단, 설명서에 해당 문구 없음.
 8. 다이슨 한국 2023-11 AS 정책 원문(뉴스룸)·판매 약관(terms-of-sale) — 차단. 내용은 ZDNet 2023-11-22로 대체.
-9. V12 디텍트 슬림 등 다나와 표가 "배터리 분리형"을 적지 않은 모델(V8 2021, 싸이클론 V10)의 배터리 방식 — 다나와에는 칸이 없습니다. V11 설명서(교체형)와 기존 조사(V8·V10 나사 고정형)로 보완해야 합니다.
+9. 다나와 표에 배터리 분리 여부가 없는 모델(V8 2021, 싸이클론 V10)의 배터리 방식 — 기존 조사(V8·V10 나사 고정형, iFixit·설명서)로 보완해야 합니다.
 
 [판단] 공식 가격·출시가를 원문으로 넣으려면 다이슨 코리아 페이지를 사람이 일반 브라우저로 열어 캡처하는 방식을 허용할지 정해야 합니다. [현장] 다이슨 고객센터(1588-4253) 문의 1건이면 모델별 배터리 가격, 센터 교체 공임, 직구품 접수 여부를 한 번에 받을 수 있습니다.
 
@@ -287,7 +288,7 @@ URL
 | www.dyson.co.th | 200(제품 경로 미차단) | 제품 페이지 1회 403(Cloudflare), 이후 다이슨 사이트 시도 중단 |
 | www.dyson.hk / www.dyson.in / www.dyson.co.id | 200 | robots만 받고 페이지는 열지 않음(다이슨 사이트 차단 방침) |
 | community.dyson.com | TLS 핸드셰이크 실패 | 미열람 |
-| prod.danawa.com | 200, `/info/?pcode=` 허용 | 7개 상품 200. Chromium 본문은 사양표 칸 공백 없음, 21760133은 networkidle 시간 초과 |
+| prod.danawa.com | 200, `/info/?pcode=` 허용 | 10개 상품 200. Chromium 본문은 사양표 칸 공백 없음, 21760133은 networkidle 시간 초과 |
 | price.enuri.com | 200, 허용(crawl-delay 1) | V8(2021) 1건 200 |
 | www.safetykorea.kr | 200, 전체 허용 | certDetail GET 200(curl), Chromium 502. XU101904-20007은 "인증정보가 존재하지 않습니다" |
 | www.kurly.com | 200, `*` 허용 | 상품 4건 200(다이슨 본체만, 배터리 미판매) |
@@ -310,3 +311,5 @@ URL
 | www.conrad.com | 403 | 미열람 |
 
 요청 수: 페이지 약 45회, robots 약 40회, WebSearch 약 40회. 같은 호스트 요청 사이 1~3초 간격.
+
+검증 결과(2026-11-20): 6절 원장 68행을 `scripts/verify-sources.mjs`의 `matchClaim`과 같은 열람 순서(Chromium → 실패 시 curl, PDF는 curl+pdftotext)로 대조해 68행 모두 일치했습니다. 첫 실행에서 "월 1회 완전 방전" 행이 값의 "1회"가 원문(영문)에 없어 실패했고, 값을 "완전 방전 once a month"로 바꾼 뒤 통과했습니다. 블로그 원고로 옮길 때는 원고 front matter에서 `npm run blog:verify`를 다시 실행하십시오.

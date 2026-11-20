@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { matchClaim } from '../../scripts/verify-sources.mjs';
+import { matchClaim, robotsAllows } from '../../scripts/verify-sources.mjs';
 
 const PAGE = '당사의 출장비(출장점검료)는 거리에 상관없이 동일하게 28,000 원 청구됩니다. 센서 기능 하자가 24.9 %(42건). 일반제품 1년 청소기';
 
@@ -24,4 +24,18 @@ test('derived numbers (note "계산:") are not expected on the page', () => {
 test('image-only rows skip number matching but still require the anchor quote', () => {
   assert.deepEqual(matchClaim({ value: '11.8%', note: '이미지: 하자 유형 그래프', quote: '센서 기능 하자가' }, '센서 기능 하자가 24.9%'), []);
   assert.deepEqual(matchClaim({ value: '11.8%', note: '이미지: 하자 유형 그래프', quote: '없는 문구' }, '센서 기능 하자가 24.9%'), ['"없는 문구"']);
+});
+
+test('robotsAllows: only the generic "*" group applies; longest match wins; Allow wins ties', () => {
+  // a shop that closes everything to generic agents but opens paths to named bots (2026-11-20 miwhole.co.kr shape)
+  const closed = 'User-agent: *\nDisallow: /\n\nUser-agent: Googlebot\nUser-agent: Yeti\nDisallow: /admin/\n';
+  assert.equal(robotsAllows(closed, '/goods/goods_view.php?goodsNo=1000000030'), false);
+  assert.equal(robotsAllows('User-agent: *\nDisallow: /*?q=\n', '/shop/product/0000090680'), true);
+  assert.equal(robotsAllows('User-agent: *\nDisallow: /*?q=\n', '/search?q=battery'), false);
+  assert.equal(robotsAllows('User-agent: *\nDisallow: /a\nAllow: /a/b\n', '/a/b/c'), true);
+  assert.equal(robotsAllows('User-agent: *\nDisallow: /*.pdf$\n', '/x/guide.pdf'), false);
+  assert.equal(robotsAllows('User-agent: *\nDisallow: /*.pdf$\n', '/x/guide.pdf?v=2'), true);
+  assert.equal(robotsAllows('User-agent: Googlebot\nDisallow: /\n', '/anything'), true); // no "*" group: open
+  assert.equal(robotsAllows('', '/'), true);
+  assert.equal(robotsAllows('User-agent: *\nDisallow:\n', '/x'), true); // empty Disallow allows all
 });

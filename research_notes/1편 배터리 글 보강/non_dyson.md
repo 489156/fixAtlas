@@ -31,13 +31,13 @@
 | AI 제트 400W 대용량·기본 배터리 | 대용량: 핸디 일반 100분, 충전 300분, 흡입력 400W / 기본: 핸디 일반 60분, 충전 210분, 250W | 같은 페이지 | "충전시간 대용량 배터리 300 min / 기본 배터리 210 min" | O | X → curl |
 | AI 제트 400W 대용량 배터리 용량 | 3,970mAh | https://www.samsung.com/sec/vacuum-cleaners/Bespoke-jet-vs90f40cs-d2c/VS90F40CSK/ | "3,970mAh의 대용량 배터리로" | O | X(타임아웃) |
 | 2023년 비스포크 제트 AI 배터리 두 종류 | 일반 250W·60분, 대용량 280W·100분 | https://www.samsungsvc.co.kr/solution/1482790 (게시 2023-06-29) | "대용량배터리 장착 시에는 최대 280W의 흡입력과 최장 100분의 사용시간" | O | O |
-| 해외 부품번호·용량(대용량) | VCA-SBTC97, 25.2V, 3970mAh, 175×83×40mm, 호환 VS28C979FQK | https://www.samsung.com/hk_en/home-appliance-accessories/jet-vc-renewal-accessory-battery3-vca-sbtc97/ | "large capacity battery (3970mAh)" | O | 점검기 결과 §10 |
-| 해외 부품번호·용량(일반) | VCA-SBTC97S, 25.2V, 2200mAh, 152×78×37mm | https://www.samsung.com/hk_en/home-appliance-accessories/jet-vc-renewal-accessory-battery2-vca-sbtc97s/ | "Battery Pack (25.2V) 2200mAh" | O | §10 |
-| 홍콩 삼성의 배터리 보증 조건(홍콩 판매분) | 2년, 정상 마모 제외, 500사이클 미만·잔량 70% 초과 시 무상 교체, 2023년 1월 이후 판매 BESPOKE Jet 전 모델 | VCA-SBTC97 페이지 | "The 2 year warranty is limited to the battery only and excludes normal wear and tear" | O | §10 |
+| 해외 부품번호·용량(대용량) | VCA-SBTC97, 25.2V, 3970mAh, 175×83×40mm, 호환 VS28C979FQK | https://www.samsung.com/hk_en/home-appliance-accessories/jet-vc-renewal-accessory-battery3-vca-sbtc97/ | "large capacity battery (3970mAh)" | O | 점검기 [curl]로 일치 |
+| 해외 부품번호·용량(일반) | VCA-SBTC97S, 25.2V, 2200mAh, 152×78×37mm | https://www.samsung.com/hk_en/home-appliance-accessories/jet-vc-renewal-accessory-battery2-vca-sbtc97s/ | "Battery Pack (25.2V) 2200mAh" | O | 점검기 [curl]로 일치 |
+| 홍콩 삼성의 배터리 보증 조건(홍콩 판매분) | 2년, 정상 마모 제외, 500사이클 미만·잔량 70% 초과 시 무상 교체, 2023년 1월 이후 판매 BESPOKE Jet 전 모델 | VCA-SBTC97 페이지 | "The 2 year warranty is limited to the battery only and excludes normal wear and tear" | O | 점검기 [curl]로 일치 |
 | 삼성 멤버스 배터리 수명·보증 안내(새 주소) | 500 Cycle 후 20~30% 저하, 주 3회 약 2년, 보증 구입 후 2년 | https://community.samsung.com/kr/conversations/18b9c2/%EA%B6%81%EA%B8%88%ED%95%B4%EC%9A%94-%EC%82%BC%EC%84%B1-%EB%AC%B4%EC%84%A0%EC%B2%AD%EC%86%8C%EA%B8%B0-%EC%A0%9C%ED%8A%B8-%EB%B0%B0%ED%84%B0%EB%A6%AC-%EC%88%98%EB%AA%85-%EA%B4%80%EB%A6%AC-%EB%B0%A9%EB%B2%95/r1_24839365 | "500 Cycle 사용 후 20~30% 성능이 떨어져요" / "구입 후 2년이며, 무상 보증 기간 내 불량 발생 시 무상 교체가 가능해요" | O | O |
 | 제트 200W SE용 배터리(DJ96-00227C) 상세 이미지 | "2년 무상보증 배터리" 인증 마크(이미지 alt 문구로 판독), 500회 충방전 후 70% | https://www.samsungsvc.co.kr/shop/product/0000085295 | 이미지 옆 제목 "최대 60분 사용 대용량 배터리" | O(alt 포함) | 본문엔 alt 없음 → 이미지 행 |
 | 220W 배터리(DJ96-00242D) 적용 모델 | VS20A95*·VS20B956AXE 등 143개(다나와 2025 BEST 7위 VS20B956AXE 포함). VS20C·VS25C·VS28·VS30·VS90 없음 | https://www.samsungsvc.co.kr/shop/product/0000090680 | "VS20B956AXE" | O | O |
-| 소모품샵 청소기 배터리 목록 | 9종(DJ96-00205D·00221C·00233A·00234A·00227C·00227A·00242D·00214A·00221A). 9종의 "상품 적용 모델"을 모두 대조했고 VS28D·VS90F·VS25C·VS30D·VS20C 모델은 하나도 없다 | https://www.samsungsvc.co.kr/shop/product?category=10424&directory=10770 | "총 9 개" | O | §10 |
+| 소모품샵 청소기 배터리 목록 | 9종(DJ96-00205D·00221C·00233A·00234A·00227C·00227A·00242D·00214A·00221A). 9종의 "상품 적용 모델"을 모두 대조했고 VS28D·VS90F·VS25C·VS30D·VS20C 모델은 하나도 없다 | https://www.samsungsvc.co.kr/shop/product?category=10424&directory=10770 | Chromium "총 9개의 상품이 있습니다" / curl "총 9 개" → 원장 인용 "총 9개" | O | O |
 | 고객 자가수리 스틱청소기 부품 분류 | 먼지통·필터·아답터·파이프·바디·브러쉬(배터리 분류 없음) | https://www.samsungsvc.co.kr/shop/product?category=175707397&directory=401594162&option=401596793 | "먼지통 필터 아답터 파이프 바디 브러쉬" | O | 미시험 |
 
 부품번호·가격 결론
@@ -64,11 +64,11 @@
 | EAC63382216에 2024 A9S·A7 Core·A9 AI 포함 | AX920BWE, AX958BWE, A720WA, AI958WA, AS720WA, AS920CWD, AX9604WE 등 | 같은 페이지 | "AX920BWE.AKOR (O920BWE.AKOR)", "A720WA.CKOR (O720WA.CKOR)" | O | → curl |
 | EAC63382208 적용 모델 수 | 263개(A9100·A9300·A9570·AS9·AT9·AU9 계열 등), 리뷰 1,679개 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | "사용 가능한 모델 (총 263개)" | O | → curl |
 | EAC63382214 단품 페이지 | LGE.COM에 없음(`/care-accessories/a9-vacuum-cleaner/eac63382214`, `/product/...` 둘 다 404). 호환표에는 216과 함께 표기 | — | — | 404 | — |
-| A5 배터리 COV30090401 | 정상가 111,000원, 회원할인가 105,400원(5%), 리뷰 6개, 용량 표기 없음 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/cov30090401 | "청소기 A5 배터리" | O | O |
-| A5 본체 정격전압 | DC 18.5V(A9S·A7 Core는 25.2V) | https://www.lge.co.kr/product/vacuum-cleaners/as520wa | "정격전압 (V) (DC) 18.5" | O | 점검기 §10 |
+| A5 배터리 COV30090401 | 정상가 111,000원, 회원할인가 105,400원(5%), 리뷰 6개, 용량 표기 없음 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/cov30090401 | "COV30090401" ("청소기 A5 배터리"는 점검기 숫자 결합 규칙 때문에 불일치) | O | O |
+| A5 본체 정격전압 | DC 18.5V(A9S·A7 Core는 25.2V) | https://www.lge.co.kr/product/vacuum-cleaners/as520wa | Chromium "정격전압 (V) (DC)18.5" / curl "정격전압 (V) (DC) 18.5" | O | O |
 | 연식별 호환표(LG 문구) | 23~25년 A9S 배터리 = EAC63382214·EAC63382216 / 19~22년 = EAC63382208·EAC63382212 / 19년 이전 = EAC63382202·EAC63758601 | https://www.lge.co.kr/product/vacuum-cleaners/a720wa | "2019~2022년 출시 A9S/A9 제품은 19년~22년 출시 배터리 및 23년 출시 배터리 사용 가능합니다" | O | O |
 | 같은 표의 다른 주석 | 2023년 출시 A9S는 2023년 출시 배터리만, 2019년 이전 A9는 19년 이전·19~22년 배터리 | 같은 페이지 | "2023년 출시 A9S 제품은 2023년 출시 배터리 사용 가능합니다." | O | O |
-| 본체 출시 연월 확인 위치 | 각 제품 스펙의 "동일모델의 출시년월"(예: AX920BWE 2024-03, A720WA 2025-03, AS520WA 2025-02) | https://www.lge.co.kr/product/vacuum-cleaners/ax920bwe | "정격전압 (V) (DC) 25.2" (같은 표에 "동일모델의 출시년월 2024-03") | O | §10 |
+| 본체 출시 연월 확인 위치 | 각 제품 스펙의 "동일모델의 출시년월"(예: AX920BWE 2024-03, A720WA 2025-03, AS520WA 2025-02) | https://www.lge.co.kr/product/vacuum-cleaners/ax920bwe | Chromium "정격전압 (V) (DC)25.2" / curl "정격전압 (V) (DC) 25.2" (같은 표에 "동일모델의 출시년월 2024-03") | O | O |
 | A9 배터리와 A9S 배터리 구분 | 충전 단자 모양: 동그란 구멍 3개(A9/A9S 배터리) vs 사각 구멍에 작은 사각 홈 4개(A9S 배터리) | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/eac63382208 | 이미지 alt: "작은 동그란 구멍이 3개가 나열 되어있으며 A9S 배터리 충전단자 모양은 사각형 구멍에 작은 사각형 흠 4개" / 본문 앵커: "구매하시기 전에 사용하시는 청소기의 동일한 배터리인지 확인해 주세요" | O(alt) | 본문엔 alt 없음 → 이미지 행 |
 | 모델명 확인 방법(LG 고객지원, 2026-05-29, 조회 160,457) | 배터리를 빼고 안쪽 은색 라벨 | https://www.lge.co.kr/support/solutions-20150332172261 | "밧데리 제거 후 안쪽면 은색 라벨" | O | O |
 | A9 AI(2025)의 배터리 수명 표시 | 본체 화면에서 잔량과 수명 표시, 이상 시 씽큐 알림 | https://www.lg.co.kr/media/release/28915 (2025-04-30) | "제품에 탑재된 화면에서 배터리 잔량뿐 아니라 수명까지 확인 가능" | O | O |
@@ -123,7 +123,7 @@
 | 사실 | 값 | URL | 인용 |
 |---|---|---|---|
 | 파워클론 슬림 CVC-G820NWM(2024년형) | 배터리 분리형 1개, 리튬이온 2000mAh, 최대 55분, 다나와 최저가 182,690원, 본체 안전확인 YU102096-24001 | https://prod.danawa.com/info/?pcode=61842860 | "배터리용량 2000mAh" / "안전확인인증 YU102096-24001" |
-| 파워클론 하이퍼 CVC-HE0710EG(2025년형) | 2,000mAh, 최대 35분, 최저가 223,250원, 안전확인 YU102201-25001 | https://prod.danawa.com/info/?pcode=94445447 | "배터리용량 2,000mAh" |
+| 파워클론 하이퍼 CVC-HE0710EG(2025년형) | 2,000mAh, 최대 35분, 최저가 223,250원, 안전확인 YU102201-25001 | https://prod.danawa.com/info/?pcode=94445447 | "2,000mAh" (Chromium 본문에서는 "배터리용량 2,000mAh"가 이어져 있지 않음) |
 | 쿠쿠 배터리 단품 가격·부품번호·보증 | 찾지 못함 | — | — |
 
 - 다나와 "쿠쿠 무선청소기 배터리" 검색 상위 6개는 모두 본체였다. cuckoo.co.kr은 403, mall·service 서브도메인은 연결 실패(502), cuckoo.co.kr·m.cuckoo.co.kr의 robots.txt는 302로 넘어갔다.
@@ -137,7 +137,7 @@
 | 접수 경로 | 고객센터 1644-9245 또는 카카오톡 '샤크닌자', 평일 09:00~18:00 | https://www.sharkninja.co.kr/ | "샤크닌자 고객센터(1644-9245) 또는 카카오톡에서 '샤크닌자'를 검색해 문의해 주세요" | O | X(타임아웃) → curl |
 | 무선청소기 무상 수리 기간 | 최대 3년(기본 1년), 공식몰 구매 후 제품 등록 시만 연장, 본체 기능 고장만 | 같은 페이지 | "최대 3년* (기본 1년)" | O | → curl |
 | 배터리 제외 | 연장 무상수리에서 배터리 제외 | 같은 페이지 | "배터리, 필터, 칼날 등 소모품 및 액세서리는 제외됩니다" | O | → curl |
-| 공식몰 배터리 단품 | Accessories 50개 중 배터리는 "샤크 무선청소기 WV250 배터리"(핸디형, 자체상품코드 XSBT250KR) 하나, 49,000원, 품절 | https://www.sharkninja.co.kr/product/%EC%83%A4%ED%81%AC-%EB%AC%B4%EC%84%A0%EC%B2%AD%EC%86%8C%EA%B8%B0-wv250-%EB%B0%B0%ED%84%B0%EB%A6%AC/299/category/142/display/1/ | "XSBT250KR" / "품절 재입고 알림 신청" | O | §10 |
+| 공식몰 배터리 단품 | Accessories 50개 중 배터리는 "샤크 무선청소기 WV250 배터리"(핸디형, 자체상품코드 XSBT250KR) 하나, 49,000원, 품절 | https://www.sharkninja.co.kr/product/%EC%83%A4%ED%81%AC-%EB%AC%B4%EC%84%A0%EC%B2%AD%EC%86%8C%EA%B8%B0-wv250-%EB%B0%B0%ED%84%B0%EB%A6%AC/299/category/142/display/1/ | "XSBT250KR" / "품절 재입고 알림 신청" | O | 점검기 [curl]로 일치 |
 | 스틱(에보파워 LC·파워클린 IW) 배터리 단품 | 공식몰 Accessories 1~5쪽 어디에도 없음 | https://www.sharkninja.co.kr/category/Accessories/142/ | — | O | — |
 
 - 공식몰 첫 화면 배너 문구는 "최대 4년* 무상 수리 서비스"지만, 4년은 선풍기 등 계절성 제품(기본 2년)이다. 무선청소기는 최대 3년이다.
@@ -211,7 +211,26 @@ D. 이미 원고에 있는 LG전자 고객센터 회신(2026-11-18, `firsthand`)
 
 ## 10. 점검기 실측(verify-sources)
 
-<!-- 결과는 실행 후 아래에 붙인다 -->
+방법: 위 원장 후보 행을 임시 원고(스크래치 폴더)에 넣고 `NODE_PATH=$(npm root -g) node scripts/verify-sources.mjs <임시원고> --evidence=<스크래치>`로 실행했다(`--write` 없음, 저장소 파일 변경 없음). 미홀 행은 robots 때문에 넣지 않았다.
+
+1차(57행): 일치 49, 이미지 1, 불일치 7. 불일치 원인과 조치
+- 삼성 소모품샵 목록 "총 9 개": Chromium 본문은 "총 9개의 상품이 있습니다". → 인용을 "총 9개"로 바꿈(curl 본문 "총 9 개"도 점검기의 숫자·단위 결합 뒤 "총 9개"가 됨).
+- LG A5 배터리 "청소기 A5 배터리": 점검기가 본문의 "숫자+공백+배"를 붙여("A5 배터리" → "A5배터리") 인용과 어긋남. → 인용 "COV30090401". 같은 이유로 "A7 배터리"가 들어간 번들 인용도 "배터리모델명EAC63382216"으로 바꿈.
+- LG 정격전압 2건: Chromium 본문은 "정격전압 (V) (DC)18.5"처럼 붙어 있다(curl은 띄어 씀). → Chromium 형태로 바꿈. Chromium이 실패해 curl로 넘어가면 이 두 행은 불일치가 난다.
+- LG 배터리턴 "156톤 / 34만 개": 값 칸의 "34만"을 점검기가 340,000으로 바꿔 대조. → 값 칸을 "156톤"으로 줄임.
+- 쿠쿠 하이퍼 "배터리용량 2,000mAh": Chromium 본문에서 두 낱말이 이어져 있지 않음. → 인용 "2,000mAh".
+
+2차(수정 10행 + 단독 1행): 모두 일치(계산 2, 이미지 1 포함). "모든 출처 기록이 원문과 일치합니다."
+
+읽기 경로(점검기 표시)
+- [browser]: community.samsung.com, samsungsvc.co.kr 상품·목록, lge.co.kr 상품·케어액세서리·고객지원·기획전, lg.co.kr 보도자료, ksa.or.kr, prod.danawa.com
+- [curl](Chromium 실패 후 대체): samsung.com/sec 지원·상품 페이지, samsung.com/hk_en, lg.com/au·ca_en(Chromium은 Access Denied 403), samsungsvc.co.kr/solution/1482790, sharkninja.co.kr, consumernews.co.kr
+- curl 대체 경로에서 띄어쓰기가 달라지는 행: KS-SQI 인용("7 개 업종에서는 1 위"), LG 정격전압 2건, LG 번들 행. Chromium이 뜨지 않는 날에는 이 행들이 불일치로 나온다.
+
+점검기 동작에서 확인한 제약(원고 작성 시 주의)
+- 값 칸의 단위는 원·%·년·회·개월·건·명·배·시간 등만 숫자로 대조한다. mAh·V·W·분 값은 인용 문구로만 확인된다.
+- 값 칸의 "17만 원", "77만9000원", "34만 개"는 170,000원 등으로 바뀌어 대조되므로, 기사 원문이 한국식 금액이면 값 칸에 넣지 말고 인용 문구에 둔다.
+- 인용 문구에 "숫자 + 공백 + (%·원·년·건·개월·회·명·배)"가 있으면 본문 쪽만 붙여져 항상 불일치한다.
 
 ---
 
@@ -241,12 +260,12 @@ D. 이미 원고에 있는 LG전자 고객센터 회신(2026-11-18, `firsthand`)
   - AX920BWE | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382216 | 2026-11-20 | EAC63382216 적용 모델에 2024년형 A9S 올인원타워 AX920BWE 포함 | AX920BWE.AKOR (O920BWE.AKOR)
   - A720WA | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382216 | 2026-11-20 | EAC63382216 적용 모델에 A7 Core A720WA 포함 | A720WA.CKOR (O720WA.CKOR)
   - 263개 | https://www.lge.co.kr/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-20 | EAC63382208(19~22년형) 적용 모델 수 | 사용 가능한 모델 (총 263개)
-  - 111,000원 / 105,400원 / 5% | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/cov30090401 | 2026-11-20 | LG A5 배터리 COV30090401 정상가·회원할인가(용량 표기 없음) | 청소기 A5 배터리
-  - 18.5V | https://www.lge.co.kr/product/vacuum-cleaners/as520wa | 2026-11-20 | LG A5 본체 정격전압(A9S·A7 Core는 25.2V) | 정격전압 (V) (DC) 18.5
-  - 25.2V | https://www.lge.co.kr/product/vacuum-cleaners/ax920bwe | 2026-11-20 | A9S AX920BWE 정격전압, 동일모델 출시 2024-03 | 정격전압 (V) (DC) 25.2
+  - 111,000원 / 105,400원 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/cov30090401 | 2026-11-20 | LG A5 배터리 COV30090401 정상가·회원할인가(할인율 5%, 용량 표기 없음) | COV30090401
+  - 18.5V | https://www.lge.co.kr/product/vacuum-cleaners/as520wa | 2026-11-20 | LG A5 본체 정격전압(A9S·A7 Core는 25.2V). 인용은 Chromium 본문 형태 | 정격전압 (V) (DC)18.5
+  - 25.2V | https://www.lge.co.kr/product/vacuum-cleaners/ax920bwe | 2026-11-20 | A9S AX920BWE 정격전압, 동일모델 출시 2024-03. 인용은 Chromium 본문 형태 | 정격전압 (V) (DC)25.2
   - 23~25년 | https://www.lge.co.kr/product/vacuum-cleaners/a720wa | 2026-11-20 | LG 배터리 호환표: 19~22년형 본체는 23년형 배터리도 사용 가능 | 2019~2022년 출시 A9S/A9 제품은 19년~22년 출시 배터리 및 23년 출시 배터리 사용 가능합니다
   - 2023년 출시 | https://www.lge.co.kr/product/vacuum-cleaners/a720wa | 2026-11-20 | LG 배터리 호환표: 2023년 이후 A9S는 23년형 배터리만 | 2023년 출시 A9S 제품은 2023년 출시 배터리 사용 가능합니다
-  - 100,400원 / 22% | https://www.lge.co.kr/product/vacuum-cleaners/a720wa | 2026-11-20 | A720WA와 함께 살 때의 번들할인가(배터리 단품가 아님) | 청소기 A9/A9S/A7 배터리 모델명 EAC63382216
+  - 100,400원 / 22% | https://www.lge.co.kr/product/vacuum-cleaners/a720wa | 2026-11-20 | A720WA와 함께 살 때의 번들할인가(배터리 단품가 아님). 인용은 Chromium 본문 형태 | 배터리모델명EAC63382216
   - 단자 모양 | https://www.lge.co.kr/product/care-accessories/a9-vacuum-cleaner/eac63382208 | 2026-11-20 | 이미지: A9/A9S 배터리는 충전 단자에 동그란 구멍 3개, A9S 배터리는 사각 구멍에 사각 홈 4개(이미지 alt로 판독) 캡처:lg-terminal@다음이미지 | 구매하시기 전에 사용하시는 청소기의 동일한 배터리인지 확인해 주세요
   - 모델 확인 | https://www.lge.co.kr/support/solutions-20150332172261 | 2026-11-20 | LG 고객지원(2026-05-29): 배터리 모델은 배터리를 뺀 안쪽 은색 라벨로 확인 | 밧데리 제거 후 안쪽면 은색 라벨
   - 교체 주기 미지정 | https://www.lge.co.kr/support/solutions-20150332172261 | 2026-11-20 | LG 고객지원(2026-05-29): 기간 기준 교체 주기 없음. solutions-20150373882418의 '권장 주기 2년'과 다름 | 기간에 따른 권장 교체 주기는 별도로 지정되어 있지 않습니다
@@ -260,14 +279,14 @@ D. 이미 원고에 있는 LG전자 고객센터 회신(2026-11-18, `firsthand`)
   - 46,530원 | https://prod.danawa.com/info/?pcode=31642349 | 2026-11-20 | 다나와 최저가: 삼성 제트 70(VS15T7032P4) 호환 배터리, 가격갱신일 2026.11.15 | VCA-SBT90E
   - KC 미표시 | https://prod.danawa.com/info/?pcode=56139131 | 2026-11-20 | 다나와는 호환 배터리 KC 번호를 '판매 사이트 문의'로만 표시 | 상세설명 / 판매 사이트 문의
   - 2000mAh | https://prod.danawa.com/info/?pcode=61842860 | 2026-11-20 | 쿠쿠 파워클론 슬림 CVC-G820NWM 배터리(분리형 1개, 최대 55분) | 배터리용량 2000mAh
-  - 2,000mAh | https://prod.danawa.com/info/?pcode=94445447 | 2026-11-20 | 쿠쿠 파워클론 하이퍼 CVC-HE0710EG 배터리(최대 35분) | 배터리용량 2,000mAh
+  - 2,000mAh | https://prod.danawa.com/info/?pcode=94445447 | 2026-11-20 | 쿠쿠 파워클론 하이퍼 CVC-HE0710EG 배터리(최대 35분) | 2,000mAh
   - 1644-9245 | https://www.sharkninja.co.kr/ | 2026-11-20 | 샤크닌자 A/S 접수: 고객센터·카카오톡 | 샤크닌자 고객센터(1644-9245) 또는 카카오톡에서 '샤크닌자'를 검색해 문의해 주세요
   - 3년 / 1년 | https://www.sharkninja.co.kr/ | 2026-11-20 | 샤크닌자 무선청소기 무상수리 최대 3년(기본 1년), 공식몰 구매 후 등록 시 | 최대 3년* (기본 1년)
   - 배터리 제외 | https://www.sharkninja.co.kr/ | 2026-11-20 | 샤크닌자 연장 무상수리에서 배터리 제외 | 배터리, 필터, 칼날 등 소모품 및 액세서리는 제외됩니다
   - 49,000원 | https://www.sharkninja.co.kr/product/%EC%83%A4%ED%81%AC-%EB%AC%B4%EC%84%A0%EC%B2%AD%EC%86%8C%EA%B8%B0-wv250-%EB%B0%B0%ED%84%B0%EB%A6%AC/299/category/142/display/1/ | 2026-11-20 | 샤크 공식몰 유일한 배터리 단품(핸디형 WV250용, 품절). 스틱 배터리 단품 없음 | XSBT250KR
   - 10월 1일 / 11월 30일 | https://www.lg.co.kr/media/release/30631 | 2026-11-20 | LG전자 보도자료(2026-10-02) 배터리턴 하반기 기간 | LG전자는 10월 1일부터 11월 30일까지 배터리턴 캠페인을 진행한다
   - 제조사 무관 | https://www.lg.co.kr/media/release/30631 | 2026-11-20 | 타사 무선청소기 폐배터리도 LG 서비스센터·LGE.COM으로 반납 | 제조사와 관계없이 사용하던 무선청소기 폐배터리를
-  - 156톤 / 34만 개 | https://www.lg.co.kr/media/release/30631 | 2026-11-20 | 2022년부터 2026년 상반기까지 누적 수거량 | 약 156톤, 수량은 34만 개가 넘는다
+  - 156톤 | https://www.lg.co.kr/media/release/30631 | 2026-11-20 | 2022년부터 2026년 상반기까지 누적 수거량(34만 개는 인용 문구로만 대조) | 약 156톤, 수량은 34만 개가 넘는다
   - 30,000원 | https://www.lge.co.kr/benefits/exhibitions/detail-PE01017005 | 2026-11-20 | 배터리턴: 서비스센터에 배터리 반납 후 A9/A9S/A7 정품 배터리 구매 시 할인 | 단일 품목 반납/구매 시 30,000원 할인
   - 99,000원 | https://www.lge.co.kr/benefits/exhibitions/detail-PE01017005 | 2026-11-20 | 배터리턴: 센터 반납 시 최종 혜택가(소비자가 129,000원) | 최종 혜택가: 99,000원
   - 104,000원 / 19% | https://www.lge.co.kr/benefits/exhibitions/detail-PE01017005 | 2026-11-20 | 배터리턴: 온라인 구매(회원 5%+추가 15%) | 최대혜택가: 104,000원 (19% 할인)
