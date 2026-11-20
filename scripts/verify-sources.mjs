@@ -125,6 +125,23 @@ export function robotsAllows(robotsTxt, pathAndQuery) {
   return best ? best.allow : true;
 }
 
+/**
+ * Reads a robots.txt HTTP answer: returns the rules text ('' = no rules) or null when the site is closed to this tool.
+ * 2xx with robots rules → the text. 2xx with an HTML page instead of rules: a firewall block or bot-challenge page
+ * (e.g. "접근 차단 안내" served with 200) → closed; any other HTML page (a homepage served for every path) → no rules.
+ * 4xx other than 401/403 → no rules (RFC 9309 "unavailable"); 401, 403, 5xx, network errors → closed. Pure; unit-tested.
+ */
+export function robotsVerdict(code, body) {
+  if (code >= 200 && code < 300) {
+    const text = String(body || '');
+    if (/^\s*(<!doctype\s+html|<html|<head|<body)/i.test(text)) {
+      return /접근\s*차단|차단\s*안내|access\s+denied|request\s+blocked|forbidden|captcha|challenge|are you a (human|robot)|enable (javascript|cookies)|bot\s*(check|verification)|cf-chl|_incapsula_|attention required/i.test(text) ? null : '';
+    }
+    return text;
+  }
+  return code >= 400 && code < 500 && code !== 401 && code !== 403 ? '' : null;
+}
+
 const robotsCache = new Map();
 /** Fetches and caches a host's robots.txt. 401/403/5xx or no answer = treat the host as closed; 404 = open. */
 async function robotsAllowed(url) {
@@ -134,9 +151,8 @@ async function robotsAllowed(url) {
     const get = () => new Promise((resolve) => {
       execFile('curl', ['-sS', '-L', '-m', '20', '-w', '\n%{http_code}', `${u.origin}/robots.txt`], { maxBuffer: 5 * 1024 * 1024 }, (err, stdout) => {
         if (err) return resolve(null);
-        const i = stdout.lastIndexOf('\n'); const code = Number(stdout.slice(i + 1));
-        if (code >= 200 && code < 300) return resolve(stdout.slice(0, i));
-        resolve(code >= 400 && code < 500 && code !== 401 && code !== 403 ? '' : null);
+        const i = stdout.lastIndexOf('\n');
+        resolve(robotsVerdict(Number(stdout.slice(i + 1)), stdout.slice(0, i)));
       });
     });
     let txt = await get();

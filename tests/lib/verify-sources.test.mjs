@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { matchClaim, robotsAllows } from '../../scripts/verify-sources.mjs';
+import { matchClaim, robotsAllows, robotsVerdict } from '../../scripts/verify-sources.mjs';
 
 const PAGE = '당사의 출장비(출장점검료)는 거리에 상관없이 동일하게 28,000 원 청구됩니다. 센서 기능 하자가 24.9 %(42건). 일반제품 1년 청소기';
 
@@ -38,4 +38,18 @@ test('robotsAllows: only the generic "*" group applies; longest match wins; Allo
   assert.equal(robotsAllows('User-agent: Googlebot\nDisallow: /\n', '/anything'), true); // no "*" group: open
   assert.equal(robotsAllows('', '/'), true);
   assert.equal(robotsAllows('User-agent: *\nDisallow:\n', '/x'), true); // empty Disallow allows all
+});
+
+test('robotsVerdict: a firewall block or bot-challenge page served as robots.txt closes the site', () => {
+  // 2026-11-20 service.daelimbath.com: HTTP 200 with an HTML "접근 차단 안내" page instead of rules
+  const block = '<!DOCTYPE html>\n<html lang="ko"><head><title>접근 차단 안내</title></head><body>…</body></html>';
+  assert.equal(robotsVerdict(200, block), null);
+  assert.equal(robotsVerdict(200, '<html><body>Please enable JavaScript and cookies to continue</body></html>'), null);
+  // a homepage served for every path is not a block: no rules
+  assert.equal(robotsVerdict(200, '<!doctype html><html><head><title>LIXIL Korea</title></head></html>'), '');
+  assert.equal(robotsVerdict(200, 'User-agent: *\nDisallow: /admin/\n'), 'User-agent: *\nDisallow: /admin/\n');
+  assert.equal(robotsVerdict(404, 'not found'), '');
+  assert.equal(robotsVerdict(403, ''), null);
+  assert.equal(robotsVerdict(401, ''), null);
+  assert.equal(robotsVerdict(503, ''), null);
 });

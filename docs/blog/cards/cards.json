@@ -228,12 +228,12 @@
  {
   "id": "05-fillvalve-thumb",
   "kind": "thumb",
-  "title": "변기 필밸브(볼탑),\n직접 바꾸면 얼마?",
-  "label": "대림바스 투피스용 정품 필밸브",
-  "big": "14,500원",
-  "sub": "원피스용은 25,700원",
-  "evidence": "../evidence/2026-12-toilet-fill-valve/dl-price.png",
-  "evidenceLabel": "대림바스 AS부품몰 캡처 2026.11.19",
+  "title": "변기 물이 안 차요?\n필밸브면 얼마?",
+  "label": "범용 투피스 필밸브(와토스 WP20) 부품값",
+  "big": "2,450원",
+  "sub": "동네 기사 게시가는 6만 원부터",
+  "evidence": "../evidence/2026-12-toilet-fill-valve/wp20-price.png",
+  "evidenceLabel": "다나와 상품 정보 캡처 2026.11.20",
   "evidenceY": 140,
   "evidenceHeight": 145
  },
