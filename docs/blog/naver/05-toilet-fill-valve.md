@@ -1,12 +1,12 @@
 ---
 slug: 2026-12-toilet-fill-valve
 kind: guide
-title: 변기 물이 안 차요? 필밸브면 직접 2,450원부터, 기사는 6만 원부터
+title: 변기 물이 안 차요? 필밸브면 직접 2천 원대부터, 기사는 6만 원부터
 demand: 투피스·원피스 양변기 물탱크에 물이 안 차거나 늦게 차는 집의 거주자가 단수·동파·앵글밸브 문제인지 필밸브(볼탑) 고장인지 가르고, 우리 집 변기 브랜드에 맞는 부품과 값, 직접 바꿀지 제조사 AS나 동네 기사를 부를지, 세입자라면 누가 내는지 판단하려고 '변기 물이 안 차요'나 '변기 필밸브 교체'를 검색할 때 이 글을 읽습니다.
 reader: 투피스·원피스 양변기 물탱크에 물이 안 차거나 늦게 차는 집의 거주자. 대림바스·계림·이누스·아메리칸스탠다드·한샘 변기를 쓰는 아파트·빌라·원룸의 소유자와 월세·전세 세입자 모두
 need: 원인이 단수·동파·앵글밸브인지 필밸브인지 가르고, 브랜드별로 맞는 부품과 값, 직접 교체와 제조사 AS·동네 기사 중 무엇이 나은지, 집주인 부담 여부를 판단
 urgency: 높음 — 물이 안 차면 변기를 쓸 수 없고 12월부터 동파가 늘어남(서울 2025~26 겨울 수도계량기 동파 2,754건, 서울시 2026-11-15). 반대로 물이 계속 차면 수도요금이 오름
-scale: 네이버 월간 검색량(PC/모바일, 2026-11-20): 변기물이안차요 470/5,920, 변기필밸브 770/4,170, 변기수리 290/2,610, 변기필밸브교체 260/1,750, 변기물소리 40/870, 변기물안참 50/540, 변기볼탑 160/530, 대림변기필밸브 40/330, 변기물이계속차요 30/300, 변기물이늦게차요 20/250, 변기필밸브교체비용 30/230, 변기물탱크물이안차요 10/200 · 묶음어 변기부속품 1,710/11,000 · 집수리 검색어 23개 중 '변기물이안차요' 5위(docs/research/data/volumes/2026-12-toilet-fill-valve_2026-11-20.json) · 다나와 필밸브 리뷰 수: 와토스 WP20 2,555건, WP21 669건, 대림바스 투피스 볼탑 289건(2026-11-20) · 이누스 고객센터 '양변기 모델명은 어떻게 확인하나요' 조회 3,679회(2026-11-20, 조회할 때마다 늘어나 본문에는 쓰지 않음), '물탱크에 물이 채워지지 않는 경우' 조회 1,918회(2026-11-20)
+scale: 네이버 월간 검색량(PC/모바일, 2026-11-20): 변기물이안차요 470/5,920, 변기필밸브 770/4,170, 변기수리 290/2,610, 변기필밸브교체 260/1,750, 변기물소리 40/870, 변기물안참 50/540, 변기볼탑 160/530, 대림변기필밸브 40/330, 변기물이계속차요 30/300, 변기물이늦게차요 20/250, 변기필밸브교체비용 30/230, 변기물탱크물이안차요 10/200 · 묶음어 변기부속품 1,710/11,000 · 집수리 검색어 23개 중 '변기물이안차요' 5위(docs/research/data/volumes/2026-12-toilet-fill-valve_2026-11-20.json) · 다나와 필밸브 리뷰 수: 와토스 WP20 2,556건, WP21 669건, 대림바스 투피스 볼탑 289건(2026-11-20) · 이누스 고객센터 '양변기 모델명은 어떻게 확인하나요' 조회 3,679회(2026-11-20, 조회할 때마다 늘어나 본문에는 쓰지 않음), '물탱크에 물이 채워지지 않는 경우' 조회 1,918회(2026-11-20)
 queries: 변기 물이 안 차요, 변기 물탱크 물이 안 차요, 변기 물이 늦게 차요, 변기 필밸브, 변기 필밸브 교체, 변기 필밸브 교체 비용, 변기 볼탑, 대림 변기 필밸브, 변기 수리, 변기 물이 계속 차요, 변기 물소리, 필밸브 교체 공구, 변기 수리 집주인
 tags: 변기물이안차요, 변기필밸브, 변기필밸브교체, 변기수리, 변기물소리, 변기볼탑, 변기물안참, 대림변기필밸브, 변기물이계속차요, 변기필밸브교체비용
 tier: yellow
@@ -25,127 +25,129 @@ claims:
   - 2,010회 | 직접:네이버 검색광고 키워드 도구 조회 2026-11-20 | 2026-11-20 | '변기필밸브교체' 월간 검색량 PC 260 + 모바일 1,750 |
   - 23개 | 직접:네이버 검색광고 키워드 도구 조회 2026-11-20 | 2026-11-20 | 차트에 넣은 집수리 검색어 수(수전·트랩·팝업·환풍기·조명·변기 등) |
   - 3배 | 직접:네이버 검색광고 키워드 도구 조회 2026-11-20 | 2026-11-20 | 6,390÷2,010=3.2(수리기록 계산) |
-  - 2,450원 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-20 | 와토스코리아 무소음 필밸브 WP20(투피스 범용) 다나와 최저가, 배송비 별도 캡처:wp20-price | 최저가2,450원
-  - 4.6점 / 2,555 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-20 | 와토스 WP20 쇼핑몰 상품리뷰 평점·수 | 4.6점 (2,555)
-  - 리뷰: 늦게 차서 교체 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-20 | 사례: 다나와 쇼핑몰 리뷰(와토스 WP20, 2024-09-04 작성) | 물이 늦게 차올라서 밸브를 교체하게 되었습니다
-  - 리뷰: 공구 하나 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-20 | 다나와 쇼핑몰 리뷰(와토스 WP20, 2025-11-05 작성) | 몽키스패너 하나면 해결
-  - 리뷰: 비철 조임 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-20 | 다나와 쇼핑몰 리뷰(와토스 WP20, 2026-01-01 작성) | 비철이라 지나친 조립력은 파손의 원인이 될 수 있으니
-  - 1분 30초 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-20 | 다나와 쇼핑몰 리뷰(와토스 WP20, 2024-11-20 작성): 세게 조인 뒤 물 차는 시간이 늘었다가 다시 적당히 조여 해결 | 1분 30초 정도로 오래 걸림
-  - 7,460원 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-20 | 대림바스 투피스 양변기 볼탑 필밸브 다나와 최저가(17몰), 배송비 별도 | 대림바스 투피스 양변기 볼탑 필밸브
+  - 2,390원 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 와토스코리아 무소음 필밸브 WP20(투피스 범용) 다나와 최저가, 배송비 별도(2026-11-20 2,450원 → 11-21 2,390원으로 바뀜) 캡처:wp20-price | 최저가2,390원
+  - 2천 원대 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 계산: 제목·첫 문단·썸네일의 묶음 표기. 다나와 최저가가 하루에도 바뀌어(2,450→2,400→2,390원) 천 원 단위로 묶음 |
+  - 4.6점 / 2,556 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 와토스 WP20 쇼핑몰 상품리뷰 평점·수 | 4.6점 (2,556)
+  - 리뷰: 늦게 차서 교체 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 사례: 다나와 쇼핑몰 리뷰(와토스 WP20, 2024-09-04 작성) | 물이 늦게 차올라서 밸브를 교체하게 되었습니다
+  - 리뷰: 공구 하나 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 다나와 쇼핑몰 리뷰(와토스 WP20, 2025-11-05 작성) | 몽키스패너 하나면 해결
+  - 리뷰: 비철 조임 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 다나와 쇼핑몰 리뷰(와토스 WP20, 2026-01-01 작성) | 비철이라 지나친 조립력은 파손의 원인이 될 수 있으니
+  - 1분 30초 | https://prod.danawa.com/info/?pcode=2276464 | 2026-11-21 | 다나와 쇼핑몰 리뷰(와토스 WP20, 2024-11-20 작성): 세게 조인 뒤 물 차는 시간이 늘었다가 다시 적당히 조여 해결 | 1분 30초 정도로 오래 걸림
+  - 7,460원 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-21 | 대림바스 투피스 양변기 볼탑 필밸브 다나와 최저가(17몰), 배송비 별도 | 대림바스 투피스 양변기 볼탑 필밸브
   - 4.6점 / 289 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-20 | 대림바스 투피스 볼탑 쇼핑몰 상품리뷰 평점·수 | 4.6점 (289)
   - 리뷰: 고무 패킹 구멍 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-20 | 사례: 다나와 쇼핑몰 리뷰(대림바스 투피스 볼탑, 2025-02-15 작성) | 변기 물이 느리게 차올라서 뜯어보니 내부 고무 빠킹이 달아서 구멍이 났습니다
   - 리뷰: 큰 너트 공구 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-20 | 다나와 쇼핑몰 리뷰(대림바스 투피스 볼탑, 2025-12-17 작성) | 큰 너트에 맞는 공구가 필요하네요
   - 리뷰: 교체해도 같은 증상 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-20 | 다나와 쇼핑몰 리뷰(대림바스 투피스 볼탑, 2024-10-21 작성) | 교체해도 동일증상이라
-  - 17,400원 | https://prod.danawa.com/info/?pcode=101136749 | 2026-11-20 | 대림바스 원피스 CC-213·214용 볼탑 필밸브 판매가(판매자 표기, 가격갱신일 2026.11.15). 같은 묶음의 최저가 14,610원은 플러시밸브 상품이라 쓰지 않음 | 대림원피스양변기볼탑 CC-213 214 필밸브 볼탭 부레
-  - 7,040원 | https://prod.danawa.com/info/?pcode=42763076 | 2026-11-20 | 와토스 WP250 키높이조절 필밸브 다나와 최저가 | WP250
-  - 19,920원 | https://prod.danawa.com/info/?pcode=101105786 | 2026-11-20 | 와토스 WP21 무소음 원피스 필밸브 다나와 최저가 | WP21
-  - 4.5점 / 669 | https://prod.danawa.com/info/?pcode=101105786 | 2026-11-20 | 와토스 WP21 쇼핑몰 상품리뷰 평점·수 | 4.5점 (669)
-  - 32,620원 | https://prod.danawa.com/info/?pcode=42776405 | 2026-11-20 | 이누스바스 원피스 볼탑 필밸브 분사펌프 다나와 최저가(가격갱신일 2026.04.24) | 이누스
-  - 33,750원 | https://search.danawa.com/?query=%EA%B3%84%EB%A6%BC+%ED%95%84%EB%B0%B8%EB%B8%8C | 2026-11-20 | 계림요업 원피스 필밸브 다나와 최저가(5몰) | 계림요업 양변기 볼탐 부품 필밸브
-  - 32,500원 | https://search.danawa.com/?query=%EC%95%84%EB%A9%94%EB%A6%AC%EC%B9%B8%EC%8A%A4%ED%83%A0%EB%8B%A4%EB%93%9C+%ED%95%84%EB%B0%B8%EB%B8%8C | 2026-11-20 | 릭실코리아 아메리칸스탠다드 양변기 필밸브(다나와 검색 상품) | C603700Z-0GAKZZ00W
-  - 15,300원 | https://search.danawa.com/?query=%ED%95%9C%EC%83%98+%EC%96%91%EB%B3%80%EA%B8%B0+%EB%B6%80%EC%86%8D | 2026-11-20 | 한샘 양변기 부속품 WTG300 다나와 최저가(4몰, 필밸브 단품인지 세트인지 미표기) | 한샘 양변기 부속품 WTG300
-  - 3,000원 | https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=57411 | 2026-11-20 | 다이소몰 멍키스패너 200 판매가 | 멍키스패너 200
-  - 10,460원 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-20 | 계산: 7,460+3,000(대림바스 투피스 볼탑 + 다이소 멍키스패너 200) |
-  - 61.8% | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-20 | 대림바스 2025년 국내 위생도기 점유율(대한도자기·타일공업협동조합 출하현황, 이코노미스트 2026-05-11) | 대림바스는 2025년 기준 국내 위생도기 시장에서 점유율 61.8%를 기록했다
-  - 25.3% | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-20 | 2위 계림요업 2025년 점유율 | 반면 2위 계림요업은 25.3%의 점유율에 그쳤다
-  - 출하현황 자료명 | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-20 | 점유율 근거 자료 | 국내 위생도기 제조업체 연간 출하현황
-  - 다나와 인기상품순 정의 | https://search.danawa.com/?query=%EC%96%91%EB%B3%80%EA%B8%B0 | 2026-11-20 | 판매량만이 아닌 점수 순위 | 조회수, 판매량, 판매금액, 연관 콘텐츠 수 등을 점수화하여
-  - 30개 / 15개 / 4개 / 2개 | https://prod.danawa.com/list/?cate=17316293 | 2026-11-20 | 계산: 다나와 양변기 인기순 상위 30개 중 대림바스 15, 아메리칸스탠다드 4, 이누스(아이에스동서) 2, 한샘 1(2026-11-20 22:13 화면, 순위는 매일 바뀜) | 아메리칸스탠다드 웨이브 S 스퀘어 투피스 양변기
+  - 17,400원 | https://prod.danawa.com/info/?pcode=101136749 | 2026-11-21 | 대림바스 원피스 CC-213·214용 볼탑 필밸브 판매가(판매자 표기, 가격갱신일 2026.11.15). 같은 묶음의 최저가 14,610원은 플러시밸브 상품이라 쓰지 않음 | 대림원피스양변기볼탑 CC-213 214 필밸브 볼탭 부레
+  - 7,040원 | https://prod.danawa.com/info/?pcode=42763076 | 2026-11-21 | 와토스 WP250 키높이조절 필밸브 다나와 최저가 | WP250
+  - 19,920원 | https://prod.danawa.com/info/?pcode=101105786 | 2026-11-21 | 와토스 WP21 무소음 원피스 필밸브 다나와 최저가 | WP21
+  - 4.5점 / 669 | https://prod.danawa.com/info/?pcode=101105786 | 2026-11-21 | 와토스 WP21 쇼핑몰 상품리뷰 평점·수 | 4.5점 (669)
+  - 32,620원 | https://prod.danawa.com/info/?pcode=42776405 | 2026-11-21 | 이누스바스 원피스 볼탑 필밸브 분사펌프 다나와 최저가(가격갱신일 2026.04.24) | 이누스
+  - 33,750원 | https://search.danawa.com/?query=%EA%B3%84%EB%A6%BC+%ED%95%84%EB%B0%B8%EB%B8%8C | 2026-11-21 | 계림요업 원피스 필밸브 다나와 최저가(5몰) | 계림요업 양변기 볼탐 부품 필밸브
+  - 32,500원 | https://search.danawa.com/?query=%EC%95%84%EB%A9%94%EB%A6%AC%EC%B9%B8%EC%8A%A4%ED%83%A0%EB%8B%A4%EB%93%9C+%ED%95%84%EB%B0%B8%EB%B8%8C | 2026-11-21 | 릭실코리아 아메리칸스탠다드 양변기 필밸브(다나와 검색 상품) | C603700Z-0GAKZZ00W
+  - 15,300원 | https://search.danawa.com/?query=%ED%95%9C%EC%83%98+%EC%96%91%EB%B3%80%EA%B8%B0+%EB%B6%80%EC%86%8D | 2026-11-21 | 한샘 양변기 부속품 WTG300 다나와 최저가(4몰, 필밸브 단품인지 세트인지 미표기) | 한샘 양변기 부속품 WTG300
+  - 3,000원 | https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=57411 | 2026-11-21 | 다이소몰 멍키스패너 200 판매가 | 멍키스패너 200
+  - 10,460원 | https://prod.danawa.com/info/?pcode=42758777 | 2026-11-21 | 계산: 7,460+3,000(대림바스 투피스 볼탑 + 다이소 멍키스패너 200) |
+  - 61.8% | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-21 | 대림바스 2025년 국내 위생도기 점유율(대한도자기·타일공업협동조합 출하현황, 이코노미스트 2026-05-11) | 대림바스는 2025년 기준 국내 위생도기 시장에서 점유율 61.8%를 기록했다
+  - 25.3% | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-21 | 2위 계림요업 2025년 점유율 | 반면 2위 계림요업은 25.3%의 점유율에 그쳤다
+  - 출하현황 자료명 | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-21 | 점유율 근거 자료 | 국내 위생도기 제조업체 연간 출하현황
+  - 다나와 인기상품순 정의 | https://search.danawa.com/?query=%EC%96%91%EB%B3%80%EA%B8%B0 | 2026-11-21 | 판매량만이 아닌 점수 순위 | 조회수, 판매량, 판매금액, 연관 콘텐츠 수 등을 점수화하여
+  - 30개 / 15개 / 4개 / 2개 | https://prod.danawa.com/list/?cate=17316293 | 2026-11-21 | 계산: 다나와 양변기 인기순 상위 30개 중 대림바스 15, 아메리칸스탠다드 4, 이누스(아이에스동서) 2, 한샘 1(2026-11-20 22:13 화면, 순위는 매일 바뀜) | 아메리칸스탠다드 웨이브 S 스퀘어 투피스 양변기
   - 10개 업체 14개 제품 | https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995 | 2026-11-21 | 사례: 한국소비자원 보도자료 '절수형 변기, 제품별로 세척성능·절수효과 등에 차이 있어'(2024-01-25) 시험 대상 | 10개 업체의 14개 제품에 대해
   - 선호도 높은 제품 | https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995 | 2026-11-21 | 같은 보도자료, 대상 선정 기준 | 소비자 선호도가 높은 절수형 변기
   - 표시사항 누락 | https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995 | 2026-11-21 | 같은 보도자료, 변기시트 모델명·재질·제조자명 표시 | 모든 제품이 표시사항의 일부 또는 전체를 누락해 개선이 필요했다
-  - 50% | https://www.hankyung.com/article/2025082908871 | 2026-11-20 | 와토스코리아 국내 위생도기 부품 시장 점유(한국경제 2025-08-29) | 국내 위생도기 부품 시장의 50% 정도를 차지하고 있는 와토스코리아
-  - 20~30% / 30% | https://www.hankyung.com/article/2025082908871 | 2026-11-20 | 중국산 부품 잠식과 가격 차이(업계 추산) | 품질 수준은 떨어지지만 가격은 30% 이상 저렴한 편
-  - 1588-1952 | https://www.daelimbath.com/download/as_guide | 2026-11-20 | 대림바스 위생도기 서비스센터 | 위생도기 1588-1952
-  - 1년 | https://www.daelimbath.com/download/as_guide | 2026-11-20 | 대림바스 설치 후 무상 AS 기간(시공·제품 하자) | 설치 후 1년 이내에 시공 하자, 제품 하자인 경우 무상 AS 가능합니다
-  - 유상 AS 비용 항목 | https://www.daelimbath.com/download/as_guide | 2026-11-20 | 고객 과실이면 유상, 금액은 공개하지 않음 | 출장비, 서비스 실비가 청구됩니다
-  - 대림바스 부품몰 | https://www.daelimbath.com/partsmall | 2026-11-20 | 직영 부품 구매 전용 쇼핑몰, 수리와 별도 | 부품 구매와 제품 점검·수리 서비스는 별도로 운영됩니다
-  - 1566-8625 | https://www.kelim.net/cs/after-service | 2026-11-20 | 계림 고객센터 | Tel 1566-8625
-  - 계림 이중 출장비 | https://www.kelim.net/cs/after-service | 2026-11-20 | 모델명을 잘못 적었을 때 | 이중 출장비 발생
-  - 계림 부품 구입처 | https://www.kelim.net/cs/faq | 2026-11-20 | 대리점·판매점 구입, 재고 확인 | 부속은 재고가 없는 경우도 있사오니
-  - 계림 물 안 참 FAQ | https://www.kelim.net/cs/faq?type=TOILET_BOWL&page=2 | 2026-11-20 | 질문 제목 캡처:kelim-faq | 양변기 탱크에 물이 채워지지 않아요
-  - 계림 부구 간섭 | https://www.kelim.net/cs/faq?type=TOILET_BOWL&page=2 | 2026-11-20 | 점검 순서 3번째 | 필밸브 부구가 다른곳에 닿았는지 확인하십시요
-  - 계림 로우탱크 | https://www.kelim.net/cs/faq?type=TOILET_BOWL&page=2 | 2026-11-20 | 원피스(로우탱크) 제트펌프 부속 | 제트펌프 전환 부구 패킹의 노후로 인한 변형 발생 및 작동불량
-  - 1588-8613 | https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid | 2026-11-20 | 이누스 고객센터 | TEL : 1588-8613
-  - 1년 | https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid | 2026-11-20 | 이누스 품질보증기간 | 제품의 인도(설치)날로부터 1년 이내의 기간을 말합니다
-  - 이누스 출장비 | https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid | 2026-11-20 | 금액 미공개 | 지역별로 차등 청구됩니다
-  - 이누스 모델명 위치1 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007 | 2026-11-20 | 제조사 안내 | 레버 반대편의 물탱크와 양변기 하부 확인
-  - 이누스 모델명 위치2 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007 | 2026-11-20 | 제조사 안내 | 탱크뚜껑을 열어 뚜껑내부 확인
-  - 이누스 모델명 위치3 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007 | 2026-11-20 | 제조사 안내 | 하부 겉면 부착 스티커로 확인
-  - 1566-3787 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3939&boardMstCd=BBM00007 | 2026-11-20 | 이누스 부품 판매업체 | 푸른물 : 1566-3787
-  - 이누스 물 안 참 1단계 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3934&boardMstCd=BBM00007 | 2026-11-20 | 제조사 간단조치 | 먼저 앵글밸브가 잠겨있는지 확인해주시기 바랍니다
-  - 이누스 물 안 참 2단계 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3934&boardMstCd=BBM00007 | 2026-11-20 | 제조사 간단조치 | 잔수호스가 플러시 밸브 몸체에서 탈거되어 있는지
-  - 1588-0900 | https://store.hanssem.com/goods/319412 | 2026-11-20 | 한샘 A/S·추가부품 문의 | A/S 신청 및 추가부품 문의(1588-0900)
-  - 1년 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-20 | 한샘 무상 품질 보증기간 | 무상 품질 보증기간 : 1년
-  - 50,000원 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-20 | 한샘 방문점검비 평일/주간 | •평일/주간: 50,000원
-  - 60,000원 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-20 | 한샘 방문점검비 휴일/야간 | •휴일/야간: 60,000원
-  - 한샘 자재비 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-20 | 부품값 기준 | 한샘 정찰제 부품 단가로 적용됩니다
-  - 070-4067-5455 | https://www.kohler.co.kr/contact-us | 2026-11-20 | 콜러 코리아 A/S | A/S : 070-4067-5455
-  - 6만 원 | https://daangn.com/kr/local-profile/%ED%99%88%ED%8B%80%EB%9F%AC-ro2wnxe1u6f5/ | 2026-11-20 | 당근 동네업체 게시가(경기 안산 홈틀러, 업체 직접 등록) | 투피스 양변기 부속품 전체 교체 6만원부터
-  - 70,000원 / 30,000원 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-20 | 당근 동네업체 게시가(서울 강남 홈앤집수리): 투피스 부속교체 70,000원~, 기본 출장비 30,000원~ 별도 | 기본출장비+항목별수리비로 청구 됩니다.
-  - 와토스 자재 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-20 | 같은 업체 항목 설명 | 와토스/자재비 포함
-  - 100,000원 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-20 | 계산: 70,000+30,000(투피스 부속교체 + 기본 출장비, 게시 시작가) |
-  - 당근 업체 정보 책임 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-20 | 당근 게시 정보의 성격 | 업체 관리자가 직접 등록한 것으로
-  - 덜 열린 밸브 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-20 | Korky(Lavelle Industries) 느린 급수 안내 | A partially closed valve or restricted supply line can limit water flow into the tank.
-  - 꺾인 호스 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-20 | 같은 안내 | Straighten the line if it is kinked.
-  - 양동이 시험 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-20 | Korky(Lavelle Industries) 느린 급수 안내 | redirect the line into a bucket
-  - 양동이 시험 판정 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-20 | 같은 안내 | There may be a blockage in the line or your incoming water supply if little or no water flows into the bucket.
-  - 이물질로 늦게 참 | https://faq.americanstandard-us.com/article/21 | 2026-11-20 | American Standard 미국 FAQ | Sometimes debris can get stuck inside the fill valve causing it to refill your tank slowly.
-  - 거름망 막힘 신호 | https://www.totousa.com/filemanager_uploads/product_assets/OwnersManual/0GU206_CST436_CST448.pdf | 2026-11-20 | TOTO 미국 설명서 0GU206-5(Rev 6/22) | An indication that the strainer requires service can be seen in a delayed fill cycle
-  - 밸브 완전 개방 | https://resources.kohler.com/webassets/kpna/catalog/pdf/en/1175975-5.pdf | 2026-11-20 | Kohler 문제 해결 'Toilet Tank Takes Excessive Time to Fill' | A. Fully open the water supply shut-off valve.
-  - 공급 쪽 막힘 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | Fluidmaster 400A 설명서(PART# 4-743 Rev. 6) 문제 해결 | Partial blockage may be at shut off valve or in water supply line
-  - 이물질 확인 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 항목 | Remove top cap and check for debris.
-  - 씰 교체 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 항목 | replace seal with a genuine Fluidmaster 242
-  - 탱크 수위 낮음 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 '물 높이가 낮을 때' | Water level in tank may be too low.
-  - 수위 올리기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 5단계 | turn adjustment screw clockwise to raise
-  - 필밸브가 저절로 켜졌다 꺼짐 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 문제 해결 | This indicates the tank is losing water.
-  - 고무마개·플러시밸브 점검 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 문제 해결 | Clean flapper and drain seat. If leak continues, change flapper or flush valve.
-  - 수위는 오버플로관 아래 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 6단계 | WATER LEVEL (C) is set below top of Overflow Pipe
-  - 남은 물 빼기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 준비 단계 | Flush toilet and remove excess water from tank with sponge
-  - 손으로만 조이기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 3단계 | Hand-tighten only. DO NOT OVER TIGHTEN.
-  - 과도한 조임 경고 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 3단계 | Over tightening may crack the fill valve or tank
-  - 부자가 닿지 않게 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 3단계 | Make sure the float cup does not touch the tank walls
-  - 연결부 누수 시 너트 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 4단계 | turn nut just enough to stop leaking
-  - 수위 낮추기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 5단계 | counter clockwise to lower water level
-  - C.L. 표시 1인치 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 2단계(높이 맞추기) | MUST be positioned 1” above top of overflow pipe
+  - 50% | https://www.hankyung.com/article/2025082908871 | 2026-11-21 | 와토스코리아 국내 위생도기 부품 시장 점유(한국경제 2025-08-29) | 국내 위생도기 부품 시장의 50% 정도를 차지하고 있는 와토스코리아
+  - 20~30% / 30% | https://www.hankyung.com/article/2025082908871 | 2026-11-21 | 중국산 부품 잠식과 가격 차이(업계 추산) | 품질 수준은 떨어지지만 가격은 30% 이상 저렴한 편
+  - 1588-1952 | https://www.daelimbath.com/download/as_guide | 2026-11-21 | 대림바스 위생도기 서비스센터 | 위생도기 1588-1952
+  - 1년 | https://www.daelimbath.com/download/as_guide | 2026-11-21 | 대림바스 설치 후 무상 AS 기간(시공·제품 하자) | 설치 후 1년 이내에 시공 하자, 제품 하자인 경우 무상 AS 가능합니다
+  - 유상 AS 비용 항목 | https://www.daelimbath.com/download/as_guide | 2026-11-21 | 고객 과실이면 유상, 금액은 공개하지 않음 | 출장비, 서비스 실비가 청구됩니다
+  - 대림바스 부품몰 | https://www.daelimbath.com/partsmall | 2026-11-21 | 직영 부품 구매 전용 쇼핑몰, 수리와 별도 | 부품 구매와 제품 점검·수리 서비스는 별도로 운영됩니다
+  - 1566-8625 | https://www.kelim.net/cs/after-service | 2026-11-21 | 계림 고객센터 | Tel 1566-8625
+  - 계림 이중 출장비 | https://www.kelim.net/cs/after-service | 2026-11-21 | 모델명을 잘못 적었을 때 | 이중 출장비 발생
+  - 계림 부품 구입처 | https://www.kelim.net/cs/faq | 2026-11-21 | 대리점·판매점 구입, 재고 확인 | 부속은 재고가 없는 경우도 있사오니
+  - 계림 물 안 참 FAQ | https://www.kelim.net/cs/faq?type=TOILET_BOWL&page=2 | 2026-11-21 | 질문 제목 캡처:kelim-faq | 양변기 탱크에 물이 채워지지 않아요
+  - 계림 부구 간섭 | https://www.kelim.net/cs/faq?type=TOILET_BOWL&page=2 | 2026-11-21 | 점검 순서 3번째 | 필밸브 부구가 다른곳에 닿았는지 확인하십시요
+  - 계림 로우탱크 | https://www.kelim.net/cs/faq?type=TOILET_BOWL&page=2 | 2026-11-21 | 원피스(로우탱크) 제트펌프 부속 | 제트펌프 전환 부구 패킹의 노후로 인한 변형 발생 및 작동불량
+  - 1588-8613 | https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid | 2026-11-21 | 이누스 고객센터 | TEL : 1588-8613
+  - 1년 | https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid | 2026-11-21 | 이누스 품질보증기간 | 제품의 인도(설치)날로부터 1년 이내의 기간을 말합니다
+  - 이누스 출장비 | https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid | 2026-11-21 | 금액 미공개 | 지역별로 차등 청구됩니다
+  - 이누스 모델명 위치1 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007 | 2026-11-21 | 제조사 안내 | 레버 반대편의 물탱크와 양변기 하부 확인
+  - 이누스 모델명 위치2 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007 | 2026-11-21 | 제조사 안내 | 탱크뚜껑을 열어 뚜껑내부 확인
+  - 이누스 모델명 위치3 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007 | 2026-11-21 | 제조사 안내 | 하부 겉면 부착 스티커로 확인
+  - 1566-3787 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3939&boardMstCd=BBM00007 | 2026-11-21 | 이누스 부품 판매업체 | 푸른물 : 1566-3787
+  - 이누스 물 안 참 1단계 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3934&boardMstCd=BBM00007 | 2026-11-21 | 제조사 간단조치 | 먼저 앵글밸브가 잠겨있는지 확인해주시기 바랍니다
+  - 이누스 물 안 참 2단계 | https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3934&boardMstCd=BBM00007 | 2026-11-21 | 제조사 간단조치 | 잔수호스가 플러시 밸브 몸체에서 탈거되어 있는지
+  - 1588-0900 | https://store.hanssem.com/goods/319412 | 2026-11-21 | 한샘 A/S·추가부품 문의 | A/S 신청 및 추가부품 문의(1588-0900)
+  - 1년 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-21 | 한샘 무상 품질 보증기간 | 무상 품질 보증기간 : 1년
+  - 50,000원 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-21 | 한샘 방문점검비 평일/주간 | •평일/주간: 50,000원
+  - 60,000원 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-21 | 한샘 방문점검비 휴일/야간 | •휴일/야간: 60,000원
+  - 한샘 자재비 | https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as | 2026-11-21 | 부품값 기준 | 한샘 정찰제 부품 단가로 적용됩니다
+  - 070-4067-5455 | https://www.kohler.co.kr/contact-us | 2026-11-21 | 콜러 코리아 A/S | A/S : 070-4067-5455
+  - 6만 원 | https://daangn.com/kr/local-profile/%ED%99%88%ED%8B%80%EB%9F%AC-ro2wnxe1u6f5/ | 2026-11-21 | 당근 동네업체 게시가(경기 안산 홈틀러, 업체 직접 등록) | 투피스 양변기 부속품 전체 교체 6만원부터
+  - 70,000원 / 30,000원 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-21 | 당근 동네업체 게시가(서울 강남 홈앤집수리): 투피스 부속교체 70,000원~, 기본 출장비 30,000원~ 별도 | 기본출장비+항목별수리비로 청구 됩니다.
+  - 와토스 자재 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-21 | 같은 업체 항목 설명 | 와토스/자재비 포함
+  - 100,000원 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-21 | 계산: 70,000+30,000(투피스 부속교체 + 기본 출장비, 게시 시작가) |
+  - 당근 업체 정보 책임 | https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/ | 2026-11-21 | 당근 게시 정보의 성격 | 업체 관리자가 직접 등록한 것으로
+  - 덜 열린 밸브 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-21 | Korky(Lavelle Industries) 느린 급수 안내 | A partially closed valve or restricted supply line can limit water flow into the tank.
+  - 꺾인 호스 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-21 | 같은 안내 | Straighten the line if it is kinked.
+  - 양동이 시험 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-21 | Korky(Lavelle Industries) 느린 급수 안내 | redirect the line into a bucket
+  - 양동이 시험 판정 | https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet | 2026-11-21 | 같은 안내 | There may be a blockage in the line or your incoming water supply if little or no water flows into the bucket.
+  - 이물질로 늦게 참 | https://faq.americanstandard-us.com/article/21 | 2026-11-21 | American Standard 미국 FAQ | Sometimes debris can get stuck inside the fill valve causing it to refill your tank slowly.
+  - 거름망 막힘 신호 | https://www.totousa.com/filemanager_uploads/product_assets/OwnersManual/0GU206_CST436_CST448.pdf | 2026-11-21 | TOTO 미국 설명서 0GU206-5(Rev 6/22) | An indication that the strainer requires service can be seen in a delayed fill cycle
+  - 밸브 완전 개방 | https://resources.kohler.com/webassets/kpna/catalog/pdf/en/1175975-5.pdf | 2026-11-21 | Kohler 문제 해결 'Toilet Tank Takes Excessive Time to Fill' | A. Fully open the water supply shut-off valve.
+  - 공급 쪽 막힘 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | Fluidmaster 400A 설명서(PART# 4-743 Rev. 6) 문제 해결 | Partial blockage may be at shut off valve or in water supply line
+  - 이물질 확인 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 항목 | Remove top cap and check for debris.
+  - 씰 교체 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 항목 | replace seal with a genuine Fluidmaster 242
+  - 탱크 수위 낮음 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 '물 높이가 낮을 때' | Water level in tank may be too low.
+  - 수위 올리기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 5단계 | turn adjustment screw clockwise to raise
+  - 필밸브가 저절로 켜졌다 꺼짐 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 문제 해결 | This indicates the tank is losing water.
+  - 고무마개·플러시밸브 점검 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 문제 해결 | Clean flapper and drain seat. If leak continues, change flapper or flush valve.
+  - 수위는 오버플로관 아래 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 6단계 | WATER LEVEL (C) is set below top of Overflow Pipe
+  - 남은 물 빼기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 준비 단계 | Flush toilet and remove excess water from tank with sponge
+  - 손으로만 조이기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 3단계 | Hand-tighten only. DO NOT OVER TIGHTEN.
+  - 과도한 조임 경고 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 3단계 | Over tightening may crack the fill valve or tank
+  - 부자가 닿지 않게 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 3단계 | Make sure the float cup does not touch the tank walls
+  - 연결부 누수 시 너트 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 4단계 | turn nut just enough to stop leaking
+  - 수위 낮추기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 5단계 | counter clockwise to lower water level
+  - C.L. 표시 1인치 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-21 | 같은 설명서 2단계(높이 맞추기) | MUST be positioned 1” above top of overflow pipe
   - 2,754건 / 2,046건 / 708건 / 34.6% | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 서울시 보도자료(2026-11-15, 서울아리수본부) 첨부 HWP 본문: 2025~26 겨울 수도계량기 동파 | 전년 2,046건보다 708건(34.6%) 증가한 2,754건으로 집계됐다
   - 1,352건 / 49.1% | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료, 복도식 아파트 비중 | 1,352건(49.1%)이 복도식 아파트에서 발생해
   - 자연재해 동파 무상 교체 | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료, 계량기 교체 비용 | 한파 등 자연재해로 수도계량기가 동파된 경우에는 무상으로 교체를 지원한다
   - 관리 소홀 동파 비용 | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료 | 관리 소홀로 동파된 경우에는 사용자에게 계량기 대금과 교체비용이 부과될 수 있다
   - 서울 신고처 120 | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료, 신고처 | 120다산콜재단, 관할 수도사업소 또는 아리수 요금고객센터로 즉시 신고
-  - 물 안 나옴 = 계량기 확인 | https://news.seoul.go.kr/env/archives/504939 | 2026-11-20 | 서울시 2019-12-03 동파 안내 | 수돗물이 갑자기 나오지 않을 때에는 수도계량기 유리가 깨지거나 부풀어 올랐는지 확인하여
-  - 50℃ 이하 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-20 | 서울시 2025-11-14 녹이기 수칙 | 언 계량기는 50℃ 이하의 열로 천천히 녹이는
-  - 지시부 깨짐 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-20 | 서울시 2025-11-14 | 수도계량기의 지시부가 깨지거나 부풀어 오르는 등 동파가 의심되는 경우
-  - 화기 금지 | https://news.seoul.go.kr/env/archives/505700 | 2026-11-20 | 서울시 2020-02-19 동파 해빙 안내 | 화기(토치, 헤어드라이기 등)를 사용하면 화재가 발생할 수 있고
-  - 50도 이상 물 금지 | https://news.seoul.go.kr/env/archives/505700 | 2026-11-20 | 같은 안내 | 50도 이상 뜨거운 물을 사용할 경우 계량기 파손의 위험이 있으므로
-  - K-water 즉시 출동 | https://www.kwater.or.kr/cust/sub01/norm05Tab.do?s_mid=1154 | 2026-11-20 | K-water 지방상수도 서비스이행표준 | 물이 잘 안나오는 등 불편사항을 신고하시면 즉시(도서지역 제외) 현장에 출동하여
-  - 5만 원 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 사례: 한국소비자원 피해예방주의보 '청소·하수도위생 서비스, 현장 추가 비용 요구 주의해야'(보도자료 2026-07-15, 게시 2026-08-05) 캡처:kca-case | 5만 원 수준의 기본요금만 제시하고
+  - 물 안 나옴 = 계량기 확인 | https://news.seoul.go.kr/env/archives/504939 | 2026-11-21 | 서울시 2019-12-03 동파 안내 | 수돗물이 갑자기 나오지 않을 때에는 수도계량기 유리가 깨지거나 부풀어 올랐는지 확인하여
+  - 50℃ 이하 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-21 | 서울시 2025-11-14 녹이기 수칙 | 언 계량기는 50℃ 이하의 열로 천천히 녹이는
+  - 지시부 깨짐 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-21 | 서울시 2025-11-14 | 수도계량기의 지시부가 깨지거나 부풀어 오르는 등 동파가 의심되는 경우
+  - 화기 금지 | https://news.seoul.go.kr/env/archives/505700 | 2026-11-21 | 서울시 2020-02-19 동파 해빙 안내 | 화기(토치, 헤어드라이기 등)를 사용하면 화재가 발생할 수 있고
+  - 50도 이상 물 금지 | https://news.seoul.go.kr/env/archives/505700 | 2026-11-21 | 같은 안내 | 50도 이상 뜨거운 물을 사용할 경우 계량기 파손의 위험이 있으므로
+  - K-water 즉시 출동 | https://www.kwater.or.kr/cust/sub01/norm05Tab.do?s_mid=1154 | 2026-11-21 | K-water 지방상수도 서비스이행표준 | 물이 잘 안나오는 등 불편사항을 신고하시면 즉시(도서지역 제외) 현장에 출동하여
+  - 기본요금만 제시 후 추가 요구 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 사례: 한국소비자원 피해예방주의보 '청소·하수도위생 서비스, 현장 추가 비용 요구 주의해야'(보도자료 2026-07-15, 게시 2026-08-05) 캡처:kca-case | 5만 원 수준의 기본요금만 제시하고
+  - 5만 원 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 계산: 원문 표기 '5만 원'을 점검기가 원 단위로 읽으므로 원문 문구로 확인 | 5만 원 수준의 기본요금만 제시하고
   - 34.5% / 48건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 같은 주의보, 하수도위생 서비스 피해 중 추가 비용 요구 비중 | 34.5%(48건)로 그 뒤를 이었다
   - 수십만 원 추가 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 같은 주의보 | 현장에서 수십만 원을 추가로 요구하는 사례가 많았다
-  - 부자 점검 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 강남구 안내(2019-12-05) 누수 원인 1 캡처:gn-check | 부력에 의해 부자가 떠오르고 물이 나오는 입구를 잘 막는지 확인
-  - 마개 점검 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 강남구 안내 누수 원인 2 | 레버를 작동시킨 후 잘 닫히는지 확인
-  - 수도요금 감면 제외 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 서울시 누수감면 제도 변경(2020-01-01 시행) | 그동안 감면되었던 양변기 누수에 따른 수도요금은 감면되지 않습니다.
-  - 40% | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 양변기 누수가 전체 누수 건수에서 차지하는 비중 | 전체 누수 건수 중 40%에 해당되어
-  - 하수도 요금 감면 제외 | https://news.seoul.go.kr/env/archives/520951 | 2026-11-20 | 서울시 물재생계획과 안내 | 2023년 1월 1일부터 양변기 누수에 대해 하수도 요금 감면이 제외됩니다.
-  - 원룸 변기 누수 수도요금 분담 사례 | https://lawtalknews.co.kr/article/UM6TZCCZ1GHI | 2026-11-20 | 사례: 로톡뉴스 2019-07-19 보도(로톡 상담 사례 재구성, 원룸 월세 세입자) 캡처:lawtalk-case | 집(변기)의 하자로 인한 것인 만큼
-  - 100만 원 | https://lawtalknews.co.kr/article/UM6TZCCZ1GHI | 2026-11-20 | 계산: 기사 표기 '100만 원'을 점검기가 원 단위로 읽으므로 원문 문구로 확인 | 수도요금이 100만 원 나왔는데
-  - 반반 부담 제안 | https://lawtalknews.co.kr/article/UM6TZCCZ1GHI | 2026-11-20 | 같은 사례의 집주인 제안 | 반반씩 부담하자
-  - 민법 제623조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-20 | 임대인의 의무 | 임대인은 목적물을 임차인에게 인도하고 계약존속중 그 사용, 수익에 필요한 상태를 유지하게 할 의무를 부담한다.
-  - 민법 제626조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-20 | 필요비 상환청구 | 임차인이 임차물의 보존에 관한 필요비를 지출한 때에는 임대인에 대하여 그 상환을 청구할 수 있다.
-  - 민법 제634조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-20 | 임차인의 통지의무 | 임차물의 수리를 요하거나
-  - 민법 제615조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-20 | 원상회복의무 | 차주가 차용물을 반환하는 때에는 이를 원상에 회복하여야 한다.
-  - 민법 제654조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-20 | 제615조(원상회복)를 임대차에 준용 | 규정은 임대차에 이를 준용한다
-  - 대법원 2010다89876 사소한 수선 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-20 | 판결요지 [1] 전단 | 임차인이 별비용을 들이지 아니하고도 손쉽게 고칠 수 있을 정도의 사소한 것
-  - 대법원 2010다89876 임대인 수선의무 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-20 | 판결요지 [1] 후단 | 사용·수익할 수 없는 상태로 될 정도의 것이라면 임대인은 수선의무를 부담한다
-  - 수도법 제14조① | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-20 | 물에 접촉하는 수도용 자재·제품 인증 | 위생안전기준에 맞는지에 대하여 인증을 받아야 한다
-  - 수도법 제14조② | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-20 | 미인증 제품 판매 금지 | 수도용 자재나 제품을 제조ㆍ수입ㆍ공급ㆍ판매하여서는 아니 된다
-  - 수도법 제14조④ | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-20 | 인증 표시 의무 | 인증을 받은 사실을 수도용 자재나 제품 및 그 포장에 표시하여야 한다
+  - 부자 점검 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-21 | 강남구 안내(2019-12-05) 누수 원인 1 캡처:gn-check | 부력에 의해 부자가 떠오르고 물이 나오는 입구를 잘 막는지 확인
+  - 마개 점검 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-21 | 강남구 안내 누수 원인 2 | 레버를 작동시킨 후 잘 닫히는지 확인
+  - 수도요금 감면 제외 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-21 | 서울시 누수감면 제도 변경(2020-01-01 시행) | 그동안 감면되었던 양변기 누수에 따른 수도요금은 감면되지 않습니다.
+  - 40% | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-21 | 양변기 누수가 전체 누수 건수에서 차지하는 비중 | 전체 누수 건수 중 40%에 해당되어
+  - 하수도 요금 감면 제외 | https://news.seoul.go.kr/env/archives/520951 | 2026-11-21 | 서울시 물재생계획과 안내 | 2023년 1월 1일부터 양변기 누수에 대해 하수도 요금 감면이 제외됩니다.
+  - 원룸 변기 누수 수도요금 분담 사례 | https://lawtalknews.co.kr/article/UM6TZCCZ1GHI | 2026-11-21 | 사례: 로톡뉴스 2019-07-19 보도(로톡 상담 사례 재구성, 원룸 월세 세입자) 캡처:lawtalk-case | 집(변기)의 하자로 인한 것인 만큼
+  - 100만 원 | https://lawtalknews.co.kr/article/UM6TZCCZ1GHI | 2026-11-21 | 계산: 기사 표기 '100만 원'을 점검기가 원 단위로 읽으므로 원문 문구로 확인 | 수도요금이 100만 원 나왔는데
+  - 반반 부담 제안 | https://lawtalknews.co.kr/article/UM6TZCCZ1GHI | 2026-11-21 | 같은 사례의 집주인 제안 | 반반씩 부담하자
+  - 민법 제623조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-21 | 임대인의 의무 | 임대인은 목적물을 임차인에게 인도하고 계약존속중 그 사용, 수익에 필요한 상태를 유지하게 할 의무를 부담한다.
+  - 민법 제626조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-21 | 필요비 상환청구 | 임차인이 임차물의 보존에 관한 필요비를 지출한 때에는 임대인에 대하여 그 상환을 청구할 수 있다.
+  - 민법 제634조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-21 | 임차인의 통지의무 | 임차물의 수리를 요하거나
+  - 민법 제615조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-21 | 원상회복의무 | 차주가 차용물을 반환하는 때에는 이를 원상에 회복하여야 한다.
+  - 민법 제654조 | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284415&efYd=20260317 | 2026-11-21 | 제615조(원상회복)를 임대차에 준용 | 규정은 임대차에 이를 준용한다
+  - 대법원 2010다89876 사소한 수선 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-21 | 판결요지 [1] 전단 | 임차인이 별비용을 들이지 아니하고도 손쉽게 고칠 수 있을 정도의 사소한 것
+  - 대법원 2010다89876 임대인 수선의무 | https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196 | 2026-11-21 | 판결요지 [1] 후단 | 사용·수익할 수 없는 상태로 될 정도의 것이라면 임대인은 수선의무를 부담한다
+  - 수도법 제14조① | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-21 | 물에 접촉하는 수도용 자재·제품 인증 | 위생안전기준에 맞는지에 대하여 인증을 받아야 한다
+  - 수도법 제14조② | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-21 | 미인증 제품 판매 금지 | 수도용 자재나 제품을 제조ㆍ수입ㆍ공급ㆍ판매하여서는 아니 된다
+  - 수도법 제14조④ | https://www.law.go.kr/LSW/lsInfoR.do?lsiSeq=284311&efYd=20260918 | 2026-11-21 | 인증 표시 의무 | 인증을 받은 사실을 수도용 자재나 제품 및 그 포장에 표시하여야 한다
 ---
 
-# 변기 물이 안 차요? 필밸브면 직접 2,450원부터, 기사는 6만 원부터
+# 변기 물이 안 차요? 필밸브면 직접 2천 원대부터, 기사는 6만 원부터
 
 네이버 검색어를 살펴보니 '변기 물이 안 차요'를 정말 많이 궁금해하셨습니다.
-원인이 물탱크 속 필밸브(볼탑)라면 직접 바꿀 때 부품값은 2,450원부터이고 동네 기사에게 맡기면 게시가 기준 6만 원부터입니다.
+원인이 물탱크 속 필밸브(볼탑)라면 직접 바꿀 때 부품값은 2천 원대(다나와 최저가 2,390원, 배송비 별도)부터이고 동네 기사에게 맡기면 게시가 기준 6만 원부터입니다.
 
 ![집수리 검색어 23개의 네이버 월간 검색량(2026년 11월 20일 조회). '변기 물이 안 차요'가 월 6,390회로 '변기 필밸브 교체' 2,010회의 3배](../diagrams/2026-12-toilet-fill-valve/search-demand.png)
 
@@ -162,7 +164,7 @@ claims:
 | 먼저 볼 것 | 세면대 물이 나오는지, 앵글밸브가 끝까지 열렸는지, 겨울이면 계량기 동파 |
 | 난이도 | 쉬움: 앵글밸브를 잠그고 탱크 안 부품 하나를 바꾸는 일 |
 | 시간 | 제조사가 밝힌 기준 없음 |
-| 직접 하면 | 필밸브 투피스 2,450~7,460원, 원피스 17,400~33,750원(다나와 최저가, 배송비 별도) |
+| 직접 하면 | 필밸브 투피스 2,390~7,460원, 원피스 17,400~33,750원(다나와 최저가, 배송비 별도) |
 | 기사에게 맡기면 | 동네업체 게시가 투피스 6만 원부터, 출장비를 따로 받으면 100,000원부터. 한샘 AS는 방문점검비 50,000원 + 기술료 + 자재비 |
 | 등급 | 초록(세입자는 노랑): 세입자는 집주인에게 먼저 알리고 떼어 낸 부품을 보관 |
 
@@ -307,7 +309,7 @@ Fluidmaster 설명서는 필밸브가 저절로 켜졌다 꺼지면 "This indica
 | 아메리칸스탠다드 | 다나와 검색 상품 32,500원(C603700Z) | 제품 설명서·보증서의 고객센터 번호로 문의 |
 | 한샘 | 한샘 양변기 부속품 WTG300 15,300원(구성 미표기) | 1588-0900, 1년. 방문점검비 50,000원(휴일·야간 60,000원) + 기술료 + 자재비 |
 | 콜러 | 모델명으로 A/S에 문의 | A/S 070-4067-5455 |
-| 와토스(범용) | WP20 2,450원, 높이조절 WP250 7,040원, 원피스 WP21 19,920원 | 변기 제조사 AS 대상이 아님 |
+| 와토스(범용) | WP20 2,390원, 높이조절 WP250 7,040원, 원피스 WP21 19,920원 | 변기 제조사 AS 대상이 아님 |
 
 출처: 다나와 상품 정보, 대림바스·계림·이누스·한샘·콜러 고객센터 안내(2026년 11월 20일 기준). 다나와 값은 최저가이고 배송비는 별도입니다.
 
@@ -329,7 +331,7 @@ Fluidmaster 설명서는 필밸브가 저절로 켜졌다 꺼지면 "This indica
 한국경제(2025년 8월 29일)는 와토스코리아를 "국내 위생도기 부품 시장의 50% 정도를 차지하고 있는 와토스코리아"로 소개했습니다.
 
 다나와 리뷰 수도 범용 쪽이 많습니다.
-와토스 WP20은 평점 4.6점에 리뷰 2,555, 대림바스 투피스 볼탑은 4.6점에 리뷰 289입니다.
+와토스 WP20은 평점 4.6점에 리뷰 2,556, 대림바스 투피스 볼탑은 4.6점에 리뷰 289입니다.
 
 동네 수리업체도 범용 부품을 쓰는 곳이 있습니다.
 서울 강남의 한 당근 업체는 투피스 부속 교체 항목에 "와토스/자재비 포함"이라고 적어 두었습니다.
@@ -344,7 +346,7 @@ Fluidmaster 설명서는 필밸브가 저절로 켜졌다 꺼지면 "This indica
 
 | 준비물 | 쓰는 곳 | 구하는 방법 |
 |---|---|---|
-| 필밸브 | 변기 모델에 맞는 브랜드 정품 또는 범용(투피스 2,450~7,460원, 원피스 17,400~33,750원) | 살 것(제조사 부품몰·대리점·다나와 등) |
+| 필밸브 | 변기 모델에 맞는 브랜드 정품 또는 범용(투피스 2,390~7,460원, 원피스 17,400~33,750원) | 살 것(제조사 부품몰·대리점·다나와 등) |
 | 몽키스패너 | 손으로 풀리지 않는 급수호스 너트와 고정 너트 | 집에 있음, 다이소로 충분(멍키스패너 200, 3,000원), 없으면 이웃에게 빌릴 것 |
 | 스펀지·양동이·수건 | 탱크 바닥에 남은 물 떠내기, 양동이 시험, 바닥 보호 | 집에 있음 |
 | 고무장갑 | 탱크 물에 손을 넣을 때 | 집에 있음 |
@@ -403,11 +405,11 @@ Fluidmaster 설명서 기준으로 멈춘 수위는 "WATER LEVEL (C) is set belo
 
 | 항목 | 직접 | 기사·제조사 AS |
 |---|---|---|
-| 필밸브(투피스) | 범용 2,450원부터, 대림바스 7,460원부터 | 업체 게시가에 자재비를 포함한 곳이 있음 |
+| 필밸브(투피스) | 범용 2,390원부터, 대림바스 7,460원부터 | 업체 게시가에 자재비를 포함한 곳이 있음 |
 | 필밸브(원피스) | 17,400~33,750원 | 위와 같음 |
 | 공구 | 집에 있으면 추가 비용 없음, 다이소 멍키스패너 3,000원 | 해당 없음 |
 | 출장비·공임 | 없음 | 동네업체 투피스 6만 원부터, 출장비 30,000원을 따로 받는 곳은 70,000원 + 30,000원. 한샘은 방문점검비 50,000원 + 기술료 + 자재비 |
-| 합계 | 투피스 2,450~10,460원(배송비 별도) | 투피스 6만~100,000원(게시 시작가 기준) |
+| 합계 | 투피스 2,390~10,460원(배송비 별도) | 투피스 6만~100,000원(게시 시작가 기준) |
 
 출처: 다나와 상품 정보, 다이소몰, 당근 동네업체 게시가, 한샘 서비스센터 요금 안내(2026년 11월 20일 기준). 합계는 수리기록 계산입니다.
 
@@ -422,7 +424,7 @@ Fluidmaster 설명서 기준으로 멈춘 수위는 "WATER LEVEL (C) is set belo
 
 ## 직접 바꾼 사람들의 후기는 어땠습니까?
 
-다나와에 모인 쇼핑몰 리뷰 평점은 와토스 WP20 4.6점(리뷰 2,555), 와토스 WP21 4.5점(리뷰 669), 대림바스 투피스 볼탑 4.6점(리뷰 289)입니다.
+다나와에 모인 쇼핑몰 리뷰 평점은 와토스 WP20 4.6점(리뷰 2,556), 와토스 WP21 4.5점(리뷰 669), 대림바스 투피스 볼탑 4.6점(리뷰 289)입니다.
 평점은 판매처 리뷰를 모은 값이라 설치 난이도만 평가한 것은 아닙니다.
 
 리뷰에는 이 글의 증상이 그대로 나옵니다.

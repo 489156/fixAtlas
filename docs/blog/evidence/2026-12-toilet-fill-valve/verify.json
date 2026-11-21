@@ -1,9 +1,11 @@
 {
-  "checked_at": "2026-11-20 23:14",
-  "date": "2026-11-20",
-  "web_rows": 112,
-  "matched": 112,
+  "checked_at": "2026-11-21 10:06",
+  "date": "2026-11-21",
+  "web_rows": 115,
+  "matched": 108,
   "image_rows": 0,
-  "problems": 0,
-  "capture_failures": []
+  "problems": 7,
+  "capture_failures": [
+    "wp20-price"
+  ]
 }
