@@ -184,7 +184,8 @@ async function robotsAllowed(url) {
       });
     });
     let txt = await get();
-    if (txt === null) { await new Promise((r) => setTimeout(r, 3000)); txt = await get(); } // one retry: a flaky fetch is not a "closed" signal
+    // a flaky fetch is not a "closed" signal: some government servers reset connections intermittently (kca.go.kr)
+    for (const wait of [3000, 8000]) { if (txt !== null) break; await new Promise((r) => setTimeout(r, wait)); txt = await get(); }
     robotsCache.set(u.origin, txt);
   }
   return robotsDecision(robotsCache.get(u.origin), u.pathname + u.search, robotsExcepted(u.origin));

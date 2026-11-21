@@ -1,11 +1,11 @@
 {
-  "checked_at": "2026-11-21 10:06",
+  "checked_at": "2026-11-21 10:21",
   "date": "2026-11-21",
-  "web_rows": 115,
-  "matched": 108,
+  "web_rows": 117,
+  "matched": 114,
   "image_rows": 0,
-  "problems": 7,
+  "problems": 3,
   "capture_failures": [
-    "wp20-price"
+    "kca-case"
   ]
 }
