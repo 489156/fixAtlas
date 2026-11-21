@@ -1,11 +1,9 @@
 {
-  "checked_at": "2026-11-21 10:21",
+  "checked_at": "2026-11-21 10:35",
   "date": "2026-11-21",
   "web_rows": 117,
-  "matched": 114,
+  "matched": 113,
   "image_rows": 0,
-  "problems": 3,
-  "capture_failures": [
-    "kca-case"
-  ]
+  "problems": 4,
+  "capture_failures": []
 }
