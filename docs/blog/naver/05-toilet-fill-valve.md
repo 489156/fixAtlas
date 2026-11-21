@@ -5,7 +5,7 @@ title: 변기 물이 안 차요? 필밸브면 직접 2,450원부터, 기사는 6
 demand: 투피스·원피스 양변기 물탱크에 물이 안 차거나 늦게 차는 집의 거주자가 단수·동파·앵글밸브 문제인지 필밸브(볼탑) 고장인지 가르고, 우리 집 변기 브랜드에 맞는 부품과 값, 직접 바꿀지 제조사 AS나 동네 기사를 부를지, 세입자라면 누가 내는지 판단하려고 '변기 물이 안 차요'나 '변기 필밸브 교체'를 검색할 때 이 글을 읽습니다.
 reader: 투피스·원피스 양변기 물탱크에 물이 안 차거나 늦게 차는 집의 거주자. 대림바스·계림·이누스·아메리칸스탠다드·한샘 변기를 쓰는 아파트·빌라·원룸의 소유자와 월세·전세 세입자 모두
 need: 원인이 단수·동파·앵글밸브인지 필밸브인지 가르고, 브랜드별로 맞는 부품과 값, 직접 교체와 제조사 AS·동네 기사 중 무엇이 나은지, 집주인 부담 여부를 판단
-urgency: 높음 — 물이 안 차면 변기를 쓸 수 없고 12월부터 동파가 늘어남(서울 2025년 12월~2026년 2월 동파 접수 3,267건). 반대로 물이 계속 차면 수도요금이 오름
+urgency: 높음 — 물이 안 차면 변기를 쓸 수 없고 12월부터 동파가 늘어남(서울 2025~26 겨울 수도계량기 동파 2,754건, 서울시 2026-11-15). 반대로 물이 계속 차면 수도요금이 오름
 scale: 네이버 월간 검색량(PC/모바일, 2026-11-20): 변기물이안차요 470/5,920, 변기필밸브 770/4,170, 변기수리 290/2,610, 변기필밸브교체 260/1,750, 변기물소리 40/870, 변기물안참 50/540, 변기볼탑 160/530, 대림변기필밸브 40/330, 변기물이계속차요 30/300, 변기물이늦게차요 20/250, 변기필밸브교체비용 30/230, 변기물탱크물이안차요 10/200 · 묶음어 변기부속품 1,710/11,000 · 집수리 검색어 23개 중 '변기물이안차요' 5위(docs/research/data/volumes/2026-12-toilet-fill-valve_2026-11-20.json) · 다나와 필밸브 리뷰 수: 와토스 WP20 2,555건, WP21 669건, 대림바스 투피스 볼탑 289건(2026-11-20) · 이누스 고객센터 '양변기 모델명은 어떻게 확인하나요' 조회 3,679회(2026-11-20, 조회할 때마다 늘어나 본문에는 쓰지 않음), '물탱크에 물이 채워지지 않는 경우' 조회 1,918회(2026-11-20)
 queries: 변기 물이 안 차요, 변기 물탱크 물이 안 차요, 변기 물이 늦게 차요, 변기 필밸브, 변기 필밸브 교체, 변기 필밸브 교체 비용, 변기 볼탑, 대림 변기 필밸브, 변기 수리, 변기 물이 계속 차요, 변기 물소리, 필밸브 교체 공구, 변기 수리 집주인
 tags: 변기물이안차요, 변기필밸브, 변기필밸브교체, 변기수리, 변기물소리, 변기볼탑, 변기물안참, 대림변기필밸브, 변기물이계속차요, 변기필밸브교체비용
@@ -51,8 +51,9 @@ claims:
   - 출하현황 자료명 | https://economist.co.kr/article/view/ecn202605040011 | 2026-11-20 | 점유율 근거 자료 | 국내 위생도기 제조업체 연간 출하현황
   - 다나와 인기상품순 정의 | https://search.danawa.com/?query=%EC%96%91%EB%B3%80%EA%B8%B0 | 2026-11-20 | 판매량만이 아닌 점수 순위 | 조회수, 판매량, 판매금액, 연관 콘텐츠 수 등을 점수화하여
   - 30개 / 15개 / 4개 / 2개 | https://prod.danawa.com/list/?cate=17316293 | 2026-11-20 | 계산: 다나와 양변기 인기순 상위 30개 중 대림바스 15, 아메리칸스탠다드 4, 이누스(아이에스동서) 2, 한샘 1(2026-11-20 22:13 화면, 순위는 매일 바뀜) | 아메리칸스탠다드 웨이브 S 스퀘어 투피스 양변기
-  - 10개 업체 14개 제품 | https://www.asiae.co.kr/article/2024012510062005736 | 2026-11-20 | 사례: 한국소비자원 절수형 변기 비교시험(아시아경제 2024-01-25 보도) 대상 선정 기준 | 소비자 선호도가 높은 절수형 변기 10개 업체의 14개 제품
-  - 표시사항 누락 | https://www.asiae.co.kr/article/2024012510062005736 | 2026-11-20 | 같은 시험, 변기시트 모델명·재질·제조자명 표시 | 모든 제품이 표시사항 일부 또는 전체를 누락
+  - 10개 업체 14개 제품 | https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995 | 2026-11-21 | 사례: 한국소비자원 보도자료 '절수형 변기, 제품별로 세척성능·절수효과 등에 차이 있어'(2024-01-25) 시험 대상 | 10개 업체의 14개 제품에 대해
+  - 선호도 높은 제품 | https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995 | 2026-11-21 | 같은 보도자료, 대상 선정 기준 | 소비자 선호도가 높은 절수형 변기
+  - 표시사항 누락 | https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995 | 2026-11-21 | 같은 보도자료, 변기시트 모델명·재질·제조자명 표시 | 모든 제품이 표시사항의 일부 또는 전체를 누락해 개선이 필요했다
   - 50% | https://www.hankyung.com/article/2025082908871 | 2026-11-20 | 와토스코리아 국내 위생도기 부품 시장 점유(한국경제 2025-08-29) | 국내 위생도기 부품 시장의 50% 정도를 차지하고 있는 와토스코리아
   - 20~30% / 30% | https://www.hankyung.com/article/2025082908871 | 2026-11-20 | 중국산 부품 잠식과 가격 차이(업계 추산) | 품질 수준은 떨어지지만 가격은 30% 이상 저렴한 편
   - 1588-1952 | https://www.daelimbath.com/download/as_guide | 2026-11-20 | 대림바스 위생도기 서비스센터 | 위생도기 1588-1952
@@ -107,18 +108,20 @@ claims:
   - 연결부 누수 시 너트 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 4단계 | turn nut just enough to stop leaking
   - 수위 낮추기 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 5단계 | counter clockwise to lower water level
   - C.L. 표시 1인치 | https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf | 2026-11-20 | 같은 설명서 2단계(높이 맞추기) | MUST be positioned 1” above top of overflow pipe
-  - 3,267건 | https://www.data.go.kr/data/15130837/fileData.do | 2026-11-20 | 계산: 서울시설공단 겨울철 수도 동파접수현황 CSV(2025-12-01~2026-02-28) 일 발생건수 합계 | 2025년 12월부터 2026년 2월까지 겨울철 수도계량기 동파 접수 현황을 집계한 자료로
-  - 189건 | https://www.data.go.kr/data/15130837/fileData.do | 2026-11-20 | 계산: 같은 CSV의 2026-01-23 일 발생건수(최다일) |
-  - 2건 중 1건 | https://www.seoul.go.kr/news/news_report.do?nttNo=470395 | 2026-11-20 | 서울시 보도자료 2026-11-15 요약줄 | 지난겨울 동파 2건 중 1건 복도식 아파트
+  - 2,754건 / 2,046건 / 708건 / 34.6% | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 서울시 보도자료(2026-11-15, 서울아리수본부) 첨부 HWP 본문: 2025~26 겨울 수도계량기 동파 | 전년 2,046건보다 708건(34.6%) 증가한 2,754건으로 집계됐다
+  - 1,352건 / 49.1% | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료, 복도식 아파트 비중 | 1,352건(49.1%)이 복도식 아파트에서 발생해
+  - 자연재해 동파 무상 교체 | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료, 계량기 교체 비용 | 한파 등 자연재해로 수도계량기가 동파된 경우에는 무상으로 교체를 지원한다
+  - 관리 소홀 동파 비용 | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료 | 관리 소홀로 동파된 경우에는 사용자에게 계량기 대금과 교체비용이 부과될 수 있다
+  - 서울 신고처 120 | https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158 | 2026-11-21 | 같은 보도자료, 신고처 | 120다산콜재단, 관할 수도사업소 또는 아리수 요금고객센터로 즉시 신고
   - 물 안 나옴 = 계량기 확인 | https://news.seoul.go.kr/env/archives/504939 | 2026-11-20 | 서울시 2019-12-03 동파 안내 | 수돗물이 갑자기 나오지 않을 때에는 수도계량기 유리가 깨지거나 부풀어 올랐는지 확인하여
   - 50℃ 이하 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-20 | 서울시 2025-11-14 녹이기 수칙 | 언 계량기는 50℃ 이하의 열로 천천히 녹이는
   - 지시부 깨짐 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-20 | 서울시 2025-11-14 | 수도계량기의 지시부가 깨지거나 부풀어 오르는 등 동파가 의심되는 경우
-  - 서울 신고처 120 | https://news.seoul.go.kr/env/archives/565606 | 2026-11-20 | 서울시 2025-11-14 | ‘120다산콜재단’ 또는 관할 수도사업소, ‘아리수 사이버고객센터’에 신고하면 된다
   - 화기 금지 | https://news.seoul.go.kr/env/archives/505700 | 2026-11-20 | 서울시 2020-02-19 동파 해빙 안내 | 화기(토치, 헤어드라이기 등)를 사용하면 화재가 발생할 수 있고
   - 50도 이상 물 금지 | https://news.seoul.go.kr/env/archives/505700 | 2026-11-20 | 같은 안내 | 50도 이상 뜨거운 물을 사용할 경우 계량기 파손의 위험이 있으므로
   - K-water 즉시 출동 | https://www.kwater.or.kr/cust/sub01/norm05Tab.do?s_mid=1154 | 2026-11-20 | K-water 지방상수도 서비스이행표준 | 물이 잘 안나오는 등 불편사항을 신고하시면 즉시(도서지역 제외) 현장에 출동하여
-  - 5만 원 / 34.5% / 48건 | https://www.segye.com/newsView/20260715520510 | 2026-11-20 | 사례: 세계일보 2026-07-15 한국소비자원 청소·하수도위생 서비스 피해구제 분석 보도 캡처:segye-case | 일부 업체는 홈페이지에 변기 뚫음 작업 기본요금만 5만원 선으로 안내하고
-  - 추가 비용 요구 비중 | https://www.segye.com/newsView/20260715520510 | 2026-11-20 | 같은 기사 | 추가 비용 요구는 34.5%(48건)를 차지했다
+  - 5만 원 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 사례: 한국소비자원 피해예방주의보 '청소·하수도위생 서비스, 현장 추가 비용 요구 주의해야'(보도자료 2026-07-15, 게시 2026-08-05) 캡처:kca-case | 5만 원 수준의 기본요금만 제시하고
+  - 34.5% / 48건 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 같은 주의보, 하수도위생 서비스 피해 중 추가 비용 요구 비중 | 34.5%(48건)로 그 뒤를 이었다
+  - 수십만 원 추가 | https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692 | 2026-11-21 | 같은 주의보 | 현장에서 수십만 원을 추가로 요구하는 사례가 많았다
   - 부자 점검 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 강남구 안내(2019-12-05) 누수 원인 1 캡처:gn-check | 부력에 의해 부자가 떠오르고 물이 나오는 입구를 잘 막는지 확인
   - 마개 점검 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 강남구 안내 누수 원인 2 | 레버를 작동시킨 후 잘 닫히는지 확인
   - 수도요금 감면 제외 | https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501 | 2026-11-20 | 서울시 누수감면 제도 변경(2020-01-01 시행) | 그동안 감면되었던 양변기 누수에 따른 수도요금은 감면되지 않습니다.
@@ -207,10 +210,8 @@ Korky는 이때 양동이로 물이 거의 안 나오면 "There may be a blockag
 ## 겨울에 갑자기 안 차면 동파부터 의심하십시오
 
 이 글이 올라가는 12월부터는 계량기 동파가 늘어납니다.
-서울시설공단이 공공데이터포털에 올린 접수 현황을 더하면 2025년 12월~2026년 2월 서울에서만 수도계량기 동파가 3,267건 접수됐습니다.
-
-가장 많은 날은 2026년 1월 23일로 하루 189건이었습니다.
-서울시는 2026년 11월 15일 보도자료에서 "지난겨울 동파 2건 중 1건 복도식 아파트"였다고 밝혔습니다.
+서울시는 2026년 11월 15일 보도자료에서 지난겨울 수도계량기 동파가 "전년 2,046건보다 708건(34.6%) 증가한 2,754건으로 집계됐다"고 밝혔습니다.
+그 가운데 "1,352건(49.1%)이 복도식 아파트에서 발생해" 복도에 계량기함이 있는 집이 특히 위험합니다.
 
 서울시 안내는 "수돗물이 갑자기 나오지 않을 때에는 수도계량기 유리가 깨지거나 부풀어 올랐는지 확인하여" 신고하라고 합니다(2019년 12월 안내).
 변기만이 아니라 세면대까지 물이 안 나오면 이 확인부터 하십시오.
@@ -218,7 +219,8 @@ Korky는 이때 양동이로 물이 거의 안 나오면 "There may be a blockag
 - 녹일 때: 서울시 2025년 11월 14일 안내는 "언 계량기는 50℃ 이하의 열로 천천히 녹이는" 방법을 권합니다.
 - 불은 쓰지 마십시오: 2020년 2월 서울시 안내는 "화기(토치, 헤어드라이기 등)를 사용하면 화재가 발생할 수 있고" "50도 이상 뜨거운 물을 사용할 경우 계량기 파손의 위험이 있으므로" 피하라고 적었습니다.
 - 계량기 지시부가 깨졌거나 부풀었으면 직접 손대지 말고 신고하십시오. 서울시는 지시부가 깨지거나 부풀면 계량기 파손이나 누수로 이어질 수 있다고 설명합니다.
-- 신고처: 서울은 "‘120다산콜재단’ 또는 관할 수도사업소, ‘아리수 사이버고객센터’에 신고하면 된다"고 안내합니다. K-water가 맡은 지방상수도는 "물이 잘 안나오는 등 불편사항을 신고하시면 즉시(도서지역 제외) 현장에 출동하여" 조치한다고 서비스 기준에 적었습니다.
+- 교체 비용: 서울시는 "한파 등 자연재해로 수도계량기가 동파된 경우에는 무상으로 교체를 지원한다"고 밝혔습니다. 다만 "관리 소홀로 동파된 경우에는 사용자에게 계량기 대금과 교체비용이 부과될 수 있다"고 덧붙였습니다.
+- 신고처: 서울은 동파가 의심되면 "120다산콜재단, 관할 수도사업소 또는 아리수 요금고객센터로 즉시 신고"해 달라고 합니다. K-water가 맡은 지방상수도는 "물이 잘 안나오는 등 불편사항을 신고하시면 즉시(도서지역 제외) 현장에 출동하여" 조치한다고 서비스 기준에 적었습니다.
 
 ## 필밸브 쪽이라면 바꾸기 전에 무엇을 해 봅니까?
 
@@ -281,7 +283,7 @@ Fluidmaster 설명서는 필밸브가 저절로 켜졌다 꺼지면 "This indica
 2026년 11월 20일 상위 30개 가운데 대림바스가 15개, 아메리칸스탠다드가 4개, 이누스가 2개, 한샘이 1개였습니다.
 
 다나와 인기순은 "조회수, 판매량, 판매금액, 연관 콘텐츠 수 등을 점수화하여" 매기는 순위라 판매량 순위와 같지는 않습니다.
-한국소비자원도 2024년 1월 절수형 변기 시험에서 "소비자 선호도가 높은 절수형 변기 10개 업체의 14개 제품"으로 대림바스·계림·이누스·아메리칸스탠다드·한샘·로얄앤코·토토 등을 골랐습니다.
+한국소비자원도 2024년 1월 25일 보도자료에서 "소비자 선호도가 높은 절수형 변기"로 대림바스·계림·이누스·아메리칸스탠다드·한샘·로얄앤코·토토 등 "10개 업체의 14개 제품에 대해" 시험했습니다.
 
 부품을 사기 전에 모델명부터 찾으십시오.
 제조사 가운데 모델명 위치를 직접 밝힌 곳은 이누스입니다.
@@ -292,8 +294,8 @@ Fluidmaster 설명서는 필밸브가 저절로 켜졌다 꺼지면 "This indica
 
 오래된 변기는 스티커가 떨어져 없을 수도 있습니다.
 
-같은 소비자원 시험에서는 "모든 제품이 표시사항 일부 또는 전체를 누락"했다는 결과가 나왔습니다(아시아경제 2024년 1월 25일 보도).
-변기시트의 모델명·재질 같은 표시를 두고 한 말이어서 스티커가 안 보이면 탱크 속 부품 사진을 찍어 고객센터에 보내는 편이 빠릅니다.
+같은 소비자원 시험에서 변기시트는 모델명·재질·제조자명을 표시해야 하는데도 "모든 제품이 표시사항의 일부 또는 전체를 누락해 개선이 필요했다"는 결과가 나왔습니다.
+표시가 빠진 제품이 흔하므로 스티커가 안 보이면 탱크 속 부품 사진을 찍어 고객센터에 보내는 편이 빠릅니다.
 
 ## 브랜드별 필밸브는 어디서 사고 AS 전화는 몇 번입니까?
 
@@ -434,13 +436,13 @@ Fluidmaster 설명서 기준으로 멈춘 수위는 "WATER LEVEL (C) is set belo
 
 ## 기사를 부를 때 추가 요금은 어떻게 피합니까?
 
-세계일보는 2026년 7월 15일 한국소비자원의 청소·하수도 서비스 피해구제 자료를 보도했습니다.
-"일부 업체는 홈페이지에 변기 뚫음 작업 기본요금만 5만원 선으로 안내하고" 현장에서 추가 비용을 요구했다는 내용입니다.
+한국소비자원은 2026년 7월 청소·하수도위생 서비스 피해예방주의보를 냈습니다.
+하수도 뚫음 작업에서 홈페이지에 "5만 원 수준의 기본요금만 제시하고" 변기 등을 연 뒤 "현장에서 수십만 원을 추가로 요구하는 사례가 많았다"는 내용입니다.
 
-같은 기사에서 하수도 서비스 피해 가운데 "추가 비용 요구는 34.5%(48건)를 차지했다"고 합니다.
+하수도위생 서비스 피해 가운데 추가 비용 요구는 "34.5%(48건)로 그 뒤를 이었다"고 소비자원은 밝혔습니다.
 변기 막힘 사례이지만 기사를 부를 때 조심할 점은 필밸브 교체도 같습니다.
 
-![세계일보 2026년 7월 15일 기사의 소비자원 피해구제 분석 부분(2026년 11월 20일 화면)](../evidence/2026-12-toilet-fill-valve/segye-case.png)
+![한국소비자원 청소·하수도위생 서비스 피해예방주의보의 추가 비용 요구 부분(2026년 11월 21일 화면)](../evidence/2026-12-toilet-fill-valve/kca-case.png)
 
 - 전화로 출장비, 부품값, 공임을 나눠서 물어보십시오.
 - 탱크 속 사진과 모델명 사진을 먼저 보내 맞는 부품을 가져오게 하십시오. 계림이 경고한 "이중 출장비 발생"을 막는 방법이기도 합니다.
@@ -498,13 +500,13 @@ Fluidmaster 설명서 기준으로 멈춘 수위는 "WATER LEVEL (C) is set belo
 - 검색량: 네이버 검색광고 키워드 도구(2026년 11월 20일 조회, 수리기록 정리)
 - 다나와 [와토스 WP20](https://prod.danawa.com/info/?pcode=2276464), [와토스 WP250](https://prod.danawa.com/info/?pcode=42763076), [와토스 WP21](https://prod.danawa.com/info/?pcode=101105786), [대림바스 투피스 볼탑](https://prod.danawa.com/info/?pcode=42758777), [대림바스 원피스 볼탑](https://prod.danawa.com/info/?pcode=101136749), [이누스 원피스 볼탑](https://prod.danawa.com/info/?pcode=42776405), [양변기 인기순](https://prod.danawa.com/list/?cate=17316293), 검색 [계림 필밸브](https://search.danawa.com/?query=%EA%B3%84%EB%A6%BC+%ED%95%84%EB%B0%B8%EB%B8%8C)·[아메리칸스탠다드 필밸브](https://search.danawa.com/?query=%EC%95%84%EB%A9%94%EB%A6%AC%EC%B9%B8%EC%8A%A4%ED%83%A0%EB%8B%A4%EB%93%9C+%ED%95%84%EB%B0%B8%EB%B8%8C)·[한샘 양변기 부속](https://search.danawa.com/?query=%ED%95%9C%EC%83%98+%EC%96%91%EB%B3%80%EA%B8%B0+%EB%B6%80%EC%86%8D) (2026년 11월 20일 기준)
 - 대림바스 [A/S 서비스 안내](https://www.daelimbath.com/download/as_guide), [부품몰 안내](https://www.daelimbath.com/partsmall) / 계림 [A/S 접수](https://www.kelim.net/cs/after-service), [FAQ](https://www.kelim.net/cs/faq) / 이누스 [서비스 요금 안내](https://cs.inusbath.com/ISDS/view/view.do?pageCd=resGuid), [모델명 확인](https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=4046&boardMstCd=BBM00007), [물탱크에 물이 채워지지 않는 경우](https://cs.inusbath.com/ISDS/bbt/bbt00004V.do?pageCd=BBM00007&boardSeq=3934&boardMstCd=BBM00007) / 한샘 [서비스센터 요금 안내](https://as.hanssem.com/reserve/ServiceChargeInfomation/view.as) / 콜러 [연락처](https://www.kohler.co.kr/contact-us) (2026년 11월 20일 기준)
-- 이코노미스트 [위생도기 점유율 보도](https://economist.co.kr/article/view/ecn202605040011)(2026-05-11), 한국경제 [와토스코리아 보도](https://www.hankyung.com/article/2025082908871)(2025-08-29), 아시아경제 [소비자원 절수형 변기 시험 보도](https://www.asiae.co.kr/article/2024012510062005736)(2024-01-25)
+- 이코노미스트 [위생도기 점유율 보도](https://economist.co.kr/article/view/ecn202605040011)(2026-05-11), 한국경제 [와토스코리아 보도](https://www.hankyung.com/article/2025082908871)(2025-08-29)
 - Kohler [Toilet Tank Takes Excessive Time to Fill](https://resources.kohler.com/webassets/kpna/catalog/pdf/en/1175975-5.pdf), Korky [How to Fix a Slow Filling Toilet](https://www.korky.com/toilet-repair-help/how-to-fix-a-slow-filling-toilet), American Standard [FAQ](https://faq.americanstandard-us.com/article/21), TOTO [0GU206 설명서](https://www.totousa.com/filemanager_uploads/product_assets/OwnersManual/0GU206_CST436_CST448.pdf), Fluidmaster [400A Fill Valve Installation Instructions](https://res.cloudinary.com/dzhpkjoqj/Fluidmaster/FLUIDMINST00101.pdf) (2026년 11월 20일 기준)
-- 공공데이터포털 [서울시설공단 겨울철 수도 동파접수현황](https://www.data.go.kr/data/15130837/fileData.do), 서울시 [2026-11-15 동파 대책 보도자료](https://www.seoul.go.kr/news/news_report.do?nttNo=470395), [2025-11-14 동파 대책](https://news.seoul.go.kr/env/archives/565606), [2020-02-19 해빙 안내](https://news.seoul.go.kr/env/archives/505700), [2019-12-03 동파 안내](https://news.seoul.go.kr/env/archives/504939), K-water [지방상수도 서비스이행표준](https://www.kwater.or.kr/cust/sub01/norm05Tab.do?s_mid=1154)
+- 서울시 [2026-11-15 동파 대책 보도자료](https://www.seoul.go.kr/news/news_report.do?nttNo=470395)([첨부 원문](https://seoulboard.seoul.go.kr/comm/getFile?srvcId=BBSTY1&upperNo=470395&fileTy=ATTACH&fileNo=1&bbsNo=158)), [2025-11-14 동파 대책](https://news.seoul.go.kr/env/archives/565606), [2020-02-19 해빙 안내](https://news.seoul.go.kr/env/archives/505700), [2019-12-03 동파 안내](https://news.seoul.go.kr/env/archives/504939), K-water [지방상수도 서비스이행표준](https://www.kwater.or.kr/cust/sub01/norm05Tab.do?s_mid=1154)
 - 당근 동네업체 [홈틀러](https://daangn.com/kr/local-profile/%ED%99%88%ED%8B%80%EB%9F%AC-ro2wnxe1u6f5/), [홈앤집수리](https://daangn.com/kr/local-profile/%ED%99%88%EC%95%A4%EC%A7%91%EC%88%98%EB%A6%AC-55afv8nnkdi1/) 게시가, 다이소몰 [멍키스패너 200](https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=57411) (2026년 11월 20일 기준)
 - 국가법령정보센터 [민법](https://www.law.go.kr/법령/민법) 제615조·제623조·제626조·제634조·제654조, [수도법](https://www.law.go.kr/법령/수도법) 제14조, [대법원 2010다89876 판결](https://www.law.go.kr/LSW/precInfoP.do?precSeq=164196)
 - 서울특별시 [하수도 요금 양변기 누수 감면 제외 안내](https://news.seoul.go.kr/env/archives/520951), 강남구 [양변기 누수 수도요금 감면 변경 안내](https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501)(2019-12-05 게시)
-- 세계일보 [소비자원 청소·하수도 서비스 피해구제 보도](https://www.segye.com/newsView/20260715520510)(2026-07-15), 로톡뉴스 [변기 누수로 수도요금 100만 원, 누구 책임인가요?](https://lawtalknews.co.kr/article/UM6TZCCZ1GHI)(2019-07-19)
+- 한국소비자원 [절수형 변기 품질시험 보도자료](https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995)(2024-01-25), [청소·하수도위생 서비스 피해예방주의보](https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692)(2026-07-15 배포), 로톡뉴스 [변기 누수로 수도요금 100만 원, 누구 책임인가요?](https://lawtalknews.co.kr/article/UM6TZCCZ1GHI)(2019-07-19)
 
 > 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 마지막 대조일은 2026-11-20입니다. 검색량 차트와 구조도는 수리기록이 직접 그렸습니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
 
@@ -515,4 +517,4 @@ Fluidmaster 설명서 기준으로 멈춘 수위는 "WATER LEVEL (C) is set belo
 
 쓴 사람: 경기도 핸디맨의 수리기록. 집수리를 하면서 가전, 가구 수리·교체·시공 비용·방법을 공식 자료, 사용자 제보 등을 비교해 기록해두고 있습니다.
 
-수정 이력: 2026-11-19 첫 원고 · 2026-11-20 검색어 차트 도입부로 바꾸고 '변기 물이 안 차요' 증상 중심으로 재작성, 브랜드 6곳과 범용 부품·동파·기사 비용·후기 추가
+수정 이력: 2026-11-19 첫 원고 · 2026-11-21 서울시 동파 공식 집계(2,754건)·소비자원 원문으로 출처 교체 · 2026-11-20 검색어 차트 도입부로 바꾸고 '변기 물이 안 차요' 증상 중심으로 재작성, 브랜드 6곳과 범용 부품·동파·기사 비용·후기 추가

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { matchClaim, robotsAllows, robotsVerdict } from '../../scripts/verify-sources.mjs';
+import { matchClaim, robotsAllows, robotsDecision, robotsVerdict } from '../../scripts/verify-sources.mjs';
 
 const PAGE = '당사의 출장비(출장점검료)는 거리에 상관없이 동일하게 28,000 원 청구됩니다. 센서 기능 하자가 24.9 %(42건). 일반제품 1년 청소기';
 
@@ -52,4 +52,12 @@ test('robotsVerdict: a firewall block or bot-challenge page served as robots.txt
   assert.equal(robotsVerdict(403, ''), null);
   assert.equal(robotsVerdict(401, ''), null);
   assert.equal(robotsVerdict(503, ''), null);
+});
+
+test('robotsDecision: an operator exception opens robots.txt-only blocks, never technical blocks', () => {
+  const closed = 'User-agent: *\nDisallow: /\n';
+  assert.equal(robotsDecision(closed, '/board/1', false), false);
+  assert.equal(robotsDecision(closed, '/board/1', true), true); // robots.txt only + approved exception
+  assert.equal(robotsDecision(null, '/board/1', true), false); // 403 / firewall page / bot check: stays closed
+  assert.equal(robotsDecision('', '/x', false), true);
 });

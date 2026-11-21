@@ -87,6 +87,13 @@ async function fetchHtml(url) {
       execFile('pdftotext', [tmp, '-'], { maxBuffer: 50 * 1024 * 1024 }, (err, stdout) => (err ? reject(new Error('PDF text extraction failed (install poppler-utils)')) : resolve({ pdf: stdout })));
     });
   }
+  if (head.startsWith('\xD0\xCF\x11\xE0')) {
+    // OLE compound file: government press releases are often HWP 5.0 attachments (e.g. seoulboard getFile)
+    const script = path.join(path.dirname(fileURLToPath(import.meta.url)), 'lib', 'hwp5text.py');
+    return new Promise((resolve, reject) => {
+      execFile('python3', ['-I', script, tmp], { maxBuffer: 50 * 1024 * 1024 }, (err, stdout, stderr) => (err ? reject(new Error(`HWP text extraction failed: ${(stderr || err.message).trim().slice(0, 80)}`)) : resolve({ pdf: stdout })));
+    });
+  }
   return fs.readFileSync(tmp, 'utf8');
 }
 
@@ -142,6 +149,27 @@ export function robotsVerdict(code, body) {
   return code >= 400 && code < 500 && code !== 401 && code !== 403 ? '' : null;
 }
 
+/**
+ * Operator-approved robots.txt exceptions (docs/blog/robots-exceptions.json). An exception lets this tool read single
+ * pages on a host whose robots.txt disallows them; it never opens a host that is closed technically (403/401/5xx,
+ * firewall block or bot-challenge page — robotsVerdict null). Pure; unit-tested.
+ */
+export function robotsDecision(verdictText, pathAndQuery, excepted) {
+  if (verdictText === null) return false; // technical block: never bypassed
+  return robotsAllows(verdictText, pathAndQuery) || Boolean(excepted);
+}
+
+let robotsExceptions;
+function robotsExcepted(origin) {
+  if (!robotsExceptions) {
+    try {
+      const file = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs/blog/robots-exceptions.json');
+      robotsExceptions = new Set(JSON.parse(fs.readFileSync(file, 'utf8')).hosts.map((h) => h.origin));
+    } catch { robotsExceptions = new Set(); }
+  }
+  return robotsExceptions.has(origin);
+}
+
 const robotsCache = new Map();
 /** Fetches and caches a host's robots.txt. 401/403/5xx or no answer = treat the host as closed; 404 = open. */
 async function robotsAllowed(url) {
@@ -159,14 +187,13 @@ async function robotsAllowed(url) {
     if (txt === null) { await new Promise((r) => setTimeout(r, 3000)); txt = await get(); } // one retry: a flaky fetch is not a "closed" signal
     robotsCache.set(u.origin, txt);
   }
-  const txt = robotsCache.get(u.origin);
-  return txt !== null && robotsAllows(txt, u.pathname + u.search);
+  return robotsDecision(robotsCache.get(u.origin), u.pathname + u.search, robotsExcepted(u.origin));
 }
 
 /** Returns { text, via, page? } — page is kept open for evidence capture when the browser path worked. */
 async function openSource(browser, url) {
   if (!(await robotsAllowed(url))) throw new Error('robots.txt가 이 주소의 자동 조회를 막습니다 — 다른 1차 자료로 바꾸세요');
-  if (browser && !/flDownload|\.pdf(\?|$)/i.test(url)) {
+  if (browser && !/flDownload|getFile|\.pdf(\?|$)|\.hwp(\?|$)/i.test(url)) {
     const page = await browser.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 }); // phone-width layout at 2x: captures stay legible on phones
     try {
       const res = await page.goto(url, { waitUntil: 'networkidle', timeout: 45000 });

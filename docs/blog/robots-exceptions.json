@@ -1,0 +1,15 @@
+{
+ "rule": "운영자 허용(2026-11-21): robots.txt만 막은 곳은 필요한 페이지를 한 번씩만 연다(훑기·대량 조회 금지, 사용자 에이전트 변경 금지). 403·401·5xx·방화벽 차단 화면·봇 확인·로그인 같은 기술적 차단은 열지 않는다. 막힌 곳의 정보가 글에 꼭 필요하면 운영자에게 구체적으로 요청한다.",
+ "hosts": [
+  {
+   "origin": "https://seoulboard.seoul.go.kr",
+   "approved": "2026-11-21",
+   "why": "서울시 보도자료 첨부(HWP) 원문. robots.txt Disallow: /, 페이지는 200"
+  },
+  {
+   "origin": "https://www.kca.go.kr",
+   "approved": "2026-11-21",
+   "why": "한국소비자원 보도자료·피해예방주의보 원문. robots.txt Disallow: /, 페이지는 200"
+  }
+ ]
+}
