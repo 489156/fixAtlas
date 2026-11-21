@@ -19,7 +19,7 @@ time: 제조사 공개 기준 없음
 affiliate: pending
 firsthand:
 publish: 2026-12-03(목) 08:00 예약 — 전날 verify-sources로 원문 재대조
-data_checked: 2026-11-20
+data_checked: 2026-11-21
 claims:
   - 6,390회 | 직접:네이버 검색광고 키워드 도구 조회 2026-11-20 | 2026-11-20 | '변기물이안차요' 월간 검색량 PC 470 + 모바일 5,920(docs/research/data/volumes/2026-12-toilet-fill-valve_2026-11-20.json) |
   - 2,010회 | 직접:네이버 검색광고 키워드 도구 조회 2026-11-20 | 2026-11-20 | '변기필밸브교체' 월간 검색량 PC 260 + 모바일 1,750 |
@@ -510,7 +510,7 @@ Fluidmaster 설명서 기준으로 멈춘 수위는 "WATER LEVEL (C) is set belo
 - 서울특별시 [하수도 요금 양변기 누수 감면 제외 안내](https://news.seoul.go.kr/env/archives/520951), 강남구 [양변기 누수 수도요금 감면 변경 안내](https://www.gangnam.go.kr/board/article/3841/view.do?mid=id01_0501)(2019-12-05 게시)
 - 한국소비자원 [절수형 변기 품질시험 보도자료](https://www.kca.go.kr/home/board/download.do?menukey=4002&fno=10041292&bid=00000013&did=1003613995)(2024-01-25), [청소·하수도위생 서비스 피해예방주의보](https://www.kca.go.kr/home/sub.do?menukey=4005&mode=view&no=1004542692)(2026-07-15 배포), 로톡뉴스 [변기 누수로 수도요금 100만 원, 누구 책임인가요?](https://lawtalknews.co.kr/article/UM6TZCCZ1GHI)(2019-07-19)
 
-> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 마지막 대조일은 2026-11-20입니다. 검색량 차트와 구조도는 수리기록이 직접 그렸습니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
+> 만든 방법: AI 도구로 초안을 쓰고 출처의 숫자·문구를 원문과 자동 대조했습니다. 마지막 대조일은 2026-11-21입니다. 검색량 차트와 구조도는 수리기록이 직접 그렸습니다. AI 사용 범위는 [방법론의 AI 사용 원칙](site:/methodology#ai)에 정리했습니다.
 
 이 글은 일반 정보입니다.
 변기 모델과 배관 상태에 따라 순서와 결과가 달라질 수 있습니다.
