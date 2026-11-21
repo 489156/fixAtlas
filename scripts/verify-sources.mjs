@@ -78,7 +78,7 @@ async function fetchHtml(url) {
   const os = await import('node:os');
   const tmp = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vs-')), 'src.bin');
   await new Promise((resolve, reject) => {
-    execFile('curl', ['-sS', '-L', '-m', '60', '--fail', '-o', tmp, url], (err, _o, stderr) => (err ? reject(new Error((stderr || err.message).trim().slice(0, 120))) : resolve()));
+    execFile('curl', ['-sS', '-L', '-m', '60', '--fail', '--retry', '2', '--retry-all-errors', '--retry-delay', '4', '-o', tmp, url], (err, _o, stderr) => (err ? reject(new Error((stderr || err.message).trim().slice(0, 120))) : resolve()));
   });
   const head = fs.readFileSync(tmp).subarray(0, 5).toString('latin1');
   if (head === '%PDF-') {
