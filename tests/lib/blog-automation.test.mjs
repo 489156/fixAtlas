@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { connectiveCommas, repeatedEndings } from '../../scripts/lib/korean-style.mjs';
 import { checkDraft, isSourced, numbersIn, styleProblems } from '../../scripts/check-claims.mjs';
 import { captureQA, claimKey, findNumberSnippet, refreshLedgerDates } from '../../scripts/verify-sources.mjs';
-import { gapAnalysis, mergeTrends, naverSignature, suggestTags, trendBatches } from '../../scripts/demand-research.mjs';
+import { freshness, gapAnalysis, groupShares, mergeTrends, missingTerms, naverSignature, parseShop, suggestTags, trendBatches } from '../../scripts/demand-research.mjs';
 import { renderTable, statusOf } from '../../scripts/blog-status.mjs';
 import { thumbnailProblems } from '../../scripts/naver-export.mjs';
 
@@ -173,6 +173,37 @@ test('DataLab: batches carry the anchor; merged trends share one scale', () => {
   assert.ok(merged.b.last12 > merged.b.prev12, 'rising trend detected');
 });
 
+test('API HUB helpers: seasonality, question gaps, commercial share, gateway', async () => {
+  const { seasonality, questionGaps, isQuestion, stripTags, commercialShare, naverGateway } = await import('../../scripts/demand-research.mjs');
+  // winter peak: Dec/Jan twice the rest, over two years
+  const data = [];
+  for (const y of [2024, 2025]) for (let m = 1; m <= 12; m += 1) data.push({ period: `${y}-${String(m).padStart(2, '0')}-01`, ratio: m === 12 || m === 1 ? 40 : 20 });
+  const s = seasonality(data);
+  assert.deepEqual(s.peak.sort(), [1, 12]);
+  assert.equal(s.byMonth[0], 40);
+
+  assert.equal(stripTags('변기 <b>필밸브</b> &quot;교체&quot;'), '변기 필밸브 "교체"');
+  assert.ok(isQuestion('변기 물이 안 차요 왜 그럴까요?'));
+  assert.ok(isQuestion('필밸브 교체 비용 얼마 정도인가요'));
+  assert.ok(!isQuestion('대림바스 필밸브 정품'), 'a product name is not a question');
+
+  const body = '필밸브를 바꾸면 물이 다시 찹니다. 대림 변기는 와토스 부품이 맞습니다. 수도 밸브를 먼저 잠급니다.';
+  const gaps = questionGaps(body, ['대림 변기 필밸브 맞나요?', '필밸브 교체 후 물소리 나요?', '필밸브 교체 후 물소리 나요?', '수도요금 많이 나오나요?']);
+  assert.ok(!gaps.some((g) => g.q.startsWith('대림')), 'answered question is not a gap');
+  assert.equal(gaps[0].q, '필밸브 교체 후 물소리 나요?');
+  assert.equal(gaps[0].count, 2, 'repeats are counted');
+
+  assert.equal(commercialShare(['평택 송탄 변기 필밸브 교체 출장', '필밸브 직접 교체 후기']), 0.5);
+  assert.equal(commercialShare([]), null);
+
+  assert.equal(naverGateway({}), null);
+  const hub = naverGateway({ NAVER_CLIENT_ID: 'x', NAVER_CLIENT_SECRET: 'y' });
+  assert.equal(hub.kind, 'hub');
+  assert.ok(hub.headers[0].startsWith('X-NCP-APIGW-API-KEY-ID'));
+  assert.ok(hub.search('kin').endsWith('/search/v1/kin'));
+  assert.equal(naverGateway({ NAVER_CLIENT_ID: 'x', NAVER_CLIENT_SECRET: 'y', NAVER_API_KIND: 'openapi' }).trend, 'https://openapi.naver.com/v1/datalab/search');
+});
+
 test('Korean anti-slop detectors fire on AI-style sentences and spare earned ones', async () => {
   const { slopPhrases } = await import('../../scripts/lib/korean-style.mjs');
   const cats = (s) => slopPhrases(s).map((h) => h.cat);
@@ -183,4 +214,19 @@ test('Korean anti-slop detectors fire on AI-style sentences and spare earned one
   assert.ok(cats('가장 합리적인 선택이라고 할 수 있습니다.').includes('빈 완충 표현'));
   assert.deepEqual(cats('집주인에게 그 비용을 돌려 달라고 할 수 있습니다.'), [], 'a legal right is not a hedge');
   assert.deepEqual(cats('카트리지만 바꾸면 부품 18,000원이 듭니다.'), []);
+});
+
+test('demand: missing terms weigh repeated questions; freshness counts recent posts', () => {
+  const gaps = [{ q: 'a', count: 5, missing: ['쉭쉭', '소리'] }, { q: 'b', count: 2, missing: ['소리', '너트'] }, { q: 'c', count: 1, missing: ['너트', '너트'] }];
+  assert.deepEqual(missingTerms(gaps, 2), [{ w: '소리', n: 7 }, { w: '쉭쉭', n: 5 }]);
+  // 20261121 minus: 1 day, 30 days, 91 days; a malformed date is ignored
+  assert.deepEqual(freshness(['20261120', '20261022', '20260822', ''], '20261121'), { n: 3, within: 2, days: 60, medianAge: 30 });
+  assert.equal(freshness([], '20261121'), null);
+});
+
+test('demand: shopping-insight shares sum per group; shop pairs need a numeric category', () => {
+  const rows = [{ period: '2026-09', group: 'm', ratio: 80 }, { period: '2026-10', group: 'm', ratio: 100 }, { period: '2026-09', group: 'f', ratio: 20 }, { period: '2026-10', group: 'f', ratio: 0 }];
+  assert.deepEqual(groupShares(rows), { m: 90, f: 10 });
+  assert.equal(groupShares([]), null);
+  assert.deepEqual(parseShop('필밸브@50000008, 비데, 블라인드@가구'), [{ keyword: '필밸브', category: '50000008' }]);
 });

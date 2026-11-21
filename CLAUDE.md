@@ -2,6 +2,8 @@
 
 가전·가구 수리비를 사용자 제보와 공식 자료로 비교하는 서비스다. 이름: 한국어 '수리기록'(2026-11-20 고장도감에서 변경), 영문 'fixRecord'(2026-11-20 fixAtlas에서 변경, 운영자 승인). 저장소·코드 식별자(`fixatlas:` 저장 키, `fixatlas-anti-slop-ko`)와 임시 도메인 `fixatlas.example`은 그대로 둔다(도메인 결정 보류). React/Vite 사이트(`src/`)와 Supabase Edge Function(`supabase/`), 네이버 블로그 원고(`docs/blog/`)가 있다. 기획 문서는 `docs/BLOG_PLAN.md`와 `docs/PLAN_REINFORCEMENT.md`, 조사 자료는 `docs/research/`에 있다.
 
+네이버 블로그 주소는 `https://blog.naver.com/fixrecord`다(운영자 개설 통보 2026-11-21). 같은 날 이 환경에서는 404였으므로 문서·프로필에 넣기 전에 열리는지 확인한다. 유상 출장 작업은 블로그·SNS 반응이 생긴 뒤에 연다(운영자 결정 2026-11-21). 그전에는 콘텐츠가 상품이고 기준은 `docs/blog/EDITORIAL_STANDARDS.md` §13이다.
+
 ## 블로그 글 상시 규칙 (운영자 지시, 2026-11-18)
 
 **매번 발행 전에 그 글의 수요자를 예상해 한 문장으로 정의한다. 이 체계를 계속 유지한다.**
@@ -49,7 +51,7 @@
 ## 발행 전 점검 명령
 
 ```bash
-npm run blog:demand   # 실제 검색어 수집·본문 공백 분석·태그 후보 (scripts/demand-research.mjs)
+npm run blog:demand   # 실제 검색어·지식iN 질문 공백·상위 글 신선도·검색량, --shop=키워드@분야코드로 구매자 구성 (scripts/demand-research.mjs)
 ```
 ```bash
 npm run blog:check    # 원고 점검. WARN은 발행을 막지 않음, --strict면 실패 (scripts/check-claims.mjs)

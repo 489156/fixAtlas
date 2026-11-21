@@ -10,10 +10,15 @@
 // 4. Optional Naver data (each part runs only when its keys are in the environment; none needs ad spend):
 //    - Search Ad keyword tool (NAVER_SEARCHAD_API_KEY, NAVER_SEARCHAD_SECRET, NAVER_SEARCHAD_CUSTOMER_ID): absolute monthly
 //      PC/mobile query counts — the only first-party source of Naver search *volume*. --write-scale appends them to `scale:`.
-//    - DataLab search trend (NAVER_CLIENT_ID, NAVER_CLIENT_SECRET): 36 months of relative interest, for seasonality and
-//      direction. Ratios are relative within one request, so every batch carries the first seed as an anchor.
-//    - Search API blog total (same keys): how many blog posts already answer the query — supply, i.e. competition.
-//    None of these is tested against the live APIs in this repository; request formats follow the published docs.
+//    - NAVER API HUB (NAVER_CLIENT_ID, NAVER_CLIENT_SECRET from the Naver Cloud console; set NAVER_API_KIND=openapi for
+//      old developers.naver.com keys). Checked against the live API on 2026-11-21.
+//      · Search trend: 36 full months of relative interest → direction and peak months (when to publish or refresh).
+//        Ratios are relative within one request, so every batch carries the first seed as an anchor.
+//      · 지식iN·카페 search: real question titles → the questions the body does not answer yet (question headings).
+//      · Blog search: how many posts already answer each query (supply) and the top 10 per seed — the share that
+//        advertise a local service (a gap an explanatory post can fill) and how recent they are (how often to refresh).
+//      · Shopping insight (front matter `shop: 필밸브@50000008` or --shop=…, keyword@first-level category id): age,
+//        gender and device split of the people who click that product keyword in Naver Shopping — who the buyer is.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -97,27 +102,168 @@ export function mergeTrends(batches) {
   return out;
 }
 
-async function naverOpenApi(keywords) {
-  const { NAVER_CLIENT_ID: id, NAVER_CLIENT_SECRET: secret } = process.env;
+/** Month-of-year profile of a monthly series: average ratio per calendar month and the peak months. Pure.
+ *  Peak = months at least 20% above the yearly mean — when to publish or refresh a post. */
+export function seasonality(data) {
+  const sum = Array(12).fill(0); const n = Array(12).fill(0);
+  for (const x of data || []) { const m = Number(String(x.period).slice(5, 7)) - 1; if (m >= 0 && m < 12) { sum[m] += x.ratio; n[m] += 1; } }
+  const byMonth = sum.map((s, i) => (n[i] ? Math.round(s / n[i]) : null));
+  const vals = byMonth.filter((v) => v !== null);
+  const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+  const peak = byMonth.map((v, i) => [i + 1, v]).filter(([, v]) => v !== null && mean > 0 && v >= mean * 1.2)
+    .sort((a, b) => b[1] - a[1]).map(([m]) => m);
+  return { byMonth, peak };
+}
+
+const ENTITIES = { '&quot;': '"', '&amp;': '&', '&lt;': '<', '&gt;': '>', '&#39;': "'", '&apos;': "'" };
+/** Search API titles carry <b> highlights and HTML entities. Pure. */
+export const stripTags = (s) => String(s ?? '').replace(/<[^>]+>/g, '').replace(/&(quot|amp|lt|gt|#39|apos);/g, (e) => ENTITIES[e]).replace(/\s+/g, ' ').trim();
+
+// A title reads as a question when it asks something; Q&A and cafe titles that only name a product are left out.
+const QUESTION = /\?|(까|나|가|죠|데|는지|ㄴ지|을지|ㄹ지)요?\s*[?.!]*$|(어떻게|어떡|왜|얼마|몇|가능|되나|하나|해야|해도|괜찮|문의|질문|궁금|추천|방법|이유|원인|차이|어디)/;
+export const isQuestion = (title) => QUESTION.test(stripTags(title));
+
+// Content words for matching a long question against the body: Hangul/Latin runs of 2+ chars minus question filler.
+const FILLER = new Set(['어떻게', '어떡하', '왜', '얼마', '가능', '문의', '질문', '궁금', '궁금해요', '추천', '방법', '이유', '원인', '하나요', '되나요', '있나요', '할까요', '해야', '해도', '괜찮', '좀', '너무', '계속', '혹시', '그냥', '이거', '이게', '저희', '우리', '집', '이유가', '해결', '도와주세요', '알려주세요', '부탁드립니다', '나요', '계세', '질문드려', '질문드립니다', '질문요', '여쭤봅니다', '여쭤', '해보신분', '어떤거', '나는거', '있을까', '없을까']);
+// Endings are stripped longest first and only when a 2+ char stem is left ("수도" stays, "필밸브가" → "필밸브").
+const ENDINGS = ['방법', '인가요', '한가요', '하나요', '되나요', '있나요', '없나요', '했는데', '하는데', '나요', '까요', '해요', '돼요', '인데', '에서', '이', '가', '을', '를', '은', '는', '에', '도', '요', '죠'];
+const stem = (w) => { for (const e of ENDINGS) if (w.endsWith(e) && w.length - e.length >= 2) return w.slice(0, -e.length); return w; };
+const contentWords = (s) => words(stripTags(s).toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' '))
+  .map(stem).filter((w) => w.length >= 2 && !FILLER.has(w));
+
+/** Real questions the body does not answer: a question counts as answered when at least `threshold` of its
+ *  content words appear in the body. Returns [{ q, words, hit }] for the unanswered, most-repeated first. Pure. */
+export function questionGaps(body, questions, threshold = 0.7) {
+  // Askers glue words ("변기물소리") and conjugate freely ("물소리나고"): match against the body without spaces and
+  // accept the word when a prefix of at least 60% of it (2+ chars) appears — the noun stem before the ending.
+  const flat = foldKo(body).replace(/\s+/g, '');
+  const inBody = (w) => { const f = foldKo(w); for (let n = f.length; n >= Math.max(2, Math.ceil(f.length * 0.6)); n -= 1) if (flat.includes(f.slice(0, n))) return true; return false; };
+  const seen = new Map();
+  for (const q of questions) {
+    const t = stripTags(q); const key = contentWords(t).join(' ');
+    if (!key) continue;
+    if (seen.has(key)) seen.get(key).count += 1; else seen.set(key, { q: t, ws: contentWords(t), count: 1 });
+  }
+  const out = [];
+  for (const { q, ws, count } of seen.values()) {
+    const missing = ws.filter((w) => !inBody(w));
+    const hit = ws.length - missing.length;
+    if (hit / ws.length < threshold) out.push({ q, count, words: ws, hit, missing });
+  }
+  return out.sort((a, b) => b.count - a.count || a.hit / a.words.length - b.hit / b.words.length);
+}
+
+// Titles that sell a local service rather than explain: a rough supply-side signal, not a classifier.
+const COMMERCIAL = /(출장|업체|전문|당일|견적|설비|시공|수리점|\d{2,4}-\d{3,4}-\d{4}|(시|구|동|읍|면)\s?(변기|수전|욕실|집수리|설비))/;
+/** Share of result titles that advertise a local service. Pure. */
+export const commercialShare = (titles) => (titles.length ? titles.filter((t) => COMMERCIAL.test(stripTags(t))).length / titles.length : null);
+
+/** Words the unanswered questions use and the body does not, weighted by how often each question repeats.
+ *  A hand-free view of the gap: no category list to maintain per post. Pure. */
+export function missingTerms(gaps, top = 20) {
+  const count = new Map();
+  for (const g of gaps) for (const w of new Set(g.missing)) count.set(w, (count.get(w) || 0) + g.count);
+  return [...count].map(([w, n]) => ({ w, n })).sort((a, b) => b.n - a.n || a.w.localeCompare(b.w, 'ko')).slice(0, top);
+}
+
+/** How recent the top results are: how many were posted within `days`, and the median age in days.
+ *  Dates and `today` are yyyymmdd. A top list made of recent posts means an old post drops out: refresh on that cycle. Pure. */
+export function freshness(dates, today, days = 60) {
+  const day = (d) => Date.UTC(Number(d.slice(0, 4)), Number(d.slice(4, 6)) - 1, Number(d.slice(6, 8))) / 86400000;
+  const ages = dates.filter((d) => /^\d{8}$/.test(d || '')).map((d) => day(today) - day(d)).filter((a) => a >= 0).sort((a, b) => a - b);
+  if (!ages.length) return null;
+  const mid = ages.length >> 1;
+  return { n: ages.length, within: ages.filter((a) => a <= days).length, days, medianAge: ages.length % 2 ? ages[mid] : Math.round((ages[mid - 1] + ages[mid]) / 2) };
+}
+
+/** Share of each group (age band, gender or device) in one shopping-insight response, in percent, largest first.
+ *  Ratios in one response share a scale (its largest point is 100), so the sums per group compare. Pure. */
+export function groupShares(rows) {
+  const sum = {};
+  for (const r of rows || []) sum[r.group] = (sum[r.group] || 0) + r.ratio;
+  const total = Object.values(sum).reduce((a, b) => a + b, 0);
+  if (!total) return null;
+  return Object.fromEntries(Object.entries(sum).sort((a, b) => b[1] - a[1]).map(([g, v]) => [g, Math.round((v / total) * 100)]));
+}
+
+/** "필밸브@50000008, 비데@50000008" → [{ keyword, category }]. Entries without a numeric category are dropped. Pure. */
+export const parseShop = (v) => String(v || '').split(',').map((x) => x.trim().split('@')).filter(([k, c]) => k && /^\d+$/.test(c || '')).map(([keyword, category]) => ({ keyword, category }));
+
+/** Which Naver gateway the keys belong to. NAVER API HUB (Naver Cloud console, headers X-NCP-APIGW-*) is the
+ *  default; developers.naver.com keys (X-Naver-Client-*) still work until that search API is retired. */
+export function naverGateway(env = process.env) {
+  const { NAVER_CLIENT_ID: id, NAVER_CLIENT_SECRET: secret, NAVER_API_KIND: kind } = env;
   if (!id || !secret) return null;
-  const headers = [`X-Naver-Client-Id: ${id}`, `X-Naver-Client-Secret: ${secret}`];
+  if (kind === 'openapi') return {
+    kind, headers: [`X-Naver-Client-Id: ${id}`, `X-Naver-Client-Secret: ${secret}`],
+    trend: 'https://openapi.naver.com/v1/datalab/search', search: (t) => `https://openapi.naver.com/v1/search/${t}.json`,
+    shopping: (k) => `https://openapi.naver.com/v1/datalab/shopping/category/keyword/${k}`,
+  };
+  return {
+    kind: 'hub', headers: [`X-NCP-APIGW-API-KEY-ID: ${id}`, `X-NCP-APIGW-API-KEY: ${secret}`],
+    trend: 'https://naverapihub.apigw.ntruss.com/search-trend/v1/search', search: (t) => `https://naverapihub.apigw.ntruss.com/search/v1/${t}`,
+    shopping: (k) => `https://naverapihub.apigw.ntruss.com/shopping/v1/category/keyword/${k}`,
+  };
+}
+
+const pause = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function naverOpenApi(keywords) {
+  const gw = naverGateway();
+  if (!gw) return null;
+  const { headers } = gw;
   const fmt = (d) => d.toISOString().slice(0, 10);
-  const end = new Date(); const start = new Date(end); start.setMonth(start.getMonth() - 36);
+  // Monthly ratios for a month still in progress read low; end at the last full month.
+  const end = new Date(); end.setDate(0); const start = new Date(end); start.setDate(1); start.setMonth(start.getMonth() - 35);
   const batches = [];
   for (const batch of trendBatches(keywords)) {
-    const data = await curlJson('https://openapi.naver.com/v1/datalab/search', headers, {
+    const data = await curlJson(gw.trend, headers, {
       startDate: fmt(start), endDate: fmt(end), timeUnit: 'month',
       keywordGroups: batch.map((k) => ({ groupName: k, keywords: [k] })),
     });
     batches.push(data?.results || []);
   }
-  const blogTotal = {};
-  for (const k of keywords) {
-    const data = await curlJson(`https://openapi.naver.com/v1/search/blog.json?display=1&query=${encodeURIComponent(k)}`, headers);
-    blogTotal[k] = data?.total ?? null;
-    await new Promise((r) => setTimeout(r, 120));
+  const season = {};
+  for (const results of batches) for (const r of results) if (!season[r.title]) season[r.title] = seasonality(r.data);
+  const get = (type, q, n) => curlJson(`${gw.search(type)}?query=${encodeURIComponent(q)}&display=${n}&sort=sim`, headers);
+  const blogTotal = {}; const kinTotal = {}; const cafeTotal = {};
+  const questions = []; let topBlogs = [];
+  for (const [i, k] of keywords.entries()) {
+    const blog = await get('blog', k, 10);
+    blogTotal[k] = blog?.total ?? null;
+    for (const x of blog?.items || []) if (!topBlogs.some((b) => b.link === x.link)) topBlogs.push({ title: stripTags(x.title), link: x.link, date: x.postdate, by: stripTags(x.bloggername), seed: k });
+    await pause(120);
+    for (const [type, totals] of [['kin', kinTotal], ['cafearticle', cafeTotal]]) {
+      const res = await get(type, k, 30);
+      totals[k] = res?.total ?? null;
+      for (const x of res?.items || []) if (isQuestion(x.title)) questions.push({ q: stripTags(x.title), src: type === 'kin' ? '지식iN' : '카페', seed: k, link: x.link });
+      await pause(120);
+    }
   }
-  return { trends: mergeTrends(batches), blogTotal };
+  return {
+    gateway: gw.kind, period: `${fmt(start)}~${fmt(end)}`, trends: mergeTrends(batches), season,
+    blogTotal, kinTotal, cafeTotal, topBlogs, commercialShare: commercialShare(topBlogs.map((b) => `${b.title} ${b.by}`)),
+    freshness: freshness(topBlogs.map((b) => b.date), fmt(new Date()).replace(/-/g, '')), questions,
+  };
+}
+
+/** Who clicks a product keyword in Naver Shopping over the last 12 full months: age, gender, device shares. */
+async function naverShoppers(pairs) {
+  const gw = naverGateway();
+  if (!gw || !pairs.length) return null;
+  const fmt = (d) => d.toISOString().slice(0, 10);
+  const end = new Date(); end.setDate(0); const start = new Date(end); start.setDate(1); start.setMonth(start.getMonth() - 11);
+  const out = [];
+  for (const { keyword, category } of pairs) {
+    const row = { keyword, category, period: `${fmt(start)}~${fmt(end)}` };
+    for (const kind of ['age', 'gender', 'device']) {
+      const data = await curlJson(gw.shopping(kind), gw.headers, { startDate: fmt(start), endDate: fmt(end), timeUnit: 'month', category, keyword });
+      row[kind] = groupShares(data?.results?.[0]?.data);
+      await pause(120);
+    }
+    out.push(row);
+  }
+  return out;
 }
 
 export async function naverVolumes(keywords) {
@@ -150,7 +296,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const opt = Object.fromEntries(args.filter((a) => a.startsWith('--')).map((a) => { const [k, v = 'true'] = a.slice(2).split('='); return [k, v]; }));
   const file = args.find((a) => !a.startsWith('--'));
-  if (!file) { console.error('usage: node scripts/demand-research.mjs <post.md> [--from=saved.json] [--out=docs/research/data/suggest] [--write-scale]'); process.exit(2); }
+  if (!file) { console.error('usage: node scripts/demand-research.mjs <post.md> [--from=saved.json] [--out=docs/research/data/suggest] [--write-scale] [--shop=키워드@분야코드,…]'); process.exit(2); }
   const text = fs.readFileSync(file, 'utf8');
   const { front, body } = parseDraft(text);
   const slug = field(front, 'slug') || path.basename(file, '.md');
@@ -183,13 +329,37 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const open = await naverOpenApi(seeds).catch((e) => { console.log(`\n네이버 데이터랩·검색 API 조회 실패: ${e.message}`); return null; });
   if (!open) console.log('\n네이버 데이터랩·검색 API: 키 없음(NAVER_CLIENT_ID·NAVER_CLIENT_SECRET)');
   else {
-    console.log('\n네이버 추세(첫 시드 평균=100) · 블로그 글 수:');
+    console.log(`\n네이버 추세(${open.period}, 첫 시드 평균=100) · 성수기 · 블로그/지식iN/카페 글 수 [${open.gateway}]:`);
     for (const k of seeds) {
-      const t = open.trends[k]; const n = open.blogTotal[k];
-      console.log(`  - ${k}: 36개월 평균 ${t?.mean ?? '-'} · 최근 12개월 ${t?.last12 ?? '-'} (그 전 12개월 ${t?.prev12 ?? '-'}) · 블로그 ${n ?? '-'}건`);
+      const t = open.trends[k]; const s = open.season[k];
+      // ratios under ~5 (anchor mean = 100) are a handful of searches; a month-of-year profile from them is noise
+      const peak = (t?.mean ?? 0) < 5 ? '판단 불가(검색량 적음)' : s?.peak?.length ? `${s.peak.join('·')}월` : '뚜렷하지 않음';
+      console.log(`  - ${k}: 평균 ${t?.mean ?? '-'} · 최근 12개월 ${t?.last12 ?? '-'} (그 전 12개월 ${t?.prev12 ?? '-'}) · 성수기 ${peak} · 블로그 ${open.blogTotal[k] ?? '-'} / 지식iN ${open.kinTotal[k] ?? '-'} / 카페 ${open.cafeTotal[k] ?? '-'}`);
     }
+    const share = open.commercialShare;
+    const fresh = open.freshness;
+    if (share !== null) console.log(`\n블로그 상위 글 ${open.topBlogs.length}개(검색어마다 10개, 중복 제외) 중 업체 홍보형 ${Math.round(share * 100)}% (제목·블로그 이름 단어 기준 추정)${fresh ? ` · 최근 ${fresh.days}일 안에 쓴 글 ${fresh.within}개 · 발행 후 중앙값 ${fresh.medianAge}일` : ''}`);
+    const gaps = questionGaps(body, open.questions.map((x) => x.q));
+    console.log(`\n지식iN·카페 실제 질문 ${open.questions.length}개 중 본문이 답하지 않는 질문 ${gaps.length}개 (많이 반복된 순, 상위 15):`);
+    for (const g of gaps.slice(0, 15)) console.log(`  - ${g.q}${g.count > 1 ? ` ×${g.count}` : ''}  [본문에 없는 말: ${g.missing.join(', ')}]`);
+    const terms = missingTerms(gaps);
+    if (terms.length) console.log(`\n답하지 않은 질문에 자주 나오는데 본문에 없는 말(질문 수): ${terms.map((t) => `${t.w} ${t.n}`).join(', ')}`);
+    if (!opt.from) { open.unanswered = gaps.map(({ q, count, missing }) => ({ q, count, missing })); open.missingTerms = terms; }
     if (!opt.from) {
       saved.naver = { ...(saved.naver || {}), open_api_fetched_at: new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date()), ...open };
+      fs.writeFileSync(path.join(opt.out || 'docs/research/data/suggest', `${slug}.json`), JSON.stringify(saved, null, 1) + '\n');
+    }
+  }
+
+  const shopPairs = parseShop(opt.shop || field(front, 'shop'));
+  const shoppers = await naverShoppers(shopPairs).catch((e) => { console.log(`\n쇼핑인사이트 조회 실패: ${e.message}`); return null; });
+  if (shoppers) {
+    const AGE = { 10: '10대', 20: '20대', 30: '30대', 40: '40대', 50: '50대', 60: '60대 이상' }; const SEX = { m: '남성', f: '여성' }; const DEV = { mo: '모바일', pc: 'PC' };
+    const line = (o, names) => (o ? Object.entries(o).map(([g, v]) => `${names[g] || g} ${v}%`).join(' · ') : '자료 없음');
+    console.log(`\n네이버 쇼핑에서 이 상품을 누른 사람(쇼핑인사이트 클릭 비중, ${shoppers[0]?.period}):`);
+    for (const r of shoppers) console.log(`  - ${r.keyword}(분야 ${r.category}): ${line(r.gender, SEX)} / ${line(r.age, AGE)} / ${line(r.device, DEV)}`);
+    if (!opt.from) {
+      saved.naver = { ...(saved.naver || {}), shoppers_fetched_at: new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Seoul' }).format(new Date()), shoppers };
       fs.writeFileSync(path.join(opt.out || 'docs/research/data/suggest', `${slug}.json`), JSON.stringify(saved, null, 1) + '\n');
     }
   }
